@@ -19,6 +19,7 @@
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
       <OutputPath>..\..\..\1.4\Assemblies\</OutputPath>
+      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
     <ItemGroup>
