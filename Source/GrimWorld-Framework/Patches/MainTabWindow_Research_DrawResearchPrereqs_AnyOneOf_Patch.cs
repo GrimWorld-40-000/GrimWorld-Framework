@@ -43,7 +43,6 @@ namespace GW_Frame
 
                     var stcManager = Find.World.GetComponent<WorldComponent_StudyManager>();
                     GUI.color = MissingPrerequisiteColor;
-
                     foreach (var req in modExtension.ItemStudyRequirements)
                     {
                         if (stcManager.CompletedRequirement(project, req.StudyObject))
@@ -53,10 +52,17 @@ namespace GW_Frame
 
                         string numRequired = "GW_MoreNeeded".Translate(req.NumberRequired);
                         string reqLabel = req.StudyObject.LabelCap;
-                        string atCogitator = "GW_StudyAt".Translate(modExtension.StudyLocation.LabelCap);
+                        string atCogitator;
+                        if (modExtension.StudyLocation != null)
+                        {
+                            atCogitator = "GW_StudyAt".Translate(modExtension.StudyLocation.LabelCap);
+                        }
+                        else
+                        {
+                            atCogitator = "GW_StudyAt".Translate("nowhere. Please set StudyLocation.");
+                        }
                         var labelPart1Size = Text.CalcSize(numRequired);
                         var stcFragmentsSize = Text.CalcSize(reqLabel);
-
                         var num = labelPart1Size.y;
                         rect.height = num;
                         Widgets.Label(rect, numRequired);

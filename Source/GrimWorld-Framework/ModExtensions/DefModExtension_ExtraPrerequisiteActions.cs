@@ -7,6 +7,7 @@ namespace GW_Frame
     {
         public ThingDef StudyLocation;
         public List<StudyRequirement> ItemStudyRequirements;
+        public bool longLabel = false; // Set this to true if a two line label is causing display issues
 
         public void ExposeData()
         {
