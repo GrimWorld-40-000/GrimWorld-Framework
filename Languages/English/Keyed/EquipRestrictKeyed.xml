@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+    <GW_GeneRestrictedEquipment_All>Missing at least one required gene.</GW_GeneRestrictedEquipment_All>
+    <GW_GeneRestrictedEquipment_AnyOne>Has none of required genes.</GW_GeneRestrictedEquipment_AnyOne>
+    <GW_GeneRestrictedEquipment_One>Does not have the gene {0}.</GW_GeneRestrictedEquipment_One>
+    <GW_GeneRestrictedEquipment_None>Has the gene {0}.</GW_GeneRestrictedEquipment_None>
+
+    <GW_XenoRestrictedEquipment_AnyOne>Is not any of the required xenotypes.</GW_XenoRestrictedEquipment_AnyOne>
+    <GW_XenoRestrictedEquipment_One>Is not a {0}.</GW_XenoRestrictedEquipment_One>
+    <GW_XenoRestrictedEquipment_None>Is a {0}.</GW_XenoRestrictedEquipment_None>
+
+    <GW_GenesNotFound>Genes are required to equip this item.</GW_GenesNotFound>
+
+    <GW_HediffRestrictedEquipment_All>Missing at least one required hediff.</GW_HediffRestrictedEquipment_All>
+    <GW_HediffRestrictedEquipment_AnyOne>Has none of required hediffs.</GW_HediffRestrictedEquipment_AnyOne>
+    <GW_HediffRestrictedEquipment_One>Does not have the hediff {0}.</GW_HediffRestrictedEquipment_One>
+    <GW_HediffRestrictedEquipment_None>Has the hediff {0}.</GW_HediffRestrictedEquipment_None>
+</LanguageData>
