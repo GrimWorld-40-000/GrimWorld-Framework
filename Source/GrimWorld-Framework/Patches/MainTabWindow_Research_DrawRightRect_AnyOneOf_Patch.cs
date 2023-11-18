@@ -16,7 +16,6 @@ namespace GW_Frame
     {
         // Will need cached textures for each requirement, and should check for it later
         private static readonly CachedTexture STCRequirementTex = new CachedTexture("UI/ImperiumStudy");
-        // Add Logs
 
         [HarmonyPostfix]
         public static void Postfix(MainTabWindow_Research __instance, Rect rightOutRect, ref ResearchTabDef ___curTabInt, ref ScrollPositioner ___scrollPositioner,

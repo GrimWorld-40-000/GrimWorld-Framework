@@ -13,13 +13,15 @@
     <DebugType>embedded</DebugType>
   </PropertyGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(SolutionDir)..\..\1.4\Assemblies\$(ProjectName).dll&quot;" />
-  </Target>
-
   <ItemGroup>
     <PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3704" ExcludeAssets="runtime" />
     <PackageReference Include="Lib.Harmony" Version="2.2.2" ExcludeAssets="runtime" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="EquipRestrict\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="EquipRestrict\EquipmentUtility_CanEquip_AnyOneOf_Patch.cs" />
+  </ItemGroup>
 </Project>
