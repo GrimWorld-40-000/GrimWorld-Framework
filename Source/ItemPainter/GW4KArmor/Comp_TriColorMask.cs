@@ -77,27 +77,26 @@ public class Comp_TriColorMask : ThingComp
 		colorComp = parent.GetComp<CompColorable>();
 		
 		//
-		if (ParentHolder is Pawn pawn)
-		{
-			if (pawn.kindDef.HasModExtension<DefaultPaletteExtension>())
-			{
-				var extension = pawn.kindDef.GetModExtension<DefaultPaletteExtension>();
-				var palette = extension.defaultPalette;
-				colorOne = palette.colorA;
-				colorTwo = palette.colorB;
-				colorThree = palette.colorC;
-				MarkDirty();
-				return;
-			}
-		}
-		
-		//
 		if (Props.defaultPalette != null)
 		{
 			colorOne = Props.defaultPalette.colorA;
 			colorTwo = Props.defaultPalette.colorB;
 			colorThree = Props.defaultPalette.colorC;
 			MarkDirty();
+		}
+	}
+
+	public override void Notify_Equipped(Pawn pawn)
+	{
+		if (pawn.kindDef.HasModExtension<DefaultPaletteExtension>())
+		{
+			var extension = pawn.kindDef.GetModExtension<DefaultPaletteExtension>();
+			var palette = extension.defaultPalette;
+			colorOne = palette.colorA;
+			colorTwo = palette.colorB;
+			colorThree = palette.colorC;
+			MarkDirty();
+			return;
 		}
 	}
 
@@ -140,6 +139,7 @@ public class Comp_TriColorMask : ThingComp
 			yield return gizmo;
 		}
 
+		PaintGizmo.disabled = !parent.Faction.IsPlayer;
 		yield return PaintGizmo;
 	}
 }
