@@ -7,6 +7,7 @@
         "compile": {
           "ref/net472/Assembly-CSharp-firstpass.dll": {},
           "ref/net472/Assembly-CSharp.dll": {},
+          "ref/net472/Assembly-CSharp_publicised.dll": {},
           "ref/net472/ISharpZipLib.dll": {},
           "ref/net472/Mono.Posix.dll": {},
           "ref/net472/Mono.Security.dll": {},
@@ -89,20 +90,25 @@
       "Lib.Harmony/2.2.2": {
         "type": "package",
         "compile": {
-          "lib/net48/0Harmony.dll": {}
+          "lib/net48/0Harmony.dll": {
+            "related": ".xml"
+          }
         },
         "runtime": {
-          "lib/net48/_._": {}
+          "lib/net48/_._": {
+            "related": ".xml"
+          }
         }
       }
     }
   },
   "libraries": {
     "Krafs.Rimworld.Ref/1.4.3704": {
-      "sha512": "1ODyeQ/5qNjtESHnJnzZw3mlvWjPBmyJY+Zj96LdmOodhZFDAM+YkZyeXYh8CwJbUU5QgdLdSl3yh6V7XyMTaA==",
+      "sha512": "INLy9Od0/msMfI9LROUaueV3QL8mnIB18xRjei5/Sw7HAYaw10emQKzts7la6AfSoFmB8mEY20bLVTnXNdeU7g==",
       "type": "package",
       "path": "krafs.rimworld.ref/1.4.3704",
       "files": [
+        ".nupkg.metadata",
         ".signature.p7s",
         "LICENSE.md",
         "README.md",
@@ -111,6 +117,8 @@
         "krafs.rimworld.ref.nuspec",
         "ref/net472/Assembly-CSharp-firstpass.dll",
         "ref/net472/Assembly-CSharp.dll",
+        "ref/net472/Assembly-CSharp_hash.hash",
+        "ref/net472/Assembly-CSharp_publicised.dll",
         "ref/net472/ISharpZipLib.dll",
         "ref/net472/Mono.Posix.dll",
         "ref/net472/Mono.Security.dll",
@@ -191,10 +199,11 @@
       ]
     },
     "Lib.Harmony/2.2.2": {
-      "sha512": "rIFtr+6ijKW+jysLylikfz0RSg7T4Wv/lWQxBAR/esSx8lizu6UTBZky0qOOlPXQuovkKY2mtlOz1001q59nNg==",
+      "sha512": "70KvWz+DiUELxafsYL/LHxA/jH3PDWeApLo/VwtnrpTvRWQ/eUdPfS/l5funmhZWOy41QXw6UjVv+6C57Nx77A==",
       "type": "package",
       "path": "lib.harmony/2.2.2",
       "files": [
+        ".nupkg.metadata",
         ".signature.p7s",
         "HarmonyLogo.png",
         "LICENSE",
@@ -226,28 +235,32 @@
     ]
   },
   "packageFolders": {
-    "/home/robert/.nuget/packages/": {}
+    "C:\\Users\\maxim\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/GrimWorld-Framework/GrimWorld_Framework.csproj",
+      "projectUniqueName": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\GrimWorld-Framework\\Source\\GrimWorld-Framework\\GrimWorld_Framework.csproj",
       "projectName": "GrimWorld_Framework",
-      "projectPath": "/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/GrimWorld-Framework/GrimWorld_Framework.csproj",
-      "packagesPath": "/home/robert/.nuget/packages/",
-      "outputPath": "/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/GrimWorld-Framework/obj/",
+      "projectPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\GrimWorld-Framework\\Source\\GrimWorld-Framework\\GrimWorld_Framework.csproj",
+      "packagesPath": "C:\\Users\\maxim\\.nuget\\packages\\",
+      "outputPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\RimWorld\\Mods\\GrimWorld-Framework\\Source\\GrimWorld-Framework\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/robert/.config/NuGet/NuGet.Config"
+        "C:\\Users\\maxim\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net48"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Users\\maxim\\Desktop\\PackageStore": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net48": {
+          "targetAlias": "net48",
           "projectReferences": {}
         }
       },
@@ -259,18 +272,20 @@
     },
     "frameworks": {
       "net48": {
+        "targetAlias": "net48",
         "dependencies": {
           "Krafs.Rimworld.Ref": {
-            "include": "Compile, Build, Native, ContentFiles, Analyzers",
+            "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "target": "Package",
             "version": "[1.4.3704, )"
           },
           "Lib.Harmony": {
-            "include": "Compile, Build, Native, ContentFiles, Analyzers",
+            "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "target": "Package",
             "version": "[2.2.2, )"
           }
-        }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.404\\RuntimeIdentifierGraph.json"
       }
     }
   }

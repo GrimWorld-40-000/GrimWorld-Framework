@@ -130,6 +130,7 @@ public class Comp_TriColorMask : ThingComp
 		defaultLabel = "Color Apparel",
 		defaultDesc = "Change the 3 colors of an equipped colorable item!",
 		alsoClickIfOtherInGroupClicked = true,
+		disabled = true,
 	};
 
 	public override IEnumerable<Gizmo> CompGetGizmosExtra()
@@ -139,7 +140,10 @@ public class Comp_TriColorMask : ThingComp
 			yield return gizmo;
 		}
 
-		PaintGizmo.disabled = !parent.Faction.IsPlayer;
+		if (parent.Faction != null)
+		{
+			PaintGizmo.disabled = !parent.Faction.IsPlayer;	
+		}
 		yield return PaintGizmo;
 	}
 }
