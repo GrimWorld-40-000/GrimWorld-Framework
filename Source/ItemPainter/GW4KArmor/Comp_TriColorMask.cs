@@ -123,11 +123,9 @@ public class Comp_TriColorMask : ThingComp
 				defaultDesc =
 					"Change the 3 colors of this item.\nRight-click to copy-paste the color and mask to other objects.",
 				alsoClickIfOtherInGroupClicked = true,
-				disabled = true,
 				action = () => { Window_ItemPainter.OpenWindowFor(parent); }
 			};
 			
-			gizm.disabled = !parent.Faction?.IsPlayer ?? true;	
 			if(ParentHolder is Pawn pawn)
 				gizm.disabled = !pawn.IsColonistPlayerControlled;
 			return gizm;
@@ -144,10 +142,8 @@ public class Comp_TriColorMask : ThingComp
 				defaultLabel = "Color Apparel",
 				defaultDesc = "Change the 3 colors of an equipped colorable item!",
 				alsoClickIfOtherInGroupClicked = true,
-				disabled = true,
 			};
 			
-			gizm.disabled = !parent.Faction?.IsPlayer ?? true;	
 			if(ParentHolder is Pawn pawn)
 				gizm.disabled = !pawn.IsColonistPlayerControlled;
 			return gizm;
