@@ -112,41 +112,53 @@ public class Comp_TriColorMask : ThingComp
 	private Gizmo_Paintable _gizmo;
 	private Gizmo_PaintableMulti _gizmoMulti;
 
-	internal Gizmo_Paintable PaintGizmo => _gizmo ??= new Gizmo_Paintable
+	internal Gizmo_Paintable PaintGizmo
 	{
-		paintComp = this,
-		defaultLabel = "Set Colors",
-		defaultDesc = "Change the 3 colors of this item.\nRight-click to copy-paste the color and mask to other objects.",
-		alsoClickIfOtherInGroupClicked = true,
-		action = () =>
+		get
 		{
-			Window_ItemPainter.OpenWindowFor(parent);
+			var gizm = _gizmo ??= new Gizmo_Paintable
+			{
+				paintComp = this,
+				defaultLabel = "Set Colors",
+				defaultDesc =
+					"Change the 3 colors of this item.\nRight-click to copy-paste the color and mask to other objects.",
+				alsoClickIfOtherInGroupClicked = true,
+				disabled = true,
+				action = () => { Window_ItemPainter.OpenWindowFor(parent); }
+			};
+			
+			gizm.disabled = !parent.Faction?.IsPlayer ?? true;	
+			if(ParentHolder is Pawn pawn)
+				gizm.disabled = !pawn.IsColonistPlayerControlled;
+			return gizm;
 		}
-	};
+	}
 
-	public Gizmo_PaintableMulti PaintGizmoMulti => _gizmoMulti ??= new Gizmo_PaintableMulti
+	public Gizmo_PaintableMulti PaintGizmoMulti
 	{
-		pawn = ParentHolder as Pawn,
-		defaultLabel = "Color Apparel",
-		defaultDesc = "Change the 3 colors of an equipped colorable item!",
-		alsoClickIfOtherInGroupClicked = true,
-		disabled = true,
-	};
+		get
+		{
+			var gizm = _gizmoMulti ??= new Gizmo_PaintableMulti
+			{
+				pawn = ParentHolder as Pawn,
+				defaultLabel = "Color Apparel",
+				defaultDesc = "Change the 3 colors of an equipped colorable item!",
+				alsoClickIfOtherInGroupClicked = true,
+				disabled = true,
+			};
+			
+			gizm.disabled = !parent.Faction?.IsPlayer ?? true;	
+			if(ParentHolder is Pawn pawn)
+				gizm.disabled = !pawn.IsColonistPlayerControlled;
+			return gizm;
+		}
+	}
 
 	public override IEnumerable<Gizmo> CompGetGizmosExtra()
 	{
 		foreach (var gizmo in base.CompGetGizmosExtra())
 		{
 			yield return gizmo;
-		}
-
-		if (parent.Faction != null)
-		{
-			PaintGizmo.disabled = !parent.Faction.IsPlayer;	
-		}
-		if(ParentHolder is Pawn pawn)
-		{
-			PaintGizmoMulti.disabled = !pawn.IsColonistPlayerControlled;
 		}
 		yield return PaintGizmo;
 	}
