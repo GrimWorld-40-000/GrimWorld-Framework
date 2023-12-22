@@ -144,6 +144,10 @@ public class Comp_TriColorMask : ThingComp
 		{
 			PaintGizmo.disabled = !parent.Faction.IsPlayer;	
 		}
+		if(ParentHolder is Pawn pawn)
+		{
+			PaintGizmoMulti.disabled = !pawn.IsColonistPlayerControlled;
+		}
 		yield return PaintGizmo;
 	}
 }
