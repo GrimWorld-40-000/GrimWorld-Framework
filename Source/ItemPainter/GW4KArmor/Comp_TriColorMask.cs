@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using GW4KArmor.Data;
 using GW4KArmor.UI;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -9,9 +10,9 @@ namespace GW4KArmor;
 public class Comp_TriColorMask : ThingComp
 {
 	public int MaskIndex;
-	private Color colorOne = Color.white;
-	private Color colorTwo = Color.white;
-	private Color colorThree = Color.white;
+	private Color? colorOne;
+	private Color? colorTwo;
+	private Color? colorThree;
 	private CompColorable colorComp;
 
 	public CompProperties_TriColorMask Props => props as CompProperties_TriColorMask;
@@ -25,7 +26,7 @@ public class Comp_TriColorMask : ThingComp
 		get
 		{
 			var compColorable = colorComp;
-			return compColorable != null && compColorable.Active ? colorComp.Color : colorOne;
+			return compColorable is { Active: true } ? colorComp.Color : colorOne ?? Color.white;
 		}
 		set
 		{
@@ -39,13 +40,13 @@ public class Comp_TriColorMask : ThingComp
 
 	public Color ColorTwo
 	{
-		get => colorTwo;
+		get => colorTwo ?? Color.white;
 		set => colorTwo = value;
 	}
 
 	public Color ColorThree
 	{
-		get => colorThree;
+		get => colorThree ?? Color.white;
 		set => colorThree = value;
 	}
 
@@ -70,14 +71,14 @@ public class Comp_TriColorMask : ThingComp
 	{
 		parent?.Notify_ColorChanged();
 	}
-	
+
 	public override void PostSpawnSetup(bool respawningAfterLoad)
 	{
 		base.PostSpawnSetup(respawningAfterLoad);
 		colorComp = parent.GetComp<CompColorable>();
 		
-		//
-		if (Props.defaultPalette != null)
+		if (respawningAfterLoad) return;
+		if (Props.defaultPalette != null && colorOne == null && colorTwo == null && colorThree == null)
 		{
 			colorOne = Props.defaultPalette.colorA;
 			colorTwo = Props.defaultPalette.colorB;
@@ -96,7 +97,6 @@ public class Comp_TriColorMask : ThingComp
 			colorTwo = palette.colorB;
 			colorThree = palette.colorC;
 			MarkDirty();
-			return;
 		}
 	}
 
