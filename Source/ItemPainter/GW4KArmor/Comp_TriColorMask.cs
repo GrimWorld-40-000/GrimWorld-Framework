@@ -116,18 +116,19 @@ public class Comp_TriColorMask : ThingComp
 	{
 		get
 		{
+			var isDisabled = parent is Apparel { Wearer: Pawn { IsColonistPlayerControlled: false } };
 			var gizm = _gizmo ??= new Gizmo_Paintable
 			{
 				paintComp = this,
-				defaultLabel = "Set Colors",
-				defaultDesc =
-					"Change the 3 colors of this item.\nRight-click to copy-paste the color and mask to other objects.",
+				defaultLabel = "Set Colors", 
 				alsoClickIfOtherInGroupClicked = true,
 				action = () => { Window_ItemPainter.OpenWindowFor(parent); }
 			};
-			
-			if(ParentHolder is Pawn pawn)
-				gizm.disabled = !pawn.IsColonistPlayerControlled;
+
+			gizm.defaultDesc = isDisabled
+				? "Cannot change colors on other faction!"
+				: "Change the 3 colors of this item.\nRight-click to copy-paste the color and mask to other objects.";
+			gizm.disabled = isDisabled;
 			return gizm;
 		}
 	}
@@ -136,16 +137,18 @@ public class Comp_TriColorMask : ThingComp
 	{
 		get
 		{
+			var isDisabled = parent is Apparel { Wearer: Pawn { IsColonistPlayerControlled: false } };
 			var gizm = _gizmoMulti ??= new Gizmo_PaintableMulti
 			{
 				pawn = ParentHolder as Pawn,
 				defaultLabel = "Color Apparel",
-				defaultDesc = "Change the 3 colors of an equipped colorable item!",
 				alsoClickIfOtherInGroupClicked = true,
 			};
 			
-			if(ParentHolder is Pawn pawn)
-				gizm.disabled = !pawn.IsColonistPlayerControlled;
+			gizm.defaultDesc = isDisabled
+				? "Cannot change colors on other faction!"
+				: "Change the 3 colors of an equipped colorable item!";
+			gizm.disabled = isDisabled;
 			return gizm;
 		}
 	}
