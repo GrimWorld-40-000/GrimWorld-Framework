@@ -21,20 +21,29 @@ public class Comp_TriColorMask : ThingComp
 
 	public ThingDef Def => parent.def;
 
-	public Color ColorOne
+	/*public Color? ColorOne
 	{
 		get
 		{
 			var compColorable = colorComp;
-			return compColorable is { Active: true } ? colorComp.Color : colorOne ?? Color.white;
+			return compColorable is { Active: true } ? colorComp.Color : colorOne;
 		}
 		set
 		{
-			var flag = colorComp == null;
-			if (flag)
+			if (colorComp == null)
 				colorOne = value;
-			else
-				colorComp.SetColor(value);
+			else if(value.HasValue)
+				colorComp.SetColor(value.Value);
+		}
+	}*/
+
+	public Color ColorOne
+	{
+		get => colorOne ?? Color.white;
+		set
+		{
+			colorComp?.SetColor(value);
+			colorOne = value;
 		}
 	}
 
@@ -76,14 +85,13 @@ public class Comp_TriColorMask : ThingComp
 	{
 		base.PostSpawnSetup(respawningAfterLoad);
 		colorComp = parent.GetComp<CompColorable>();
-		
+
 		if (respawningAfterLoad) return;
 		if (Props.defaultPalette != null && colorOne == null && colorTwo == null && colorThree == null)
 		{
-			colorOne = Props.defaultPalette.colorA;
+			ColorOne = Props.defaultPalette.colorA;
 			colorTwo = Props.defaultPalette.colorB;
 			colorThree = Props.defaultPalette.colorC;
-			MarkDirty();
 		}
 	}
 
@@ -93,10 +101,9 @@ public class Comp_TriColorMask : ThingComp
 		{
 			var extension = pawn.kindDef.GetModExtension<DefaultPaletteExtension>();
 			var palette = extension.defaultPalette;
-			colorOne = palette.colorA;
+			ColorOne = palette.colorA;
 			colorTwo = palette.colorB;
 			colorThree = palette.colorC;
-			MarkDirty();
 		}
 	}
 
@@ -107,6 +114,9 @@ public class Comp_TriColorMask : ThingComp
 		Scribe_Values.Look(ref colorTwo, "colorTwo", Color.white);
 		Scribe_Values.Look(ref colorThree, "colorThree", Color.white);
 		Scribe_Values.Look(ref MaskIndex, "maskIndex");
+		
+		if(Scribe.mode == LoadSaveMode.PostLoadInit)
+			MarkDirty();
 	}
 
 	private Gizmo_Paintable _gizmo;

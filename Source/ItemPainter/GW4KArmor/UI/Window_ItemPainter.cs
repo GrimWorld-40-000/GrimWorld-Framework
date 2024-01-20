@@ -720,6 +720,9 @@ public class Window_ItemPainter : Window
 
 	private void DrawMainButtons(Rect rect)
 	{
+		var font = Text.Font;
+		Text.Font = GameFont.Small;
+		
 		var rect2 = rect.LeftHalf().ExpandedBy(-5f);
 		var rect3 = rect.RightHalf().ExpandedBy(-5f);
 		if ( Widgets.ButtonText(rect2, "Save"))
@@ -737,6 +740,8 @@ public class Window_ItemPainter : Window
 			Apply(originalColors, originalMask);
 			Messages.Message("Reverted to original colors & mask.", MessageTypeDefOf.NeutralEvent, false);
 		}
+
+		Text.Font = font;
 	}
 
 	private IEnumerable<Palette> CurrentPalettes
