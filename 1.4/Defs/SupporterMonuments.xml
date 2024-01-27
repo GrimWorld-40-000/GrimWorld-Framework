@@ -62,7 +62,7 @@
     <ThingDef ParentName="GWSupporterMonumentBase">
         <defName>GW_FancyObelisk</defName>
         <label>supporter monument center</label>
-        <description>A monument to those who helped make the Grimworld project a reality.</description>
+        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Astartes tier:\n\nRainyredman1234, Bailey English\n\n  Primarch tier:\n\nFulgrim, R.CSN, kyle shadowchain, Echo</description>
         <graphicData>
             <texPath>Things/Building/Obelisks/Obelisk_Fancy</texPath>
             <drawSize>(5,5)</drawSize>
@@ -74,7 +74,7 @@
     <ThingDef ParentName="GWSupporterMonumentBase">
         <defName>GW_OrdinaryObelisk</defName>
         <label>supporter's monument</label>
-        <description>A monument to those who helped make the Grimworld project a reality.</description>
+        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Servitor tier:\n\nAKorgar, Hell Fire, Sparrow, just a guy named brad\n\n  Guardsmen tier:\n\n♠_Caligula_♠, Józef Kozioł, MisterCroxo48\n\n  Stormtrooper tier:\n\nBenio, Alloyskull, Vylixan, Gofres, Celorico, Risque, Madgile\n\n  Neophyte tier:\n\nTacticalCrumpet, Petrie, JawnWick</description>
         <graphicData>
             <texPath>Things/Building/Obelisks/Obelisk_Ordinary</texPath>
             <drawSize>(3,3)</drawSize>
