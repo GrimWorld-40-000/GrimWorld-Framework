@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+    <GenStepDef>
+        <defName>GW_SupporterMonuments</defName>
+        <order>1601</order><!-- after fogged and exostrider (if using Biotech) -->
+        <genStep Class="GenStep_ScatterLayout">
+            <count>1</count>
+            <allowMechanoidDatacoreReadOrLost>false</allowMechanoidDatacoreReadOrLost>
+            <validators>
+                <li Class="ScattererValidator_Buildable">
+                    <radius>10</radius>
+                    <affordance>Light</affordance>
+                </li>
+            </validators>
+            <allowRoofed>false</allowRoofed>
+            <minEdgeDistPct>0.166667</minEdgeDistPct>
+            <minDistToPlayerStartPct>0.333</minDistToPlayerStartPct>
+            <allowFoggedPositions>false</allowFoggedPositions>
+            <onlyOnStartingMap>true</onlyOnStartingMap>
+            <layout>
+                <li>
+                    <thing>GW_FancyObelisk</thing>
+                </li>
+                <li>
+                    <thing>GW_OrdinaryObelisk</thing>
+                    <offset>(3, 0, 0)</offset>
+                </li>
+                <li>
+                    <thing>GW_OrdinaryObelisk</thing>
+                    <offset>(-3, 0, 0)</offset>
+                </li>
+                <li>
+                    <thing>GW_OrdinaryObelisk</thing>
+                    <offset>(0, 0, 3)</offset>
+                </li>
+                <li>
+                    <thing>GW_OrdinaryObelisk</thing>
+                    <offset>(0, 0, -3)</offset>
+                </li>
+            </layout>
+        </genStep>
+    </GenStepDef>
+
+    <ThingDef ParentName="NonDeconstructibleAncientBuildingBase" Name="GWSupporterMonumentBase" Abstract="True">
+        <rotatable>false</rotatable>
+        <graphicData>
+            <graphicClass>Graphic_Single</graphicClass>
+            <shadowData>
+                <volume>(1.1, 1, 1.1)</volume>
+                <offset>(-0.2,0,-0.2)</offset>
+            </shadowData>
+        </graphicData>
+        <fillPercent>0.5</fillPercent>
+        <passability>PassThroughOnly</passability>
+        <pathCost>50</pathCost>
+        <statBases>
+            <MaxHitPoints>1500</MaxHitPoints>
+        </statBases>
+        <killedLeavings />
+    </ThingDef>
+
+    <ThingDef ParentName="GWSupporterMonumentBase">
+        <defName>GW_FancyObelisk</defName>
+        <label>supporter monument center</label>
+        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Astartes tier:\n\nRainyredman1234, Bailey English\n\n  Primarch tier:\n\nFulgrim, R.CSN, kyle shadowchain, Echo</description>
+        <graphicData>
+            <texPath>Things/Building/Obelisks/Obelisk_Fancy</texPath>
+            <drawSize>(5,5)</drawSize>
+            <drawOffset>(0,0,0.5)</drawOffset>
+        </graphicData>
+        <size>(4,4)</size>
+    </ThingDef>
+
+    <ThingDef ParentName="GWSupporterMonumentBase">
+        <defName>GW_OrdinaryObelisk</defName>
+        <label>supporter's monument</label>
+        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Servitor tier:\n\nAKorgar, Hell Fire, Sparrow, just a guy named brad\n\n  Guardsmen tier:\n\n♠_Caligula_♠, Józef Kozioł, MisterCroxo48\n\n  Stormtrooper tier:\n\nBenio, Alloyskull, Vylixan, Gofres, Celorico, Risque, Madgile\n\n  Neophyte tier:\n\nTacticalCrumpet, Petrie, JawnWick</description>
+        <graphicData>
+            <texPath>Things/Building/Obelisks/Obelisk_Ordinary</texPath>
+            <drawSize>(3,3)</drawSize>
+        </graphicData>
+        <size>(2,2)</size>
+    </ThingDef>
+</Defs>
