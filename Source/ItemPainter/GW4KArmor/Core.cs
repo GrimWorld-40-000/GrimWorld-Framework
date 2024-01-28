@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using GW4KArmor.Patches;
 using GW4KArmor.UI;
 using HarmonyLib;
@@ -93,7 +95,28 @@ public class Core : Mod
 
 	private void LoadBundleContent()
 	{
-		var assetBundle = Content.assetBundles.loadedAssetBundles.FirstOrDefault();
+		string platform = "";
+		
+		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		{
+			platform = "StandaloneWindows64";
+		}
+		else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+		{
+			platform = "StandaloneLinux64";
+		}
+		else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+		{
+			platform = "StandaloneOSX";
+		}
+		else
+		{
+			Error("Unknown platform! This mod will not work.");
+			platform = null;
+		}
+		
+		string assetPath = Path.Combine(Content.RootDir, "1.4", "AssetBundles", platform, "gw4k");
+		AssetBundle assetBundle = AssetBundle.LoadFromFile(assetPath);
 		if (assetBundle == null)
 		{
 			Error("Asset bundle failed to load, so the shader cannot be used! This mod will not work.");
