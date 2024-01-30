@@ -8,6 +8,7 @@
   </supportedVersions>
 	<loadAfter>
 		<li>brrainz.harmony</li>
+		<li>Grimworld.Framework</li>
 	</loadAfter>
 	<modDependencies>
 		<li>
@@ -24,4 +25,3 @@ This currently adds:
 Core functionality leveraged by other mods in the series.
   </description>
 </ModMetaData>
-
