@@ -8,7 +8,7 @@
   </supportedVersions>
 	<loadAfter>
 		<li>brrainz.harmony</li>
-		<li>Grimworld.Framework</li>
+		<li>CETeam.CombatExtended</li>
 	</loadAfter>
 	<modDependencies>
 		<li>
