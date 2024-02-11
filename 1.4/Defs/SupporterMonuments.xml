@@ -42,6 +42,10 @@
     </GenStepDef>
 
     <ThingDef ParentName="NonDeconstructibleAncientBuildingBase" Name="GWSupporterMonumentBase" Abstract="True">
+		<building>
+			<deconstructible>false</deconstructible>
+			<claimable>true</claimable>
+		</building>
         <rotatable>false</rotatable>
         <graphicData>
             <graphicClass>Graphic_Single</graphicClass>
