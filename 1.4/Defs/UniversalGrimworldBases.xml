@@ -32,7 +32,6 @@
         <recipes>
             <li>Make_ComponentIndustrial</li>
             <li>Make_ComponentSpacer</li>
-            <li>GW_Make_ComponentRelic</li>
         </recipes>
         <graphicData>
             <graphicClass>Graphic_Multi</graphicClass>
