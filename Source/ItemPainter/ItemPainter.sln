@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorPicker", "ColorPicker\ColorPicker.csproj", "{7CEE32BC-85F5-4513-B947-851BA58705F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GW4KArmor", "GW4KArmor\GW4KArmor.csproj", "{7E2B3B04-C20A-4615-9C0B-A43A0F2EE300}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7CEE32BC-85F5-4513-B947-851BA58705F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CEE32BC-85F5-4513-B947-851BA58705F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CEE32BC-85F5-4513-B947-851BA58705F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CEE32BC-85F5-4513-B947-851BA58705F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E2B3B04-C20A-4615-9C0B-A43A0F2EE300}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E2B3B04-C20A-4615-9C0B-A43A0F2EE300}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E2B3B04-C20A-4615-9C0B-A43A0F2EE300}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E2B3B04-C20A-4615-9C0B-A43A0F2EE300}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

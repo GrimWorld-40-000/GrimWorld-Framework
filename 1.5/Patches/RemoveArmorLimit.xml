@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+    <Operation Class="PatchOperationConditional">
+        <xpath>Defs/StatDef[@Name="ArmorRatingBase"]/maxValue</xpath>
+        <match Class="PatchOperationRemove">
+            <xpath>Defs/StatDef[@Name="ArmorRatingBase"]/maxValue</xpath>
+        </match>
+    </Operation>
+</Patch>
