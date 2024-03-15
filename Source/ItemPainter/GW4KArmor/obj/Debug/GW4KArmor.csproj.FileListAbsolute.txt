@@ -1,0 +1,2 @@
+/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/ItemPainter/GW4KArmor/obj/Debug/GW4KArmor.csproj.AssemblyReference.cache
+/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/ItemPainter/GW4KArmor/obj/Debug/GW4KArmor.csproj.CoreCompileInputs.cache
