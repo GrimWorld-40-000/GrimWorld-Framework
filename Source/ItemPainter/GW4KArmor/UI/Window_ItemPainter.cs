@@ -34,7 +34,6 @@ namespace GW4KArmor.UI
         Color.blue
         };
 
-
         private readonly ThingWithComps target;
         private readonly Comp_TriColorMask comp;
         private Material materialInstance;
@@ -55,7 +54,6 @@ namespace GW4KArmor.UI
         //New
         private const float Pallete_Option_Size = 65;
         private Vector2 _paletteScroller;
-        private Vector2 _patternScroller;
 
         public static Window_ItemPainter OpenWindowFor(ThingWithComps thing)
         {
@@ -70,10 +68,8 @@ namespace GW4KArmor.UI
         {
             target = thing;
             var triColorMaskComp = thing.GetComp<Comp_TriColorMask>();
-            if (triColorMaskComp == null)
-                throw new Exception(string.Format("Missing TriColorMaskComp on {0} ({1})", thing, thing.def.defName));
+            comp = triColorMaskComp ?? throw new Exception(string.Format("Missing TriColorMaskComp on {0} ({1})", thing, thing.def.defName));
 
-            comp = triColorMaskComp;
             previewMaskIndex = comp.MaskIndex;
             colors[0] = comp.ColorOne;
             colors[1] = comp.ColorTwo;

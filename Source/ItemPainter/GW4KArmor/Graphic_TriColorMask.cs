@@ -16,8 +16,7 @@ namespace GW4KArmor
 
         public override void DrawWorker(Vector3 loc, Rot4 rot, ThingDef thingDef, Thing thing, float extraRotation)
         {
-            var apparel = thing as Apparel;
-            if (apparel != null)
+            if (thing is Apparel apparel)
                 rot = Rot4.South;
 
             base.DrawWorker(loc, rot, thingDef, thing, extraRotation);
@@ -28,8 +27,7 @@ namespace GW4KArmor
             var rotateBack = false;
             var rotation = thing.Rotation;
 
-            var apparel = thing as Apparel;
-            if (apparel != null)
+            if (thing is Apparel apparel)
             {
                 rotation = thing.Rotation;
                 thing.Rotation = Rot4.South;

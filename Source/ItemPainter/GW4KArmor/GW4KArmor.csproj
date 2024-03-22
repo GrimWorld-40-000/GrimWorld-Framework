@@ -1,5 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net48</TargetFramework>
         <Authors>Epicguru(Original), Telefonmast(Edit)</Authors>
@@ -10,25 +10,26 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
-
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <OutputPath>..\..\..\1.4\Assemblies\</OutputPath>
         <Optimize>true</Optimize>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <OutputPath>..\..\..\1.4\Assemblies\</OutputPath>
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <OutputPath>..\..\..\1.4\Assemblies\</OutputPath>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <OutputPath>..\..\..\1.5\Assemblies</OutputPath>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <OutputPath>..\..\..\1.5\Assemblies</OutputPath>
+    </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Lib.Harmony" Version="2.3.1.1" />
         <PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3901" />
     </ItemGroup>
-
     <ItemGroup>
-      <ProjectReference Include="..\ColorPicker\ColorPicker.csproj" />
+        <ProjectReference Include="..\ColorPicker\ColorPicker.csproj" />
     </ItemGroup>
-
 </Project>

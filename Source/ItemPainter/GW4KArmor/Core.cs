@@ -12,6 +12,7 @@ using Verse;
 
 namespace GW4KArmor
 {
+    [StaticConstructorOnStartup]
     public class Core : Mod
     {
         public static HashSet<CompProperties_TriColorMask> AllMaskable = new HashSet<CompProperties_TriColorMask>();
@@ -20,17 +21,16 @@ namespace GW4KArmor
         public static Shader MaskShader { get; private set; }
         public static Harmony HarmonyInstance { get; private set; }
 
-
+        /*
         [DebugAction("_GW", allowedGameStates = AllowedGameStates.Entry)]
         private static void OpenWindow()
         {
-            HarmonyPatches.ThingIDPatch.Scope scope = new HarmonyPatches.ThingIDPatch.Scope();
-            using (scope)
+            Log.Message("Opening window?");
+            using (new HarmonyPatches.ThingIDPatch.Scope())
             {
                 ThingDef def = AllMaskable.RandomElement().Def;
                 var thing = ThingMaker.MakeThing(def);
                 Window_ItemPainter.OpenWindowFor(thing as ThingWithComps);
-                scope.Dispose();
             }
         }
 
@@ -40,26 +40,19 @@ namespace GW4KArmor
             foreach (var thing in Find.CurrentMap.thingGrid.ThingsAt(Verse.UI.MouseCell()))
             {
                 var apparel = thing as Apparel;
-                var flag = apparel == null;
-                if (!flag)
+                if (apparel != null)
                 {
                     Comp_TriColorMask comp = apparel.GetComp<Comp_TriColorMask>();
-                    bool flag2 = comp == null;
-                    if (!flag2) Window_ItemPainter.OpenWindowFor(apparel);
+                    if (comp != null) Window_ItemPainter.OpenWindowFor(apparel);
                 }
             }
         }
-
-        public static void Log(string msg)
-        {
-            Verse.Log.Message("<color=magenta>[GW4kArmor]</color> " + (msg ?? "<i><null></i>"));
-        }
+*/
 
         public static void Error(string msg, Exception e = null)
         {
-            Verse.Log.Error("<color=magenta>[GW4kArmor]</color> " + (msg ?? "<i><null></i>"));
-            var flag = e != null;
-            if (flag) Verse.Log.Error(e.ToString());
+            Log.Error("<color=magenta>[GW4kArmor]</color> " + (msg ?? "<i><null></i>"));
+            if (e != null) Log.Error(e.ToString());
         }
 
         public Core(ModContentPack content) : base(content)
@@ -74,8 +67,8 @@ namespace GW4KArmor
                 Error("Harmony patching failed:", e);
             }
 
-            LongEventHandler.QueueLongEvent(FindMaskableThings, "GW4KArmor.LoadText", false, null);
-            LongEventHandler.QueueLongEvent(LoadBundleContent, "GW4KArmor.LoadText", false, null);
+            List<Action> queuedActions = new List<Action>() { FindMaskableThings, LoadBundleContent };
+            LongEventHandler.QueueLongEvent(queuedActions, "GW4KArmor.LoadText");
         }
 
         private static void FindMaskableThings()
@@ -91,7 +84,7 @@ namespace GW4KArmor
                 }
             }
 
-            Log(string.Format("Found {0} maskable armor or weapons.", AllMaskable.Count));
+            Log.Message(string.Format("<color=magenta>[GW4kArmor]</color> Found {0} maskable armor or weapons.", AllMaskable.Count));
         }
 
         private void LoadBundleContent()

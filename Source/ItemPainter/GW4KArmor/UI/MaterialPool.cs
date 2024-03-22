@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using Verse;
 
 namespace GW4KArmor.UI
 {

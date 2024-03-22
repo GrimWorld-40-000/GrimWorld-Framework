@@ -130,7 +130,7 @@ namespace GW4KArmor
 
                 Gizmo_Paintable gizm;
 
-                if (_gizmoMulti != null) gizm = _gizmo;
+                if (_gizmo != null) gizm = _gizmo;
                 else gizm = new Gizmo_Paintable
                 {
                     paintComp = this,

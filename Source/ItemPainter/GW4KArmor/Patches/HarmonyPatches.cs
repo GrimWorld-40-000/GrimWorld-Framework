@@ -3,6 +3,8 @@ using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GW4KArmor.Patches
 {
@@ -10,7 +12,7 @@ namespace GW4KArmor.Patches
     {
 
 
-        [HarmonyPatch(typeof(ApparelGraphicRecordGetter), "TryGetGraphicApparel")]
+        [HarmonyPatch(typeof(ApparelGraphicRecordGetter), nameof(ApparelGraphicRecordGetter.TryGetGraphicApparel))]
         public static class ApparelGraphicRecordGetter_TryGetGraphicApparel
         {
             public static void Postfix(Apparel apparel, bool __result, ref ApparelGraphicRecord rec)
@@ -25,23 +27,18 @@ namespace GW4KArmor.Patches
             }
         }
 
-        [HarmonyPatch(typeof(GraphicData), "GraphicColoredFor")]
+        [HarmonyPatch(typeof(GraphicData), nameof(GraphicData.GraphicColoredFor))]
         public static class GraphicData_GraphicColoredFor
         {
             // Token: 0x06000069 RID: 105 RVA: 0x00004454 File Offset: 0x00002654
             public static bool Prefix(Thing t, ref Graphic __result)
             {
-
                 if (!(t is ThingWithComps thingWithComps))
-                {
                     return true;
-                }
 
                 var comp = thingWithComps.GetComp<Comp_TriColorMask>();
                 if (comp == null)
-                {
                     return true;
-                }
 
                 Graphic graphic;
                 if (t is Apparel)
@@ -53,7 +50,7 @@ namespace GW4KArmor.Patches
             }
         }
 
-        [HarmonyPatch(typeof(ShaderUtility), "SupportsMaskTex")]
+        [HarmonyPatch(typeof(ShaderUtility), nameof(ShaderUtility.SupportsMaskTex))]
         public static class ShaderUtility_SupportsMaskTex
         {
             public static void Postfix(Shader shader, ref bool __result)
@@ -65,25 +62,18 @@ namespace GW4KArmor.Patches
             }
         }
 
-        [HarmonyPatch(typeof(ThingIDMaker), "GiveIDTo")]
+        [HarmonyPatch(typeof(ThingIDMaker), nameof(ThingIDMaker.GiveIDTo))]
         public static class ThingIDPatch
         {
             [HarmonyPriority(800)]
             private static bool Prefix(Thing t)
             {
-                var flag = active == 0;
-                bool result;
-                if (flag)
-                {
-                    result = true;
-                }
-                else
+                if (active != 0)
                 {
                     t.thingIDNumber = 69420;
-                    result = false;
+                    return false;
                 }
-
-                return result;
+                return true;
             }
 
             private static int active;
@@ -99,6 +89,38 @@ namespace GW4KArmor.Patches
                 {
                     var flag = active > 0;
                     if (flag) active--;
+                }
+            }
+        }
+
+        //Inject Painting-Tool Gizmo on items with PaintableThingExtension
+        [HarmonyPatch(typeof(Pawn), nameof(Pawn.GetGizmos))]
+        public static class Pawn_GetGizmosPatch
+        {
+            private static List<ThingWithComps> tempList = new List<ThingWithComps>();
+            public static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
+            {
+                tempList.Clear();
+                if (__instance.equipment != null && __instance.apparel != null)
+                {
+                    tempList.AddRange(__instance.equipment.AllEquipmentListForReading);
+                    tempList.AddRange(__instance.apparel.WornApparel);
+                    var comps = tempList.Select(a => a.GetComp<Comp_TriColorMask>()).Where(c => c != null)?.ToList();
+                    if (comps == null) return;
+                    if (comps.Count < 1) return;
+                    var firstComp = comps.First();
+                    if (comps.Count == 1)
+                    {
+                        var gizmo = firstComp.PaintGizmo;
+                        __result = __result.Append(gizmo);
+                    }
+
+                    if (comps.Count > 1)
+                    {
+                        var gizmo = firstComp.PaintGizmoMulti;
+                        gizmo.pawn = __instance;
+                        __result = __result.Append(gizmo);
+                    }
                 }
             }
         }
