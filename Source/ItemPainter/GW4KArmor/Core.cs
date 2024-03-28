@@ -67,8 +67,8 @@ namespace GW4KArmor
                 Error("Harmony patching failed:", e);
             }
 
-            List<Action> queuedActions = new List<Action>() { FindMaskableThings, LoadBundleContent };
-            LongEventHandler.QueueLongEvent(queuedActions, "GW4KArmor.LoadText");
+            LongEventHandler.QueueLongEvent(FindMaskableThings, "GW4KArmor.LoadText", false, null);
+            LongEventHandler.QueueLongEvent(LoadBundleContent, "GW4KArmor.LoadText", false, null);
         }
 
         private static void FindMaskableThings()
