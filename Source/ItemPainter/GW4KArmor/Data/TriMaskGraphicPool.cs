@@ -54,8 +54,7 @@ namespace GW4KArmor.Data
 
         private static List<ShaderParameter> GetColorParameter(in Color color)
         {
-            List<ShaderParameter> list;
-            var flag = colorToParameter.TryGetValue(color, out list);
+            var flag = colorToParameter.TryGetValue(color, out List<ShaderParameter> list);
             List<ShaderParameter> result;
             if (flag)
             {
