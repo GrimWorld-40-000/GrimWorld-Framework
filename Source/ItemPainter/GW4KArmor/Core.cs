@@ -20,7 +20,7 @@ public class Core : Mod
     public static Shader MaskShader { get; private set; }
     public static Harmony HarmonyInstance { get; private set; }
 
-
+    /*
     [DebugAction("_GW", allowedGameStates = AllowedGameStates.Entry)]
     private static void OpenWindow()
     {
@@ -47,7 +47,7 @@ public class Core : Mod
             }
         }
     }
-
+    */
     public static void Log(string msg)
     {
         Verse.Log.Message("<color=magenta>[GW4kArmor]</color> " + (msg ?? "<i><null></i>"));
