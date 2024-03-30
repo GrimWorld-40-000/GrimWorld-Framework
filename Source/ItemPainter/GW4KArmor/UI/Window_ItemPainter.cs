@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ColorPicker;
 using GW4KArmor.Data;
+using LudeonTK;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -518,7 +519,7 @@ namespace GW4KArmor.UI
             {
                 var flag2 = apparel.def.apparel.LastLayer == ApparelLayerDefOf.Overhead ||
                             apparel.def.apparel.LastLayer == ApparelLayerDefOf.EyeCover ||
-                            PawnRenderer.RenderAsPack(apparel) ||
+                            apparel.RenderAsPack() ||
                             apparel.WornGraphicPath == BaseContent.PlaceholderImagePath ||
                             apparel.WornGraphicPath == BaseContent.PlaceholderGearImagePath;
                 result = !flag2;

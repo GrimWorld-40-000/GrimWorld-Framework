@@ -37,7 +37,7 @@ namespace GW4KArmor.Data
 
             var flag2 = apparel.def.apparel.LastLayer == ApparelLayerDefOf.Overhead ||
                         apparel.def.apparel.LastLayer == ApparelLayerDefOf.EyeCover ||
-                        PawnRenderer.RenderAsPack(apparel) ||
+                        (apparel.RenderAsPack()) ||
                         apparel.WornGraphicPath == BaseContent.PlaceholderImagePath ||
                         apparel.WornGraphicPath == BaseContent.PlaceholderGearImagePath;
             return !flag2;
