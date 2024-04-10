@@ -78,7 +78,7 @@
     <ThingDef ParentName="GWSupporterMonumentBase">
         <defName>GW_OrdinaryObelisk</defName>
         <label>supporter's monument</label>
-        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Servitor tier:\n\nAKorgar, Hell Fire, Sparrow, just a guy named brad\n\n  Guardsmen tier:\n\n♠_Caligula_♠, Józef Kozioł, MisterCroxo48\n\n  Stormtrooper tier:\n\nBenio, Alloyskull, Vylixan, Gofres, Celorico, Risque, Madgile\n\n  Neophyte tier:\n\nTacticalCrumpet, Petrie, JawnWick</description>
+        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Servitor tier:\n\nAKorgar, Hell Fire, Sparrow, just a guy named brad, Cajetan, rui, Beau Cannon, Steven Pretswell\n\n  Guardsmen tier:\n\n♠_Caligula_♠, Józef Kozioł, MisterCroxo48\n\n  Stormtrooper tier:\n\nBenio, Alloyskull, Vylixan, Gofres, Celorico, Risque, Madgile, Andy Chen, spaces, Retro72, Sneksonaplane\n\n  Neophyte tier:\n\nTacticalCrumpet, Petrie, JawnWick, Martin Polli, Lenin`s Cat</description>
         <graphicData>
             <texPath>Things/Building/Obelisks/Obelisk_Ordinary</texPath>
             <drawSize>(3,3)</drawSize>
