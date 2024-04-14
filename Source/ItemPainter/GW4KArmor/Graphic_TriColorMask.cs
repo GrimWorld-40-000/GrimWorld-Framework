@@ -6,14 +6,6 @@ namespace GW4KArmor
 {
     public class Graphic_TriColorMask : Graphic_Multi
     {
-        public Material[] mats = new Material[4];
-
-        public float drawRotatedExtraAngleOffset;
-
-        public bool westFlipped;
-
-        public bool eastFlipped;
-
         public override void DrawWorker(Vector3 loc, Rot4 rot, ThingDef thingDef, Thing thing, float extraRotation)
         {
             if (thing is Apparel apparel)
@@ -21,7 +13,7 @@ namespace GW4KArmor
 
             base.DrawWorker(loc, rot, thingDef, thing, extraRotation);
         }
-
+        
         public override void Print(SectionLayer layer, Thing thing, float extraRotation)
         {
             var rotateBack = false;

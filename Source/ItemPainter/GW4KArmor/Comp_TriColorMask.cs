@@ -126,7 +126,14 @@ namespace GW4KArmor
         {
             get
             {
-                bool isDisabled = !(parent is Apparel apparel && apparel.Wearer.Faction == Faction.OfPlayer);
+                var isDisabled = false;
+                if (parent is Apparel apparel)
+                {
+                    if(apparel.Wearer != null)
+                        isDisabled = apparel.Wearer.Faction != Faction.OfPlayer;
+                    else if(apparel.Faction != null)
+                        isDisabled = apparel.Faction != Faction.OfPlayer;
+                }
 
                 Gizmo_Paintable gizm;
 

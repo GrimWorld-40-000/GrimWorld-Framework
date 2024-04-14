@@ -10,8 +10,6 @@ namespace GW4KArmor.Patches
 {
     internal static class HarmonyPatches
     {
-
-
         [HarmonyPatch(typeof(ApparelGraphicRecordGetter), nameof(ApparelGraphicRecordGetter.TryGetGraphicApparel))]
         public static class ApparelGraphicRecordGetter_TryGetGraphicApparel
         {
@@ -22,7 +20,10 @@ namespace GW4KArmor.Patches
                 {
                     var triColorMaskComp = apparel?.GetComp<Comp_TriColorMask>();
                     var flag2 = triColorMaskComp == null;
-                    if (!flag2) rec.graphic = TriMaskGraphicPool.GraphicFromComp<Graphic_TriColorMask>(triColorMaskComp);
+                    if (!flag2)
+                    {
+                        rec.graphic = TriMaskGraphicPool.GraphicFromComp<Graphic_TriColorMask>(triColorMaskComp);
+                    }
                 }
             }
         }
