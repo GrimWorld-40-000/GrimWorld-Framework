@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
 	<GW_RequiresStudyOf>Requires study of:</GW_RequiresStudyOf>
-	<GW_MoreNeeded>{0} more</GW_MoreNeeded>
+	<GW_MoreNeeded>{0} more </GW_MoreNeeded>
 	<GW_StudyAt> at a {0}.</GW_StudyAt>
 	<GW_DiscoveredResearch>You've discovered this research.</GW_DiscoveredResearch>
 </LanguageData>

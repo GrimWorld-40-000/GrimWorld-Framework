@@ -1,5 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net48</TargetFramework>
         <Authors>Epicguru(Original), Telefonmast(Edit)</Authors>
@@ -10,25 +10,37 @@
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <LangVersion>latest</LangVersion>
     </PropertyGroup>
-
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <OutputPath>..\..\..\1.4\Assemblies\</OutputPath>
         <Optimize>true</Optimize>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <OutputPath>..\..\..\1.4\Assemblies\</OutputPath>
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <OutputPath>..\..\..\1.4\Assemblies\</OutputPath>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
-
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <OutputPath>..\..\..\1.5\Assemblies</OutputPath>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <OutputPath>..\..\..\1.5\Assemblies</OutputPath>
+    </PropertyGroup>
+    
     <ItemGroup>
-        <PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3704" />
+        <PackageReference Include="Krafs.Publicizer" Version="2.2.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Lib.Harmony" Version="2.2.2" />
+        <PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.4063" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\ColorPicker\ColorPicker.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ColorPicker\ColorPicker.csproj" />
+        <Publicize Include="Assembly-CSharp" />
     </ItemGroup>
-
+    
 </Project>

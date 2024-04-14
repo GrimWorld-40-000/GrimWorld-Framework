@@ -3,24 +3,25 @@ using GW4KArmor.Data;
 using JetBrains.Annotations;
 using Verse;
 
-namespace GW4KArmor;
-
-[UsedImplicitly(ImplicitUseKindFlags.Default, ImplicitUseTargetFlags.WithMembers)]
-public class PaletteDef : Def
+namespace GW4KArmor
 {
-    public List<Palette> palettes = new List<Palette>();
-    
-    public override void PostLoad()
+    [UsedImplicitly(ImplicitUseKindFlags.Default, ImplicitUseTargetFlags.WithMembers)]
+    public class PaletteDef : Def
     {
-        base.PostLoad();
-        foreach (Palette palette in this.palettes)
+        public List<Palette> palettes = new List<Palette>();
+
+        public override void PostLoad()
         {
-            palette.canBeDeleted = false;
-            bool flag = !string.IsNullOrWhiteSpace(palette.name);
-            if (!flag)
+            base.PostLoad();
+            foreach (Palette palette in this.palettes)
             {
-                Core.Error("Missing <name> from a palette in def '" + this.defName + "'", null);
-                palette.name = "---";
+                palette.canBeDeleted = false;
+                bool flag = !string.IsNullOrWhiteSpace(palette.name);
+                if (!flag)
+                {
+                    Core.Error("Missing <name> from a palette in def '" + this.defName + "'", null);
+                    palette.name = "---";
+                }
             }
         }
     }

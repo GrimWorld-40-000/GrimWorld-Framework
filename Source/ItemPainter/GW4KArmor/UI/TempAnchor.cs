@@ -1,20 +1,22 @@
 ﻿using UnityEngine;
 using Verse;
+using System;
 
-namespace GW4KArmor.UI;
-
-public readonly ref struct TempAnchor
+namespace GW4KArmor.UI
 {
-    private readonly TextAnchor _old;
-
-    public TempAnchor(TextAnchor anchor)
+    public readonly struct TempAnchor : IDisposable
     {
-        _old = Text.Anchor;
-        Text.Anchor = anchor;
-    }
+        private readonly TextAnchor _old;
 
-    public void Dispose()
-    {
-        Text.Anchor = _old;
+        public TempAnchor(TextAnchor anchor)
+        {
+            _old = Text.Anchor;
+            Text.Anchor = anchor;
+        }
+
+        public void Dispose()
+        {
+            Text.Anchor = _old;
+        }
     }
 }

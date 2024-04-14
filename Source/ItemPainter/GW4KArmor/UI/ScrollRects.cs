@@ -1,36 +1,37 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace GW4KArmor.UI;
-
-internal static class ScrollRects
+namespace GW4KArmor.UI
 {
-    internal const int MAX_COUNT = 128;
-    private static readonly Vector2[] _scrollPoints = new Vector2[128];
-    private static readonly Dictionary<string, int> _indicesByName = new();
-
-    private static int _maxID;
-
-    internal static int NameToIndex(string name)
+    internal static class ScrollRects
     {
-        int num;
-        var flag = _indicesByName.TryGetValue(name, out num);
-        int result;
-        if (flag)
+        internal const int MAX_COUNT = 128;
+        private static readonly Vector2[] _scrollPoints = new Vector2[128];
+        private static readonly Dictionary<string, int> _indicesByName = new Dictionary<string, int>();
+
+        private static int _maxID;
+
+        internal static int NameToIndex(string name)
         {
-            result = num;
-        }
-        else
-        {
-            _indicesByName[name] = _maxID;
-            result = _maxID++;
+            int num;
+            var flag = _indicesByName.TryGetValue(name, out num);
+            int result;
+            if (flag)
+            {
+                result = num;
+            }
+            else
+            {
+                _indicesByName[name] = _maxID;
+                result = _maxID++;
+            }
+
+            return result;
         }
 
-        return result;
-    }
-
-    internal static ref Vector2 Get(string name)
-    {
-        return ref _scrollPoints[NameToIndex(name)];
+        internal static ref Vector2 Get(string name)
+        {
+            return ref _scrollPoints[NameToIndex(name)];
+        }
     }
 }

@@ -1,0 +1,9 @@
+/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/ItemPainter/ColorPicker/obj/Debug/ColorPicker.csproj.AssemblyReference.cache
+/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/ItemPainter/ColorPicker/obj/Debug/ColorPicker.csproj.CoreCompileInputs.cache
+/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/1.4/Assemblies/ColorPicker.dll
+/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/1.4/Assemblies/ColorPicker.pdb
+/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/ItemPainter/ColorPicker/obj/Debug/ColorPicker.csproj.CopyComplete
+/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/ItemPainter/ColorPicker/obj/Debug/ColorPicker.dll
+/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/ItemPainter/ColorPicker/obj/Debug/ColorPicker.pdb
+/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/1.5/Assemblies/ColorPicker.dll
+/home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/1.5/Assemblies/ColorPicker.pdb

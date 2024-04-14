@@ -4,92 +4,93 @@ using GW4KArmor.UI;
 using UnityEngine;
 using Verse;
 
-namespace GW4KArmor;
-
-public class Gizmo_PaintableMulti : Command
+namespace GW4KArmor
 {
-    public Pawn pawn;
-    
-    public Gizmo_PaintableMulti()
+    public class Gizmo_PaintableMulti : Command
     {
-        //icon = PaintContent.PaintIcon;
-        icon = PaintContent.PaintIconMulti;
-    }
+        public Pawn pawn;
 
-    private static List<ThingWithComps> tempList = new();
-    public override IEnumerable<FloatMenuOption> RightClickFloatMenuOptions
-    {
-        get
+        public Gizmo_PaintableMulti()
         {
-            if (pawn == null) yield break;
-            if (pawn.equipment != null && pawn.apparel != null)
+            //icon = PaintContent.PaintIcon;
+            icon = PaintContent.PaintIconMulti;
+        }
+
+        private static List<ThingWithComps> tempList = new List<ThingWithComps>();
+        public override IEnumerable<FloatMenuOption> RightClickFloatMenuOptions
+        {
+            get
             {
-                tempList.Clear();
-                tempList.AddRange(pawn.equipment.AllEquipmentListForReading);
-                tempList.AddRange(pawn.apparel.WornApparel);
-                foreach (var thing in tempList)
+                if (pawn == null) yield break;
+                if (pawn.equipment != null && pawn.apparel != null)
                 {
-                    var comp = thing.GetComp<Comp_TriColorMask>();
-                    if (comp != null)
+                    tempList.Clear();
+                    tempList.AddRange(pawn.equipment.AllEquipmentListForReading);
+                    tempList.AddRange(pawn.apparel.WornApparel);
+                    foreach (var thing in tempList)
                     {
-                        yield return new FloatMenuOption($"Paint {thing.LabelCap}", delegate()
+                        var comp = thing.GetComp<Comp_TriColorMask>();
+                        if (comp != null)
                         {
-                            Window_ItemPainter.OpenWindowFor(comp.parent);
-                        });
+                            yield return new FloatMenuOption($"Paint {thing.LabelCap}", delegate ()
+                            {
+                                Window_ItemPainter.OpenWindowFor(comp.parent);
+                            });
+                        }
                     }
                 }
             }
         }
     }
-}
 
-public class Gizmo_Paintable : Command_Action
-{
-    private static ThingDef ClipBoardDef;
-    private static (Color[] colors, int maskIndex) Clipboard { get; set; }
-    
-    public Comp_TriColorMask paintComp;
-    
-    public Gizmo_Paintable()
+    public class Gizmo_Paintable : Command_Action
     {
-        //icon = PaintContent.PaintIcon;
-        icon = PaintContent.PaintIcon;
-    }
+        private static ThingDef ClipBoardDef;
+        private static (Color[] colors, int maskIndex) Clipboard { get; set; }
 
-    public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
-    {
-        var rect = new Rect(topLeft.x, topLeft.y, 75f, 75f);
-        var top = rect.TopHalf().ContractedBy(2).RightPart(0.75f);
-        var copyRect = top.LeftHalf().Rounded();
-        var pasteRect = top.RightHalf().Rounded();
+        public Comp_TriColorMask paintComp;
 
-        var button1Hovered = Mouse.IsOver(copyRect);
-        var button2Hovered = Mouse.IsOver(pasteRect);
-        
-        var button1 = Widgets.ButtonInvisible(copyRect);
-        var button2 = Widgets.ButtonInvisible(pasteRect);
-        var result = base.GizmoOnGUI(topLeft, maxWidth, parms);
-        
-        GUI.color = button1Hovered ? GenUI.MouseoverColor : Color.white;
-        GUI.DrawTexture(copyRect, TexButton.Copy);
-        GUI.color = Color.white;
-        if (button1)
+        public Gizmo_Paintable()
         {
-            ClipBoardDef = paintComp.parent.def;
-            Clipboard = (paintComp.Copy(), paintComp.MaskIndex);
-            return new GizmoResult(GizmoState.Clear);
+            //icon = PaintContent.PaintIcon;
+            icon = PaintContent.PaintIcon;
         }
 
-        var active = ClipBoardDef == paintComp.parent.def;
-        GUI.color = active ? (button2Hovered ? GenUI.MouseoverColor : Color.white) : Color.gray;
-        GUI.DrawTexture(pasteRect, TexButton.Paste);
-        GUI.color = Color.white;
-        if (button2 && active)
+        public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
         {
-            paintComp.Paste(Clipboard.colors);
-            return new GizmoResult(GizmoState.Clear);
-        }
+            var rect = new Rect(topLeft.x, topLeft.y, 75f, 75f);
+            var top = rect.TopHalf().ContractedBy(2).RightPart(0.75f);
+            var copyRect = top.LeftHalf().Rounded();
+            var pasteRect = top.RightHalf().Rounded();
 
-        return result;
+            var button1Hovered = Mouse.IsOver(copyRect);
+            var button2Hovered = Mouse.IsOver(pasteRect);
+
+            var button1 = Widgets.ButtonInvisible(copyRect);
+            var button2 = Widgets.ButtonInvisible(pasteRect);
+            var result = base.GizmoOnGUI(topLeft, maxWidth, parms);
+
+            GUI.color = button1Hovered ? GenUI.MouseoverColor : Color.white;
+            GUI.DrawTexture(copyRect, TexButton.Copy);
+            GUI.color = Color.white;
+            if (button1)
+            {
+                ClipBoardDef = paintComp.parent.def;
+                Clipboard = (paintComp.Copy(), paintComp.MaskIndex);
+                return new GizmoResult(GizmoState.Clear);
+            }
+
+            var active = ClipBoardDef == paintComp.parent.def;
+            GUI.color = active ? (button2Hovered ? GenUI.MouseoverColor : Color.white) : Color.gray;
+            GUI.DrawTexture(pasteRect, TexButton.Paste);
+            GUI.color = Color.white;
+            if (button2 && active)
+            {
+                paintComp.Paste(Clipboard.colors);
+                return new GizmoResult(GizmoState.Clear);
+            }
+
+            return result;
+        }
     }
 }

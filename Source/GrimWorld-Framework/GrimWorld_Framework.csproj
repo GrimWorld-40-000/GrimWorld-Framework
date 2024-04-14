@@ -7,15 +7,17 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>embedded</DebugType>
+    <OutputPath>..\..\1.5\Assemblies</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>embedded</DebugType>
+    <OutputPath>..\..\1.5\Assemblies</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3704" ExcludeAssets="runtime" />
-    <PackageReference Include="Lib.Harmony" Version="2.2.2" ExcludeAssets="runtime" />
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3901" ExcludeAssets="runtime" />
+    <PackageReference Include="Lib.Harmony" Version="2.3.1.1" ExcludeAssets="runtime" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,5 +25,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="EquipRestrict\EquipmentUtility_CanEquip_AnyOneOf_Patch.cs" />
+    <Compile Remove="Statics\GrimWorld_FrameworkMod.cs" />
   </ItemGroup>
 </Project>
