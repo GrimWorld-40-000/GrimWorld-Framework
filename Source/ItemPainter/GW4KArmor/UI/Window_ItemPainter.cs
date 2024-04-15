@@ -271,7 +271,7 @@ namespace GW4KArmor.UI
             tabRect.y = tabRect.yMax;
 
             Widgets.DrawMenuSection(pickerRect);
-            TabDrawer.DrawTabs(tabRect, colorTabs, 1);
+            TabDrawer.DrawTabs(tabRect, colorTabs);
             DrawColorPicker(pickerRect.ContractedBy(5));
         }
 

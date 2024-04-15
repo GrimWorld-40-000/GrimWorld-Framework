@@ -4,7 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac3c07d7-b43f-414c-80e1-b88f8ce3c484" name="Changes" comment="" />
+    <list default="true" id="ac3c07d7-b43f-414c-80e1-b88f8ce3c484" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../1.5/Assemblies/ColorPicker.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../../1.5/Assemblies/ColorPicker.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../1.5/Assemblies/ColorPicker.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../../1.5/Assemblies/ColorPicker.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../1.5/Assemblies/GW4KArmor.dll" beforeDir="false" afterPath="$PROJECT_DIR$/../../1.5/Assemblies/GW4KArmor.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../1.5/Assemblies/GW4KArmor.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/../../1.5/Assemblies/GW4KArmor.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ColorPicker/Dialog_ColorPicker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ColorPicker/Dialog_ColorPicker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ColorPicker/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/ColorPicker/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GW4KArmor/UI/Window_ItemPainter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/GW4KArmor/UI/Window_ItemPainter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GW4KArmor/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/GW4KArmor/obj/project.assets.json" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -15,11 +24,12 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/5e7111d7c87b42a9b06c2df8445bfa2351aa00/35/0d8337a5/ShaderParameter.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9b17790b066e46d08be4026d65926375c97000/72/72095982/Graphic.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2ePkoPuoPCgyq6GOfnmQgC8g422" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -29,7 +39,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "1.5",
+    "git-widget-placeholder": "main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -66,11 +76,23 @@
       <option name="presentableId" value="Default" />
       <updated>1711813774688</updated>
       <workItem from="1711813775838" duration="773000" />
+      <workItem from="1713220215142" duration="296000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
