@@ -187,7 +187,7 @@ namespace GW_Frame
                 var modExtension = project.GetModExtension<DefModExtension_ExtraPrerequisiteActions>();
                 if (!project.prerequisites.NullOrEmpty())
                 {
-                    Widgets.LabelCacheHeight(ref rect, "ResearchPrerequisites".Translate() + ":");
+                    Widgets.LabelCacheHeight(ref rect, "Prerequisites".Translate() + ":");
                     rect.yMin += rect.height;
                     rect.xMin += 6f;
                     for (int i = 0; i < project.prerequisites.Count; i++)
