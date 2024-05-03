@@ -43,7 +43,7 @@
 
     <ThingDef ParentName="NonDeconstructibleAncientBuildingBase" Name="GWSupporterMonumentBase" Abstract="True">
 		<building>
-			<deconstructible>false</deconstructible>
+			<deconstructible>true</deconstructible>
 			<claimable>true</claimable>
 		</building>
         <rotatable>false</rotatable>
