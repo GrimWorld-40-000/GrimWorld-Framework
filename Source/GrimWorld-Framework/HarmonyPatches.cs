@@ -33,6 +33,10 @@ namespace GW_Frame
                 postfix: new HarmonyMethod(patchType, nameof(PrerequisitesCompletedPostFix)));
             harmony.Patch(AccessTools.Method(typeof(MainTabWindow_Research), "DrawBottomRow"),
                 prefix: new HarmonyMethod(patchType, nameof(DrawBottomRowPreFix)));
+            harmony.Patch(AccessTools.Method(typeof(Pawn_EquipmentTracker), "MakeRoomFor"),
+                postfix: new HarmonyMethod(patchType, nameof(DropShieldIfEquippedTwoHandedPostFix)));
+            harmony.Patch(AccessTools.Method(typeof(Pawn_ApparelTracker), "Wear"),
+                postfix: new HarmonyMethod(patchType, nameof(DropTwoHandedIfEquippedShieldPostFix)));
         }
 
         public static void CanEquipPostfix(ref bool __result, Thing thing, Pawn pawn, ref string cantReason)
@@ -329,6 +333,34 @@ namespace GW_Frame
             }
 
             return true;
+        }
+
+        public static void DropShieldIfEquippedTwoHandedPostFix(Pawn_EquipmentTracker __instance, ThingWithComps eq)
+        {
+            if (!eq.HasThingCategory(DefDatabase<ThingCategoryDef>.GetNamed("TwoHanded"))) return;
+
+            var pawnApparelTracker = __instance.pawn.apparel;
+            var allWornApparels = pawnApparelTracker.WornApparel;
+
+            foreach (var wornApparel in allWornApparels)
+            {
+                if (wornApparel.HasThingCategory(DefDatabase<ThingCategoryDef>.GetNamed("GW_Shield")))
+                {
+                    pawnApparelTracker.TryDrop(wornApparel);
+                    break;
+                }
+            }
+        }
+
+        public static void DropTwoHandedIfEquippedShieldPostFix(Pawn_ApparelTracker __instance, Apparel newApparel)
+        {
+            if (!newApparel.HasThingCategory(DefDatabase<ThingCategoryDef>.GetNamed("GW_Shield"))) return;
+
+            var pawnPrimaryWeapon = __instance.pawn.equipment.Primary;
+
+            if(pawnPrimaryWeapon != null && pawnPrimaryWeapon.HasThingCategory(DefDatabase<ThingCategoryDef>.GetNamed("TwoHanded"))) {
+                __instance.pawn.equipment.TryDropEquipment(pawnPrimaryWeapon, out var resultEq, __instance.pawn.Position, false);
+            }
         }
     }
 }
