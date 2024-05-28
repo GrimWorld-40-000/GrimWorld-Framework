@@ -73,6 +73,13 @@
             <drawOffset>(0,0,0.5)</drawOffset>
         </graphicData>
         <size>(4,4)</size>
+		<minifiedDef>MinifiedThing</minifiedDef>
+	     <thingCategories>
+          <li>BuildingsFurniture</li>
+         </thingCategories>
+         <statBases>
+          <Mass>20</Mass>
+         </statBases>
     </ThingDef>
 
     <ThingDef ParentName="GWSupporterMonumentBase">
@@ -84,5 +91,13 @@
             <drawSize>(3,3)</drawSize>
         </graphicData>
         <size>(2,2)</size>
+		<minifiedDef>MinifiedThing</minifiedDef>
+         <thingCategories>
+          <li>BuildingsFurniture</li>
+         </thingCategories>
+         <statBases>
+          <Mass>20</Mass>
+         </statBases>
     </ThingDef>
+
 </Defs>
