@@ -51,12 +51,12 @@ namespace GW_Frame.Settings
             foreach(var pair in shieldTagsDict)
             {
                 ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(pair.Key);
-                ChangeCategories(def, ThingCategoryDef.Named("GW_Shield"), pair.Value);
+                ChangeCategories(def, Grimworld_DefsOf.GW_Shield, pair.Value);
             }
             foreach (var pair in twoHandedTagsDict)
             {
                 ThingDef def = DefDatabase<ThingDef>.GetNamedSilentFail(pair.Key);
-                ChangeCategories(def, ThingCategoryDef.Named("GW_TwoHanded"), pair.Value);
+                ChangeCategories(def, Grimworld_DefsOf.GW_TwoHanded, pair.Value);
             }
         }
 
@@ -90,7 +90,7 @@ namespace GW_Frame.Settings
             {
                 if (def.IsApparel || def.IsWeapon)
                 {
-                    if (def.thingCategories != null && def.thingCategories.Any(x => x.defName == "GW_Shield"))
+                    if (def.thingCategories != null && def.thingCategories.Contains(Grimworld_DefsOf.GW_Shield))
                     {
                         shieldTagsDict.Add(def.defName, true);
                     }
@@ -106,7 +106,7 @@ namespace GW_Frame.Settings
             {
                 if (def.IsApparel || def.IsWeapon)
                 {
-                    if (def.thingCategories != null && def.thingCategories.Any(x => x.defName == "GW_TwoHanded"))
+                    if (def.thingCategories != null && def.thingCategories.Contains(Grimworld_DefsOf.GW_TwoHanded))
                     {
                         twoHandedTagsDict.Add(def.defName, true);
                     }
