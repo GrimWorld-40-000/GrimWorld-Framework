@@ -11,6 +11,8 @@ namespace GW_Frame.Settings
 {
     public class Settings : ModSettings
     {
+        public static bool HaveTagsEverLoaded;
+        
         public static Settings Instance => LoadedModManager.GetMod<GrimWorldMod>().GetSettings<Settings>();
 
         private List<SettingsRecord> modSettings;
@@ -21,6 +23,16 @@ namespace GW_Frame.Settings
             {
                 Reset();
             }
+
+            
+            if (!HaveTagsEverLoaded)
+            {
+                HaveTagsEverLoaded = true;
+                Log.Message("Grimworld is loading it's tag system for the first time! Setting default values");  
+                Instance.Reset();
+            }
+            
+            
             settingsRecord = modSettings.Find(x => x.GetType() == type);
             return settingsRecord != null;
         }
@@ -75,6 +87,19 @@ namespace GW_Frame.Settings
         {
             base.ExposeData();
             Scribe_Collections.Look(ref modSettings, "modSettings", LookMode.Deep);
+            Scribe_Values.Look(ref HaveTagsEverLoaded, "GW_HaveTagsEverLoaded");
         }
     }
+    
+    
+
+    /*[StaticConstructorOnStartup]
+    public static class GrimworldLoadChecker
+    {
+        //This sets tags if it has never been done before
+        
+        static GrimworldLoadChecker()
+        {
+        }
+    }*/
 }

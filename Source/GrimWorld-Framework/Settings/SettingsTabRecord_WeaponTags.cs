@@ -89,18 +89,29 @@ namespace GW_Frame.Settings
             Rect vertRect = new Rect(settingsSection.x, 0, settingsSection.width - 20, settingsAreaListHeight);
             Widgets.BeginScrollView(settingsSection, ref scrollPositionList, vertRect);
             float settingsListHeight = 0;
-            
-            
-            Rect searchBarRect = new Rect(settingsSection.x - ((settingsSection.width - 20) / 8), settingsListHeight, (settingsSection.width - 20) / 2, 25);
 
+            Rect generalRect = new Rect(settingsSection.x + 10, settingsListHeight,
+                (settingsSection.width - 20), 25);
+            Rect resetButtonRect = generalRect.LeftHalf();
+            Rect searchBarRect = generalRect.RightHalf();
+
+            
+            List<ThingDef> defs = tabs[_currentTabIndex].Defs.ToList();
             
             
             searchTerm = Widgets.TextEntryLabeled(searchBarRect, $"{"Filter".Translate()}: ", searchTerm);
+
+            if (Widgets.ButtonText(resetButtonRect, "Reset".Translate()))
+            {
+                settingsRecord.ResetToDefaultForDefs(defs);
+            }
             
             settingsListHeight += searchBarRect.height;
 
-            List<ThingDef> defs = tabs[_currentTabIndex].Defs.ToList();
 
+            
+            
+            
             //Filters out based on search term
             if (searchTerm != string.Empty)
             {

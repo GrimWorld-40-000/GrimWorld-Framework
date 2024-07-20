@@ -86,37 +86,37 @@ namespace GW_Frame.Settings
         public override void Reset()
         {
             shieldTagsDict = new Dictionary<string, bool>();
-            foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs)
+            twoHandedTagsDict = new Dictionary<string, bool>();
+            ResetToDefaultForDefs(DefDatabase<ThingDef>.AllDefs);
+        }
+
+        public void ResetToDefaultForDefs(IEnumerable<ThingDef> defsToReset)
+        {
+            var thingDefs = defsToReset as ThingDef[] ?? defsToReset.ToArray();
+            foreach (ThingDef def in thingDefs)
             {
-                if (def.IsApparel || def.IsWeapon)
-                {
-                    if (def.thingCategories != null && def.thingCategories.Contains(Grimworld_DefsOf.GW_Shield))
-                    {
-                        shieldTagsDict.Add(def.defName, true);
-                    }
-                    else
-                    {
-                        shieldTagsDict.Add(def.defName, false);
-                    }
-                }
+                if (!def.IsApparel && !def.IsWeapon) continue;
+                shieldTagsDict.SetOrAdd(def.defName, IsThingShieldByDefault(def));
             }
 
-            twoHandedTagsDict = new Dictionary<string, bool>();
-            foreach (ThingDef def in DefDatabase<ThingDef>.AllDefs)
+            foreach (ThingDef def in thingDefs)
             {
-                if (def.IsApparel || def.IsWeapon)
-                {
-                    if (def.thingCategories != null && def.thingCategories.Contains(Grimworld_DefsOf.GW_TwoHanded))
-                    {
-                        twoHandedTagsDict.Add(def.defName, true);
-                    }
-                    else
-                    {
-                        twoHandedTagsDict.Add(def.defName, false);
-                    }
-                }
+                if (!def.IsWeapon) continue;
+                twoHandedTagsDict.SetOrAdd(def.defName, IsThingTwoHandedByDefault(def));
             }
         }
+
+        private bool IsThingTwoHandedByDefault(ThingDef thing)
+        {
+            return thing.thingCategories != null && (thing.thingCategories.Contains(Grimworld_DefsOf.GW_TwoHanded) ||
+                                                     thing.thingCategories.Contains(Grimworld_DefsOf.TwoHanded));
+        }
+        
+        private bool IsThingShieldByDefault(ThingDef thing)
+        {
+            return thing.thingCategories != null && thing.thingCategories.Contains(Grimworld_DefsOf.GW_Shield);
+        }
+        
         public override void ExposeData()
         {
             Scribe_Collections.Look(ref shieldTagsDict, "shieldTagsDict", LookMode.Value, LookMode.Value);
