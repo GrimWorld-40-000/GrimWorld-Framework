@@ -20,7 +20,12 @@ namespace GW_Frame.Settings
             {
                 return true;
             }
-            return false;
+            else
+            {
+                bool newValue = IsThingShieldByDefault(thingDef);
+                shieldTagsDict.Add(thingDef.defName, newValue);
+                return newValue;
+            }
         }
         public bool TrySetValueShield(ThingDef thingDef, bool value)
         {
@@ -36,7 +41,12 @@ namespace GW_Frame.Settings
             {
                 return true;
             }
-            return false;
+            else
+            {
+                bool newValue = IsThingTwoHandedByDefault(thingDef);
+                twoHandedTagsDict.Add(thingDef.defName, newValue);
+                return newValue;
+            }
         }
         public bool TrySetValueTwoHanded(ThingDef thingDef, bool value)
         {
