@@ -90,16 +90,5 @@ namespace GW_Frame.Settings
             Scribe_Values.Look(ref HaveTagsEverLoaded, "GW_HaveTagsEverLoaded");
         }
     }
-    
-    
-
-    /*[StaticConstructorOnStartup]
-    public static class GrimworldLoadChecker
-    {
-        //This sets tags if it has never been done before
-        
-        static GrimworldLoadChecker()
-        {
-        }
-    }*/
+ 
 }

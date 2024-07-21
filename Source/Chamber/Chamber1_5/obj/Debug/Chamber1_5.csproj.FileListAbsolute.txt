@@ -1,6 +1,0 @@
-C:\Users\ser\source\repos\Chamber1_5\Chamber1_5\obj\Debug\Chamber1_5.csproj.AssemblyReference.cache
-C:\Users\ser\source\repos\Chamber1_5\Chamber1_5\obj\Debug\Chamber1_5.csproj.CoreCompileInputs.cache
-D:\Downloads\finalframeworktotest\GrimWorld-Framework-1.5\1.5\Assemblies\Chamber1_5.dll
-C:\Users\ser\source\repos\Chamber1_5\Chamber1_5\obj\Debug\Chamber1_5.dll
-D:\Documentos\RimWorld\Mods\GrimWorld-Framework-1.5\1.5\Assemblies\Chamber1_5.dll
-C:\Users\ser\Desktop\Chamber1_5.dll

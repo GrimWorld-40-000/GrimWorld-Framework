@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GrimWorld_Framework")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2d0e7c4b11bfce6d2c2aca358e3966278cd258ed")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1c23b5f685085e3d0c4381971d7646d9b039214f")]
 [assembly: System.Reflection.AssemblyProductAttribute("GrimWorld_Framework")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GrimWorld_Framework")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,7 +1,7 @@
 {
   "version": 3,
   "targets": {
-    ".NETFramework,Version=v4.8": {
+    ".NETFramework,Version=v4.7.2": {
       "Krafs.Rimworld.Ref/1.5.4085": {
         "type": "package",
         "compile": {
@@ -95,12 +95,12 @@
       "Lib.Harmony/2.3.1.1": {
         "type": "package",
         "compile": {
-          "lib/net48/0Harmony.dll": {
+          "lib/net472/0Harmony.dll": {
             "related": ".pdb;.xml"
           }
         },
         "runtime": {
-          "lib/net48/_._": {
+          "lib/net472/_._": {
             "related": ".pdb;.xml"
           }
         }
@@ -254,7 +254,7 @@
     }
   },
   "projectFileDependencyGroups": {
-    ".NETFramework,Version=v4.8": [
+    ".NETFramework,Version=v4.7.2": [
       "Krafs.Rimworld.Ref >= 1.5.4085",
       "Lib.Harmony >= 2.3.1.1"
     ]
@@ -276,15 +276,15 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net48"
+        "net472"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net48": {
-          "targetAlias": "net48",
+        "net472": {
+          "targetAlias": "net472",
           "projectReferences": {}
         }
       },
@@ -295,8 +295,8 @@
       }
     },
     "frameworks": {
-      "net48": {
-        "targetAlias": "net48",
+      "net472": {
+        "targetAlias": "net472",
         "dependencies": {
           "Krafs.Rimworld.Ref": {
             "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",

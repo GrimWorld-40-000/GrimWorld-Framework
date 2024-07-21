@@ -4,3 +4,11 @@
 /home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/GrimWorld-Framework/obj/Debug/net472/GrimWorld_Framework.AssemblyInfo.cs
 /home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/GrimWorld-Framework/obj/Debug/net472/GrimWorld_Framework.csproj.CoreCompileInputs.cache
 /home/robert/.steam/debian-installation/steamapps/common/RimWorld/Mods/GrimWorld-Framework/Source/GrimWorld-Framework/obj/Debug/net472/GrimWorld_Framework.dll
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\GrimWorld-Framework\1.5\Assemblies\net472\GrimWorld_Framework.dll
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\GrimWorld-Framework\Source\GrimWorld-Framework\obj\Debug\net472\GrimWorld_Framework.csproj.AssemblyReference.cache
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\GrimWorld-Framework\Source\GrimWorld-Framework\obj\Debug\net472\GrimWorld_Framework.GeneratedMSBuildEditorConfig.editorconfig
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\GrimWorld-Framework\Source\GrimWorld-Framework\obj\Debug\net472\GrimWorld_Framework.AssemblyInfoInputs.cache
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\GrimWorld-Framework\Source\GrimWorld-Framework\obj\Debug\net472\GrimWorld_Framework.AssemblyInfo.cs
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\GrimWorld-Framework\Source\GrimWorld-Framework\obj\Debug\net472\GrimWorld_Framework.csproj.CoreCompileInputs.cache
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\GrimWorld-Framework\Source\GrimWorld-Framework\obj\Debug\net472\GrimWorld_Framework.sourcelink.json
+D:\SteamLibrary\steamapps\common\RimWorld\Mods\GrimWorld-Framework\Source\GrimWorld-Framework\obj\Debug\net472\GrimWorld_Framework.dll
