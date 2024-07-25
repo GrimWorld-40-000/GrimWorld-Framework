@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFramework>net472</TargetFramework>
     <RootNamespace>GW_Frame</RootNamespace>
   </PropertyGroup>
 
@@ -16,7 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.4.3901" ExcludeAssets="runtime" />
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.4085" ExcludeAssets="runtime" />
     <PackageReference Include="Lib.Harmony" Version="2.3.1.1" ExcludeAssets="runtime" />
   </ItemGroup>
 
