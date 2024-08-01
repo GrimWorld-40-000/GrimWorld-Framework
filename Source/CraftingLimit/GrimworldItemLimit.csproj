@@ -20,11 +20,6 @@
     <PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.4085" ExcludeAssets="runtime" />
     <PackageReference Include="Lib.Harmony" Version="2.3.1.1" ExcludeAssets="runtime" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="EquipRestrict\" />
-    <Folder Include="ItemCraftingLimits\" />
-  </ItemGroup>
   <ItemGroup>
     <Compile Remove="EquipRestrict\EquipmentUtility_CanEquip_AnyOneOf_Patch.cs" />
     <Compile Remove="Statics\GrimWorld_FrameworkMod.cs" />
