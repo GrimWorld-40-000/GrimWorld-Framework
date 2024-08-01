@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
   <name>GrimWorld 40,000 - Framework</name>
-  <author>Clashgore, Odzmang, BlackMarket420, Tittymcswaggy, Alite, Abomination, Epsilon, Maxim, Shun The Witch, Samael, Con</author>
+  <author>Clashgore, Odzmang, BlackMarket420, Tittymcswaggy, Alite, Abomination, Epsilon, Maxim, Shun The Witch, Samael, Con, ThatHitmann</author>
   <packageId>Grimworld.Framework</packageId>
   <modIconPath IgnoreIfNoMatchingField="True">UI/GrimWorldFrameworkModIcon</modIconPath>
   <supportedVersions>

@@ -41,7 +41,7 @@ namespace GW_Frame
             harmony.Patch(AccessTools.Method(typeof(Log), "ResetMessageCount"),
                 postfix: new HarmonyMethod(patchType, nameof(ResetMessageCountPostfix)));
         }
-
+        
         public static void ResetMessageCountPostfix()
         {
             Settings.Settings.Instance.CastChanges();
@@ -196,7 +196,6 @@ namespace GW_Frame
             if (project.HasModExtension<DefModExtension_ExtraPrerequisiteActions>())
             {
                 float xMin = rect.xMin;
-                float yMin = rect.yMin;
                 var modExtension = project.GetModExtension<DefModExtension_ExtraPrerequisiteActions>();
                 if (!project.prerequisites.NullOrEmpty())
                 {
@@ -265,7 +264,8 @@ namespace GW_Frame
                 }
                 GUI.color = Color.white;
                 rect.xMin = xMin;
-                y = rect.yMin - yMin;
+                
+                y = rect.yMin;
                 flag = true;
             }
             return !flag;
