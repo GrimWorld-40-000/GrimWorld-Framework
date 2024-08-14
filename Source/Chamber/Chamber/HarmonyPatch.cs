@@ -46,7 +46,7 @@ namespace Chamber
             foreach (LocalTargetInfo item17 in GenUI.TargetsAt(clickPos, TargetingParameters.ForCarryToBiosculpterPod(pawn), thingsOnly: true))
             {
                 Pawn pawn3 = (Pawn)item17.Thing;
-                if (pawn3.DestroyedOrNull()||pawn3.Dead)
+                if (pawn3.DestroyedOrNull() || pawn3.Dead || pawn3.IsColonyMech || pawn3.RaceProps?.IsMechanoid == true || pawn3.RaceProps?.IsFlesh == false || pawn3.RaceProps?.IsAnomalyEntity == true)
                 {
                     continue;
                 }
