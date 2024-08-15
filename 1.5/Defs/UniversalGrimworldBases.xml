@@ -7,7 +7,7 @@
         <passability>PassThroughOnly</passability>
         <pathCost>50</pathCost>
         <statBases>
-            <MaxHitPoints>750</MaxHitPoints>
+            <MaxHitPoints>1250</MaxHitPoints>
             <WorkToBuild>5000</WorkToBuild>
             <Flammability>1.0</Flammability>
         </statBases>
@@ -23,7 +23,7 @@
             </li>
             <li Class="CompProperties_Power">
                 <compClass>CompPowerTrader</compClass>
-                <basePowerConsumption>250</basePowerConsumption>
+                <basePowerConsumption>600</basePowerConsumption>
                 <shortCircuitInRain>true</shortCircuitInRain>
             </li>
             <li Class="CompProperties_Flickable"/>
