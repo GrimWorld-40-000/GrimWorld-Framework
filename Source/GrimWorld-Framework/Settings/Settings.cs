@@ -13,8 +13,9 @@ namespace GW_Frame.Settings
     {
         public static bool HaveTagsEverLoaded;
         
-        public static Settings Instance => LoadedModManager.GetMod<GrimWorldMod>().GetSettings<Settings>();
-
+        public static Settings Instance => _cachedSettings ??= LoadedModManager.GetMod<GrimWorldMod>().GetSettings<Settings>();
+        private static Settings _cachedSettings;
+        
         private List<SettingsRecord> modSettings;
 
         public bool TryGetModSettings(Type type, out SettingsRecord settingsRecord)

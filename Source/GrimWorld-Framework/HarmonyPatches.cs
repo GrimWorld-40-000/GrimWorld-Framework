@@ -44,7 +44,7 @@ namespace GW_Frame
         
         public static void ResetMessageCountPostfix()
         {
-            Settings.Settings.Instance.CastChanges();
+            Settings.Settings.Instance?.CastChanges();
             ThingCategoryDef.Named("GW_Shield").ResolveReferences();
             ThingCategoryDef.Named("GW_TwoHanded").ResolveReferences();
         }
