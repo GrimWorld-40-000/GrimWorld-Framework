@@ -13,6 +13,11 @@ namespace GW_Frame.Settings
     {
         private Dictionary<string, bool> shieldTagsDict;
         private Dictionary<string, bool> twoHandedTagsDict;
+        
+        public SettingsRecord_WeaponTags()
+        {
+            
+        }
 
         public bool TryGetValueShield(ThingDef thingDef, out bool value)
         {

@@ -44,6 +44,8 @@ namespace GW_Frame.Settings
                 {
                     pair?.CastChanges();
                 }
+                
+                modSettings.RemoveWhere(record => record == null);
             }
             else
             {
