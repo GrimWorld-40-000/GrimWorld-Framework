@@ -42,7 +42,7 @@ namespace GW_Frame.Settings
             {
                 foreach (var pair in modSettings)
                 {
-                    pair.CastChanges();
+                    pair?.CastChanges();
                 }
             }
             else
