@@ -38,8 +38,9 @@ namespace GW_Frame
                 postfix: new HarmonyMethod(patchType, nameof(DropShieldIfEquippedTwoHandedPostFix)));
             harmony.Patch(AccessTools.Method(typeof(Pawn_ApparelTracker), "Wear"),
                 postfix: new HarmonyMethod(patchType, nameof(DropTwoHandedIfEquippedShieldPostFix)));
-            harmony.Patch(AccessTools.Method(typeof(Log), "ResetMessageCount"),
-                postfix: new HarmonyMethod(patchType, nameof(ResetMessageCountPostfix)));
+            //TODO: Temporarily disabled  until it's purpose can be ascertained (genuinely WTF does this do?) 
+            //harmony.Patch(AccessTools.Method(typeof(Log), "ResetMessageCount"),
+            //    postfix: new HarmonyMethod(patchType, nameof(ResetMessageCountPostfix)));
         }
         
         public static void ResetMessageCountPostfix()
