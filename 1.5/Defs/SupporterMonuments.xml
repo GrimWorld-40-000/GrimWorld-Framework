@@ -66,7 +66,7 @@
     <ThingDef ParentName="GWSupporterMonumentBase">
         <defName>GW_FancyObelisk</defName>
         <label>supporter monument center</label>
-        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Astartes tier:\n\nRainyredman1234, Bailey English\n\n  Primarch tier:\n\nFulgrim, R.CSN, kyle shadowchain, Echo\n\n  Emperor of Mankind tier:\n\nRisqué Che, Ahlpheiss</description>
+        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Astartes tier:\n\nRainyredman1234, Bailey English, Varps\n\n  Primarch tier:\n\nFulgrim, R.CSN, kyle shadowchain, Echo2222, Corvus\n\n  Emperor of Mankind tier:\n\nRisqué Che, Ahlpheiss</description>
         <graphicData>
             <texPath>Things/Building/Obelisks/Obelisk_Fancy</texPath>
             <drawSize>(5,5)</drawSize>
@@ -85,7 +85,7 @@
     <ThingDef ParentName="GWSupporterMonumentBase">
         <defName>GW_OrdinaryObelisk</defName>
         <label>supporter's monument</label>
-        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Servitor tier:\n\nAKorgar, Hell Fire, Sparrow, just a guy named brad\n\n  Guardsmen tier:\n\n♠_Caligula_♠, Józef Kozioł, MisterCroxo48\n\n  Stormtrooper tier:\n\nBenio, Alloyskull, Vylixan, Gofres, Celorico, Risque, Madgile\n\n  Neophyte tier:\n\nTacticalCrumpet, Petrie, JawnWick</description>
+        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Servitor tier:\n\nAKorgar, Hell Fire, Sparrow, just a guy named brad, Adam rameriez, Akim Goddard, Akuma, Astral, Austin Foote, Beau Cannon, Big chief, Biz, Brody Cherry, Cajetan, Cameron Hunt, Cayleb, Chin 5chin, Cringe Boy, Dust_Man, Edward, FreeManzForLife, Ghostemp, Gilded Wraith, Haerang, Harry pascoe, Hoff Man, Hofi, John Gibon, Junhyuk Lee, Kingbruh, LittleBitOfPud, Lordathand, Matthew H, Nicholas Swaminathan, Oscar Melgar, PiePiePie, Rhinous, Ruben Jannes, Shot Bullet, Steven Pretswell, surpotato, Three Dollar Bill, Zdeněk Vrtal, ZedA, Zhilsir, Zii, Zymire Seaborn\n\n  Guardsmen tier:\n\nJózef Kozioł, MisterCroxo48, Christian Stavnshöj, Daluca, Liadryn, MisterCroxo48, Pascal, rui, Thera_SPQR, Zany Grosma\n\n  Stormtrooper tier:\n\n♠_Caligula_♠, Benio, Alloyskull, Vylixan, Gofres, Celorico, Risque, Madgile, Andrew Witherspoon, Andy Chen, Cool Man, Deathmarine, Erde, Eric Lott, Fancypants4000, Gofres, Freen Skies, Gregg Quibal, Issac Christie, Jason Dean, joe sy, John Smith, Joshua Smith, Kákóczki Levente, LeyZee, lucas kamisnky, Luke Bainbridge, Madgile, Matthew Rotejo, Mitch Collins, neonoxia, Plink the Necrobird, PrimoStream, Ravenous 21, Retro72, Roger B, satkill08, Schmiddy, Sophia Orr, spade, Toasty Cosmonaut, Visaud S, Xestril\n\n Neophyte tier:\n\nTacticalCrumpet, Petrie, JawnWick</description>
         <graphicData>
             <texPath>Things/Building/Obelisks/Obelisk_Ordinary</texPath>
             <drawSize>(3,3)</drawSize>
