@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using HarmonyLib;
@@ -19,8 +20,6 @@ namespace GW_Frame
 
         private static readonly Color MissingPrerequisiteColor = ColorLibrary.RedReadable;
 
-        // Will need cached textures for each requirement, and should check for it later
-        private static readonly CachedTexture STCRequirementTex = new CachedTexture("UI/ImperiumStudy");
 
 
         static HarmonyPatches()
@@ -300,7 +299,6 @@ namespace GW_Frame
 
             DefModExtension_ExtraPrerequisiteActions modExtension = project.GetModExtension<DefModExtension_ExtraPrerequisiteActions>();
             WorldComponent_StudyManager stcManager = Find.World.GetComponent<WorldComponent_StudyManager>();
-            List<string> defsToCheckFor = new List<string> { "GW_STC_Fragment" };
 
             Color color = GUI.color;
             TextAnchor anchor = Text.Anchor;
@@ -311,35 +309,26 @@ namespace GW_Frame
             rect2.x = rect.x;
             rect2.width = num;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(rect2, project.CostApparent.ToString());
+            Widgets.Label(rect2, project.CostApparent.ToString(CultureInfo.CurrentCulture));
             rect2.x += num;
             foreach (StudyRequirement req in modExtension.ItemStudyRequirements)
             {
-                if (defsToCheckFor.Contains(req.StudyObject.ToString()))
-                {
-                    string text;
-
-                    if (stcManager.CompletedRequirement(project, req.StudyObject))
-                        text = req.NumberRequired.ToString() + " / " + req.NumberRequired.ToString();
-                    else
-                        text = "0 / " + req.NumberRequired.ToString();
-
-                    Vector2 vector = Text.CalcSize(text);
-                    Rect rect3 = rect2;
-                    rect3.xMin = rect2.xMax - vector.x - 10f;
-                    Rect rect4 = rect2;
-                    rect4.width = rect4.height;
-                    rect4.x = rect3.x - rect4.width;
-                    GUI.color = stcManager.CompletedRequirement(project, req.StudyObject) ? Color.green : ColorLibrary.RedReadable;
-                    Widgets.Label(rect3, text);
-                    GUI.color = Color.white;
-                    if (req.StudyObject.ToString() == "GW_STC_Fragment")
-                        GUI.DrawTexture(rect4.ContractedBy(3f), STCRequirementTex.Texture);
-                    rect2.x += num;
-                    GUI.color = color;
-                    Text.Anchor = anchor;
-                    return false;
-                }
+                bool complete = stcManager.CompletedRequirement(project, req.StudyObject);
+                string text = $"{(complete ? req.NumberRequired : 0)} / {req.NumberRequired}";
+                Vector2 textAreaSize = Text.CalcSize(text);
+                Rect rect3 = rect2;
+                rect3.xMin = rect2.xMax - textAreaSize.x - 10f;
+                Rect rect4 = rect2;
+                rect4.width = rect4.height;
+                rect4.x = rect3.x - rect4.width;
+                GUI.color = complete ? Color.green : ColorLibrary.RedReadable;
+                Widgets.Label(rect3, text);
+                GUI.color = Color.white;
+                GUI.DrawTexture(rect4.ContractedBy(3f), req.StudyObject.uiIcon);
+                rect2.x += num;
+                GUI.color = color;
+                Text.Anchor = anchor;
+                return false;
             }
 
             return true;
