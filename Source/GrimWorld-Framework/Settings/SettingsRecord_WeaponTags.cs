@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GrimworldItemLimit;
 using UnityEngine;
 using Verse;
 
@@ -13,6 +14,7 @@ namespace GW_Frame.Settings
     {
         private Dictionary<string, bool> shieldTagsDict;
         private Dictionary<string, bool> twoHandedTagsDict;
+
         
         public SettingsRecord_WeaponTags()
         {
@@ -102,9 +104,28 @@ namespace GW_Frame.Settings
         {
             shieldTagsDict = new Dictionary<string, bool>();
             twoHandedTagsDict = new Dictionary<string, bool>();
+            Comp_ItemCraftingLimit.DisabledDefNames = new List<string>();
             ResetToDefaultForDefs(DefDatabase<ThingDef>.AllDefs);
         }
 
+        private static List<string> DisabledDefNames => Comp_ItemCraftingLimit.DisabledDefNames;
+        
+        public bool IsLimitEnabled(ThingDef item)
+        {
+            return !DisabledDefNames.Contains(item.defName);
+        }
+
+        public void SetCraftingLimitEnabled(ThingDef thingDef, bool isEnabled)
+        {
+            if (isEnabled)
+            {
+                Comp_ItemCraftingLimit.DisabledDefNames.RemoveWhere(name => name.Equals(thingDef.defName));
+            }
+            else
+            {
+                DisabledDefNames.Add(thingDef.defName);
+            }
+        }
         public void ResetToDefaultForDefs(IEnumerable<ThingDef> defsToReset)
         {
             var thingDefs = defsToReset as ThingDef[] ?? defsToReset.ToArray();
@@ -136,6 +157,12 @@ namespace GW_Frame.Settings
         {
             Scribe_Collections.Look(ref shieldTagsDict, "shieldTagsDict", LookMode.Value, LookMode.Value);
             Scribe_Collections.Look(ref twoHandedTagsDict, "twoHandedTagsDict", LookMode.Value, LookMode.Value);
+            Scribe_Collections.Look(ref Comp_ItemCraftingLimit.DisabledDefNames, "disabledDefNames");
+            if (DisabledDefNames == null)
+            {
+                Comp_ItemCraftingLimit.DisabledDefNames = new List<string>();
+            }
         }
+
     }
 }

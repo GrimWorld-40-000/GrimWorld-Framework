@@ -7,4 +7,6 @@
 
 
 	<GW_BillPausedBecauseOfCraftingLimit>Bill automatically suspended because one of the products has reached the craftable limit.</GW_BillPausedBecauseOfCraftingLimit>
+    <GW_CraftingLimit>Is crafting limit enabled?</GW_CraftingLimit>
+	<GW_CraftingLimits>Crafting Limits</GW_CraftingLimits>
 </LanguageData>

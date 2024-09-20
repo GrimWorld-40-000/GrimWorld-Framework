@@ -8,7 +8,7 @@ namespace GrimworldItemLimit
         
         public static bool DoesRecipeHaveAnyProductThatIsAtLimit(this RecipeDef recipe)
         {
-            return (from thingDefCountClass in recipe.products let comp = thingDefCountClass.thingDef.GetCompProperties<CompProperties_ItemCraftingLimit>() where comp != null where ItemsCraftedLibrary.GetCurrentLibrary().GetItemsOfDefCrafted(thingDefCountClass.thingDef) + thingDefCountClass.count > comp.maxNumberCraftable select thingDefCountClass).Any();
+            return (from thingDefCountClass in recipe.products let comp = thingDefCountClass.thingDef.GetCompProperties<CompProperties_ItemCraftingLimit>() where comp != null where Comp_ItemCraftingLimit.IsEnabled(thingDefCountClass.thingDef) where ItemsCraftedLibrary.GetCurrentLibrary().GetItemsOfDefCrafted(thingDefCountClass.thingDef) + thingDefCountClass.count > comp.maxNumberCraftable select thingDefCountClass).Any();
         }
         
         

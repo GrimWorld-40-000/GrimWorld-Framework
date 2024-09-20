@@ -29,4 +29,9 @@
     <Compile Remove="EquipRestrict\EquipmentUtility_CanEquip_AnyOneOf_Patch.cs" />
     <Compile Remove="Statics\GrimWorld_FrameworkMod.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="GrimworldItemLimit">
+      <HintPath>..\..\1.5\Assemblies\GrimworldItemLimit.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

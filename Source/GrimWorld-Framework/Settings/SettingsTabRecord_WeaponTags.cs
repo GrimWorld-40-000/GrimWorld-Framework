@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GrimworldItemLimit;
 using UnityEngine;
 using Verse;
 
@@ -11,15 +12,15 @@ namespace GW_Frame.Settings
 {
     public class SettingsTabRecord_WeaponTags : SettingsTabRecord
     {
-        private SettingsRecord_WeaponTags settingsRecord;
-        public SettingsRecord_WeaponTags SettingsRecord
+        private static SettingsRecord_WeaponTags settingsRecord;
+        public static SettingsRecord_WeaponTags SettingsRecord
         {
             get
             {
                 if (settingsRecord == null)
                 {
-                    Settings.Instance.TryGetModSettings(typeof(SettingsRecord_WeaponTags), out SettingsRecord settingsRecord);
-                    this.settingsRecord = settingsRecord as SettingsRecord_WeaponTags;
+                    Settings.Instance.TryGetModSettings(typeof(SettingsRecord_WeaponTags), out SettingsRecord record);
+                    settingsRecord = record as SettingsRecord_WeaponTags;
                 }
                 return settingsRecord;
             }
@@ -117,7 +118,6 @@ namespace GW_Frame.Settings
             {
                 defs.RemoveWhere(thingDef => !thingDef.label.ToLower().Contains(searchTerm.ToLower()));
             }
-
             foreach (ThingDef thingDef in defs)
             {
                 //Create rects
@@ -150,6 +150,11 @@ namespace GW_Frame.Settings
                         Widgets.CheckboxLabeled(valueRect, Grimworld_DefsOf.GW_TwoHanded.LabelCap, ref twoHandedValue);
                         SettingsRecord.TrySetValueTwoHanded(thingDef, twoHandedValue);
                         break;
+                    case ListTabInfo.ListType.Craftable:
+                        bool isEnabled = SettingsRecord.IsLimitEnabled(thingDef);
+                        Widgets.CheckboxLabeled(valueRect, "GW_CraftingLimit".Translate(), ref isEnabled);
+                        SettingsRecord.SetCraftingLimitEnabled(thingDef, isEnabled);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -180,6 +185,13 @@ namespace GW_Frame.Settings
                 return DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.IsApparel)
                     .OrderBy(x => x.label);
             }, "Apparel".Translate(), ListTabInfo.ListType.Apparel);
+            
+            //Craftables tab
+            yield return new ListTabInfo(delegate
+            {
+                return DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.HasComp<Comp_ItemCraftingLimit>())
+                    .OrderBy(x => x.label);
+            }, "GW_CraftingLimits".Translate(), ListTabInfo.ListType.Craftable);
         }
     }
 
@@ -204,7 +216,8 @@ namespace GW_Frame.Settings
         public enum ListType
         {
             Weapon,
-            Apparel
+            Apparel,
+            Craftable
         }
 
         public IEnumerable<ThingDef> Defs => ValueGetter.Invoke();
