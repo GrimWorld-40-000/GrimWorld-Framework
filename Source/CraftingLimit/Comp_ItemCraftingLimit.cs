@@ -7,6 +7,8 @@ namespace GrimworldItemLimit
     {
         public static List<string> DisabledDefNames;
 
-        public static bool IsEnabled(ThingDef def) => !DisabledDefNames.Contains(def.defName);
+
+
+        public static bool IsEnabled(ThingDef def) => !DisabledDefNames?.Contains(def?.defName) ?? true;
     }
 }
