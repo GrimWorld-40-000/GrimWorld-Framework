@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<!-- STC study -->
 	<GW_RequiresStudyOf>Requires study of:</GW_RequiresStudyOf>
 	<GW_MoreNeeded>{0} more </GW_MoreNeeded>
 	<GW_StudyAt> at a {0}.</GW_StudyAt>
 	<GW_DiscoveredResearch>You've discovered this research.</GW_DiscoveredResearch>
 
-
+	<!-- Crafting limits -->
 	<GW_BillPausedBecauseOfCraftingLimit>Bill automatically suspended because one of the products has reached the craftable limit.</GW_BillPausedBecauseOfCraftingLimit>
     <GW_CraftingLimit>Is crafting limit enabled?</GW_CraftingLimit>
 	<GW_CraftingLimits>Crafting Limits</GW_CraftingLimits>
+
+	<!-- Misc thing comps -->
+	<GW_IndoorsThingsOutdoorsLabel>Buildings exposed</GW_IndoorsThingsOutdoorsLabel>
+	<GW_IndoorsThingsOutdoorsDesc>Buildings that should be kept indoors are exposed to the outside. These things may malfunction, sometimes with dangerous consequences.</GW_IndoorsThingsOutdoorsDesc>
+	<GW_ThingDamagedByTemperature>Begins overheating above: {0}</GW_ThingDamagedByTemperature>
+
 </LanguageData>
