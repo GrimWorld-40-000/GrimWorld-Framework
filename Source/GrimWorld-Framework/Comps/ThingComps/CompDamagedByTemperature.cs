@@ -24,6 +24,7 @@ namespace GW_Frame.Comps.ThingComps
 		public override void CompTick()
 		{
 			base.CompTick();
+			
 			//TODO is .AmbientTemperature faster or slower than just checking the room temp/map temp
 			//parent.GetRoom()?.Temperature ?? parent.Map.mapTemperature.OutdoorTemp;
 			//parent.AmbientTemperature
@@ -31,7 +32,8 @@ namespace GW_Frame.Comps.ThingComps
 			{
 				if (IsTooHot)
 				{
-					parent.TakeDamage(new DamageInfo(Props.damageDef, GetDamagePerRareTick(parent.AmbientTemperature), 1));
+					parent.TakeDamage(new DamageInfo(Props.damageDef, 
+						GetDamagePerRareTick(parent.AmbientTemperature), 1));
 				}
 			}
 		}

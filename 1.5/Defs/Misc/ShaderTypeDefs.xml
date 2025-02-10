@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <GW_Frame.GWShaderTypeDef>
+        <defName>Cutout_LUT</defName>
+        <shaderPath>Cutout_LUT</shaderPath>
+    </GW_Frame.GWShaderTypeDef>
+
+</Defs>

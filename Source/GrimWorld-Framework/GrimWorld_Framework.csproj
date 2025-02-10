@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <Folder Include="EquipRestrict\" />
-    <Folder Include="ItemCraftingLimits\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="EquipRestrict\EquipmentUtility_CanEquip_AnyOneOf_Patch.cs" />
@@ -32,6 +31,7 @@
   <ItemGroup>
     <Reference Include="GrimworldItemLimit">
       <HintPath>..\..\1.5\Assemblies\GrimworldItemLimit.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
 </Project>
