@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using GW_Frame.Debugging;
 using RimWorld;
 using UnityEngine;
 using Verse;
@@ -13,7 +14,6 @@ namespace GW_Frame.Comps.ThingComps
 		public FloatRange timeBetweenExplosions;
 		public bool onlyExplodeWhenOn;
 		public bool scaleByFuelPercentage;
-
 		public DamageDef explosiveDamageType;
 		public int damageAmountBase = -1;
 		public float armorPenetrationBase = -1f;
@@ -57,45 +57,50 @@ namespace GW_Frame.Comps.ThingComps
 		public override void ResolveReferences(ThingDef parentDef)
 		{
 			base.ResolveReferences(parentDef);
+			
 			if (explosiveDamageType != null)
 				return;
+			
 			explosiveDamageType = DamageDefOf.Bomb;
 		}
-
+		
 		public override IEnumerable<string> ConfigErrors(ThingDef parentDef)
 		{
-			foreach (var configError in base.ConfigErrors(parentDef))
+			foreach (string configError in base.ConfigErrors(parentDef))
 				yield return configError;
+			
 			if (parentDef.tickerType != TickerType.Normal)
 				yield return "CompMultiExplosive requires Normal ticker type";
 		}
 	}
-
+	
 	public class CompMultiExplosive : ThingComp
 	{
+		protected Sustainer wickSoundSustainer;
+		
 		public bool wickStarted;
 		public int wickTicksLeft;
+		public bool destroyedThroughDetonation;
+		public float? customExplosiveRadius;
+		
 		private Thing instigator;
 		private int countdownTicksLeft = -1;
-		public bool destroyedThroughDetonation;
 		private List<Thing> thingsIgnoredByExplosion;
-		public float? customExplosiveRadius;
-		protected Sustainer wickSoundSustainer;
 		private OverlayHandle? overlayBurningWick;
-
 		private int explosionIndex;
 		private int minorExplosionTicksLeft;
-
+		private CompRefuelable _fuelComp;
+		private CompPowerTrader _powerComp;
+		
+		protected int StartWickThreshold => Mathf
+			.RoundToInt(Props.startWickHitPointsPercent * parent.MaxHitPoints);
+		
 		public CompProperties_MultiExplosive Props => (CompProperties_MultiExplosive)props;
-
-		protected int StartWickThreshold => Mathf.RoundToInt(Props.startWickHitPointsPercent * parent.MaxHitPoints);
-
+		
 		private float Scaling => Props.scaleByFuelPercentage ? FuelComp.FuelPercentOfMax : 1;
 		private CompRefuelable FuelComp => _fuelComp ??= parent.GetComp<CompRefuelable>();
-		private CompRefuelable _fuelComp;
 		private CompPowerTrader PowerComp => _powerComp ??= parent.GetComp<CompPowerTrader>();
-		private CompPowerTrader _powerComp;
-
+		
 		private float ExplosiveRadius => Props.explosiveRadii[explosionIndex] * Scaling;
 		private int ExplosiveDamage => (int)(Props.damageAmountBase * Scaling);
 
@@ -105,17 +110,21 @@ namespace GW_Frame.Comps.ThingComps
 			{
 				if (Props.chanceNeverExplodeFromDamage < 9.999999747378752E-06)
 					return true;
+				
 				Rand.PushState();
 				Rand.Seed = parent.thingIDNumber.GetHashCode();
-				var num = Rand.Value > (double)Props.chanceNeverExplodeFromDamage ? 1 : 0;
+				int num = Rand.Value > (double)Props.chanceNeverExplodeFromDamage 
+					? 1 
+					: 0;
 				Rand.PopState();
+				
 				return num != 0;
 			}
 		}
 
 		public void AddThingsIgnoredByExplosion(List<Thing> things)
 		{
-			thingsIgnoredByExplosion ??= new List<Thing>();
+			thingsIgnoredByExplosion ??= [];
 			thingsIgnoredByExplosion.AddRange(things);
 		}
 
@@ -123,8 +132,7 @@ namespace GW_Frame.Comps.ThingComps
 		{
 			base.PostExposeData();
 			Scribe_References.Look(ref instigator, "instigator");
-			Scribe_Collections.Look(ref thingsIgnoredByExplosion, "thingsIgnoredByExplosion",
-				LookMode.Reference);
+			Scribe_Collections.Look(ref thingsIgnoredByExplosion, "thingsIgnoredByExplosion", LookMode.Reference);
 			Scribe_Values.Look(ref wickStarted, "wickStarted");
 			Scribe_Values.Look(ref wickTicksLeft, "wickTicksLeft");
 			Scribe_Values.Look(ref destroyedThroughDetonation, "destroyedThroughDetonation");
@@ -136,6 +144,7 @@ namespace GW_Frame.Comps.ThingComps
 		{
 			if (Props.countdownTicks.HasValue)
 				countdownTicksLeft = Props.countdownTicks.Value.RandomInRange;
+			
 			UpdateOverlays();
 		}
 
@@ -158,25 +167,36 @@ namespace GW_Frame.Comps.ThingComps
 			parent.HitPoints = (int)(parent.MaxHitPoints * Props.startWickHitPointsPercent);
 
 			if (wickSoundSustainer == null)
+			{
 				StartWickSustainer();
+			}
 			else
+			{
 				wickSoundSustainer.Maintain();
+			}
+
 			if (Props.wickMessages != null)
-				foreach (var wickMessage in Props.wickMessages.Where(wickMessage =>
+			{
+				foreach (WickMessage wickMessage in Props.wickMessages.Where(wickMessage =>
 					         wickMessage.ticksLeft == wickTicksLeft && wickMessage.wickMessagekey != null))
+				{
 					Messages.Message(
 						wickMessage.wickMessagekey.Translate(
 							(NamedArgument)parent.GetCustomLabelNoCount(false),
 							(NamedArgument)wickTicksLeft.ToStringSecondsFromTicks()),
 						(Thing)parent, wickMessage.messageType ?? MessageTypeDefOf.NeutralEvent,
 						false);
+				}
+			}
 
 			--wickTicksLeft;
 			if (wickTicksLeft > 0)
 				return;
-
+			
 			--minorExplosionTicksLeft;
-			if (minorExplosionTicksLeft > 0) return;
+			if (minorExplosionTicksLeft > 0) 
+				return;
+			
 			minorExplosionTicksLeft = (int)(Props.timeBetweenExplosions.RandomInRange * 60);
 
 			if (explosionIndex >= Props.explosiveRadii.Count - 1)
@@ -195,7 +215,8 @@ namespace GW_Frame.Comps.ThingComps
 		{
 			SoundDefOf.MetalHitImportant.PlayOneShot(new TargetInfo(parent.PositionHeld,
 				parent.MapHeld));
-			var info = SoundInfo.InMap((TargetInfo)(Thing)parent, MaintenanceType.PerTick);
+			
+			SoundInfo info = SoundInfo.InMap((TargetInfo)(Thing)parent, MaintenanceType.PerTick);
 			wickSoundSustainer = SoundDefOf.HissSmall.TrySpawnSustainer(info);
 		}
 
@@ -203,6 +224,7 @@ namespace GW_Frame.Comps.ThingComps
 		{
 			if (wickSoundSustainer == null)
 				return;
+			
 			wickSoundSustainer.End();
 			wickSoundSustainer = null;
 		}
@@ -211,17 +233,21 @@ namespace GW_Frame.Comps.ThingComps
 		{
 			if (!parent.Spawned || !Props.drawWick)
 				return;
+			
 			parent.Map.overlayDrawer.Disable(parent, ref overlayBurningWick);
 			if (!wickStarted)
 				return;
+			
 			overlayBurningWick =
 				parent.Map.overlayDrawer.Enable(parent, OverlayTypes.BurningWick);
 		}
 
 		public override void PostDestroy(DestroyMode mode, Map previousMap)
 		{
-			if ((mode != DestroyMode.KillFinalize || !Props.explodeOnKilled) && !Props.explodeOnDestroyed)
+			if ((mode != DestroyMode.KillFinalize || !Props.explodeOnKilled) && 
+			    !Props.explodeOnDestroyed)
 				return;
+			
 			Detonate(previousMap, true);
 		}
 
@@ -236,9 +262,11 @@ namespace GW_Frame.Comps.ThingComps
 			absorbed = false;
 			if (!CanEverExplodeFromDamage)
 				return;
+			
 			if (wickStarted || Props.startWickOnDamageTaken == null ||
 			    !Props.startWickOnDamageTaken.Contains(dinfo.Def))
 				return;
+			
 			StartWick(dinfo.Instigator);
 		}
 
@@ -246,6 +274,7 @@ namespace GW_Frame.Comps.ThingComps
 		{
 			if (!CanEverExplodeFromDamage || !CanExplodeFromDamageType(dinfo.Def) || parent.Destroyed)
 				return;
+			
 			if (wickStarted && dinfo.Def == DamageDefOf.Stun)
 			{
 				StopWick();
@@ -257,45 +286,53 @@ namespace GW_Frame.Comps.ThingComps
 				     (Props.startWickOnInternalDamageTaken.NullOrEmpty() ||
 				      !Props.startWickOnInternalDamageTaken.Contains(dinfo.Def))))
 					return;
+				
 				StartWick(dinfo.Instigator);
 			}
 		}
 
-		public void StartWick()
+		private void StartWick()
 		{
 			StartWick(null);
 		}
 
-		public void StartWick(Thing instigatorKnown)
+		private void StartWick(Thing instigatorKnown)
 		{
-			if (Props.onlyExplodeWhenOn && !PowerComp.PowerOn) return;
+			if (Props.onlyExplodeWhenOn && !PowerComp.PowerOn) 
+				return;
+			
 			if (wickStarted || ExplosiveRadius <= 0.0)
 				return;
+			
 			instigator = instigatorKnown;
 			wickStarted = true;
 			wickTicksLeft = Props.wickTicks.RandomInRange;
 			StartWickSustainer();
+			
 			GenExplosion.NotifyNearbyPawnsOfDangerousExplosive(parent, Props.explosiveDamageType,
 				instigator: instigatorKnown);
 			UpdateOverlays();
 		}
 
-		public void StopWick()
+		private void StopWick()
 		{
 			wickStarted = false;
 			instigator = null;
 			UpdateOverlays();
 			EndWickSustainer();
 		}
-
-		protected void DoMinorExplosion(Map map, bool forceCenter = false, bool ignoreUnspawned = false)
+		
+		private void DoMinorExplosion(Map map, bool forceCenter = false, bool ignoreUnspawned = false)
 		{
-			var propsMultiExplosive = Props;
-			if (ignoreUnspawned && !parent.SpawnedOrAnyParentSpawned) return;
-			var explosiveRadius = ExplosiveRadius;
+			CompProperties_MultiExplosive propsMultiExplosive = Props;
+			if (ignoreUnspawned && !parent.SpawnedOrAnyParentSpawned) 
+				return;
+			
+			float explosiveRadius = ExplosiveRadius;
 			if (explosiveRadius <= 0.0)
 				return;
-			var knownInstigatorThing =
+			
+			Thing knownInstigatorThing =
 				instigator == null || (instigator.HostileTo(parent.Faction) &&
 				                       parent.Faction != Faction.OfPlayer)
 					? parent
@@ -303,17 +340,17 @@ namespace GW_Frame.Comps.ThingComps
 
 			if (map == null)
 			{
-				Log.Warning("Tried to detonate CompExplosive in a null map.");
+				GWLog.Warning("[DoMinorExplosion] Tried to detonate CompExplosive in a null map.");
 			}
 			else
 			{
-				var cell = forceCenter
+				IntVec3 cell = forceCenter
 					? parent.PositionHeld
 					: parent.OccupiedRect().GetCellsOnEdge(Rot4.Random).RandomElement();
 
 				if (propsMultiExplosive.explosionEffect != null)
 				{
-					var effecter = propsMultiExplosive.explosionEffect.Spawn();
+					Effecter effecter = propsMultiExplosive.explosionEffect.Spawn();
 					effecter.Trigger(new TargetInfo(cell, map),
 						new TargetInfo(cell, map));
 					effecter.Cleanup();
@@ -333,12 +370,13 @@ namespace GW_Frame.Comps.ThingComps
 			}
 		}
 
-		protected void Detonate(Map map, bool ignoreUnspawned = false)
+		private void Detonate(Map map, bool ignoreUnspawned = false)
 		{
-			if (parent.Destroyed) return;
+			if (parent.Destroyed) 
+				return;
+			
 			destroyedThroughDetonation = true;
 			parent.Kill();
-
 			DoMinorExplosion(map, true, ignoreUnspawned);
 		}
 
@@ -349,25 +387,30 @@ namespace GW_Frame.Comps.ThingComps
 
 		public override string CompInspectStringExtra()
 		{
-			var str = "";
+			string str = "";
 			if (countdownTicksLeft != -1)
 				str = str +
 				      "DetonationCountdown".Translate(
 					      (NamedArgument)countdownTicksLeft.TicksToDays().ToString("0.0"));
+			
 			if (Props.extraInspectStringKey != null)
 				str = str + ((str != "" ? "\n" : "") + Props.extraInspectStringKey.Translate());
+			
 			return str;
 		}
-
+		
 		public override IEnumerable<Gizmo> CompGetGizmosExtra()
 		{
-			if (countdownTicksLeft > 0)
+			if (countdownTicksLeft <= 0)
+				yield break;
+			
+			Command_Action commandAction = new()
 			{
-				var commandAction = new Command_Action();
-				commandAction.defaultLabel = "DEV: Trigger countdown";
-				commandAction.action = StartWick;
-				yield return commandAction;
-			}
+				// probably want to use another keyed string here for easy translation
+				defaultLabel = "DEV: Trigger countdown",
+				action = StartWick
+			};
+			yield return commandAction;
 		}
 	}
 }
