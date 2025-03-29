@@ -13,14 +13,19 @@ namespace GW_Frame.Comps.ThingComps
 		{
 			if (!parent.IsHashIntervalTick(60) || !ShouldPushHeatNow)
 				return;
-			GenTemperature.PushHeat(parent.PositionHeld, parent.MapHeld, Props.heatPerSecond * Scaling);
+			
+			GenTemperature.PushHeat(parent.PositionHeld, parent.MapHeld,
+				Props.heatPerSecond * Scaling);
 		}
 
 		public override void CompTickRare()
 		{
 			if (!ShouldPushHeatNow)
 				return;
-			GenTemperature.PushHeat(parent.PositionHeld, parent.MapHeld, Props.heatPerSecond * 4.1666665f * Scaling);
+
+			const float energyPerSecFactor = 4.1666665f;
+			GenTemperature.PushHeat(parent.PositionHeld, parent.MapHeld,
+				Props.heatPerSecond * energyPerSecFactor * Scaling);
 		}
 	}
 }
