@@ -3,6 +3,10 @@ using Verse;
 
 namespace GW_Frame
 {
+    /// <summary>
+    /// DefModExtension's are not meant to save fields, only to hold static data.
+    /// Use a Comp if you need to change/save/persist data.
+    /// </summary>
     public class DefModExtension_ExtraPrerequisiteActions : DefModExtension, IExposable
     {
         public ThingDef StudyLocation;
