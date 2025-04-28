@@ -33,7 +33,7 @@ namespace eridanus_quests
 		public override void ExposeData()
 		{
 			base.ExposeData();
-			Scribe_Values.Look(ref playerFactionIs, "playerPlayingAs");
+			Scribe_Defs.Look(ref playerFactionIs, "playerFactionIs");
 		}
 	}
 }
