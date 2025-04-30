@@ -20,10 +20,14 @@ namespace GW_Frame.Comps.ThingComps
 		public override void CompTick()
 		{
 			base.CompTick();
-			if (!parent.IsHashIntervalTick(250)) return;
+			
+			if (!parent.IsHashIntervalTick(250)) 
+				return;
+			
 			if (!IsIndoors())
 			{
-				parent.TakeDamage(new DamageInfo(Props.damageDef, Props.damagePerTick * 250, 1));
+				parent.TakeDamage(new DamageInfo(Props.damageDef,
+					Props.damagePerTick * 250, 1));
 			}
 		}
 	}

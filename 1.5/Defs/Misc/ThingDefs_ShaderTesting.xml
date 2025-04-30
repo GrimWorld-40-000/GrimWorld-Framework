@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+    <ThingDef ParentName="BuildingBase">
+        <defName>GW_ShaderTest</defName>
+        <label>shader test</label>
+        <thingClass>GW_Frame.ShaderTestThing</thingClass>
+        <description>this had to be a full def... so yeah, here it is</description>
+        <graphicData>
+            <texPath>Aquilla_torso_Hulk_south</texPath>
+            <graphicClass>Graphic_Single</graphicClass>
+            <shaderType>Cutout_LUT</shaderType>
+        </graphicData>
+    </ThingDef>
+
+</Defs>

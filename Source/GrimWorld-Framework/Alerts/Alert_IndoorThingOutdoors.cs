@@ -8,7 +8,7 @@ namespace GW_Frame.Alerts
 {
 	public class Alert_IndoorThingOutdoors : Alert
 	{
-		private List<Thing> indoorsOutdoorsResult = new List<Thing>();
+		private List<Thing> indoorsOutdoorsResult = new();
 
 		public Alert_IndoorThingOutdoors()
 		{
@@ -20,9 +20,13 @@ namespace GW_Frame.Alerts
 			get
 			{
 				indoorsOutdoorsResult.Clear();
-				foreach (var thing in Find.Maps.Where(map => map.mapPawns.AnyColonistSpawned).SelectMany(map => map.listerThings.GetAllThings()))
+				foreach (Thing thing in Find.Maps
+					         .Where(map => map.mapPawns.AnyColonistSpawned)
+					         .SelectMany(map => map.listerThings.GetAllThings()))
 				{
-					if (!thing.TryGetComp(out CompMustBeIndoors indoors)) continue;
+					if (!thing.TryGetComp(out CompMustBeIndoors indoors)) 
+						continue;
+					
 					if (indoors.ShouldAlertNow) indoorsOutdoorsResult.Add(thing);
 				}
 				return indoorsOutdoorsResult;
