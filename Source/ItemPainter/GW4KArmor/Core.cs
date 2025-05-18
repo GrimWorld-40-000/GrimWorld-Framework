@@ -115,7 +115,7 @@ public class Core : Mod
             platform = null;
         }
 
-        string assetPath = Path.Combine(Content.RootDir, "1.5", "AssetBundles", platform, "gw4k");
+        string assetPath = Path.Combine(Content.RootDir, "1.4", "AssetBundles", platform, "gw4k");
         AssetBundle assetBundle = AssetBundle.LoadFromFile(assetPath);
         if (assetBundle == null)
         {
