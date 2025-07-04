@@ -14,13 +14,13 @@ namespace GW4KArmor
         private Color? colorTwo;
         private Color? colorThree;
         private CompColorable colorComp;
-
+        
         public CompProperties_TriColorMask Props => props as CompProperties_TriColorMask;
-
+        
         public MaskTextureStorage Masks => Props.Masks;
-
+        
         public ThingDef Def => parent.def;
-
+        
         /*public Color? ColorOne
         {
             get
@@ -36,7 +36,7 @@ namespace GW4KArmor
                     colorComp.SetColor(value.Value);
             }
         }*/
-
+        
         public Color ColorOne
         {
             get => colorOne ?? Color.white;
@@ -46,65 +46,71 @@ namespace GW4KArmor
                 colorOne = value;
             }
         }
-
+        
         public Color ColorTwo
         {
             get => colorTwo ?? Color.white;
             set => colorTwo = value;
         }
-
+        
         public Color ColorThree
         {
             get => colorThree ?? Color.white;
             set => colorThree = value;
         }
-
+        
         public Color[] Copy()
         {
-            return new[]
-            {
-            ColorOne,
-            ColorTwo,
-            ColorThree
-        };
+            return
+            [
+                ColorOne,
+                ColorTwo,
+                ColorThree
+            ];
         }
-
+        
         public void Paste(Color[] colors)
         {
             ColorOne = colors[0];
             ColorTwo = colors[1];
             ColorThree = colors[2];
         }
-
+        
         public void MarkDirty()
         {
             parent?.Notify_ColorChanged();
         }
-
+        
         public override void PostSpawnSetup(bool respawningAfterLoad)
         {
             base.PostSpawnSetup(respawningAfterLoad);
+            
             colorComp = parent.GetComp<CompColorable>();
 
-            if (respawningAfterLoad) return;
-            if (Props.defaultPalette != null && colorOne == null && colorTwo == null && colorThree == null)
-            {
-                ColorOne = Props.defaultPalette.colorA;
-                colorTwo = Props.defaultPalette.colorB;
-                colorThree = Props.defaultPalette.colorC;
-            }
+            if (respawningAfterLoad) 
+                return;
+
+            if (Props.defaultPalette == null ||
+                colorOne != null ||
+                colorTwo != null ||
+                colorThree != null) 
+                return;
+            
+            ColorOne = Props.defaultPalette.colorA;
+            colorTwo = Props.defaultPalette.colorB;
+            colorThree = Props.defaultPalette.colorC;
         }
 
         public override void Notify_Equipped(Pawn pawn)
         {
-            if (pawn.kindDef.HasModExtension<DefaultPaletteExtension>())
-            {
-                var extension = pawn.kindDef.GetModExtension<DefaultPaletteExtension>();
-                var palette = extension.defaultPalette;
-                ColorOne = palette.colorA;
-                colorTwo = palette.colorB;
-                colorThree = palette.colorC;
-            }
+            if (!pawn.kindDef.HasModExtension<DefaultPaletteExtension>())
+                return;
+            
+            DefaultPaletteExtension extension = pawn.kindDef.GetModExtension<DefaultPaletteExtension>();
+            Palette palette = extension.defaultPalette;
+            ColorOne = palette.colorA;
+            colorTwo = palette.colorB;
+            colorThree = palette.colorC;
         }
 
         public override void PostExposeData()
@@ -126,25 +132,36 @@ namespace GW4KArmor
         {
             get
             {
-                var isDisabled = false;
+                bool isDisabled = false;
+                
                 if (parent is Apparel apparel)
                 {
                     if(apparel.Wearer != null)
+                    {
                         isDisabled = apparel.Wearer.Faction != Faction.OfPlayer;
+                    }
                     else if(apparel.Faction != null)
+                    {
                         isDisabled = apparel.Faction != Faction.OfPlayer;
+                    }
                 }
 
                 Gizmo_Paintable gizm;
 
-                if (_gizmo != null) gizm = _gizmo;
-                else gizm = new Gizmo_Paintable
+                if (_gizmo != null)
                 {
-                    paintComp = this,
-                    defaultLabel = "Set Colors",
-                    alsoClickIfOtherInGroupClicked = true,
-                    action = () => { Window_ItemPainter.OpenWindowFor(parent); }
-                };
+                    gizm = _gizmo;
+                }
+                else
+                {
+                    gizm = new Gizmo_Paintable
+                    {
+                        paintComp = this,
+                        defaultLabel = "Set Colors",
+                        alsoClickIfOtherInGroupClicked = true,
+                        action = () => { Window_ItemPainter.OpenWindowFor(parent); }
+                    };
+                }
 
                 gizm.defaultDesc = isDisabled
                     ? "Cannot change colors on other faction!"
@@ -159,16 +176,21 @@ namespace GW4KArmor
             get
             {
                 bool isDisabled = !(parent is Apparel apparel && apparel.Wearer.Faction == Faction.OfPlayer);
-
                 Gizmo_PaintableMulti gizm;
 
-                if (_gizmoMulti != null) gizm = _gizmoMulti;
-                else gizm = new Gizmo_PaintableMulti
+                if (_gizmoMulti != null)
                 {
-                    pawn = ParentHolder as Pawn,
-                    defaultLabel = "Color Apparel",
-                    alsoClickIfOtherInGroupClicked = true,
-                };
+                    gizm = _gizmoMulti;
+                }
+                else
+                {
+                    gizm = new Gizmo_PaintableMulti
+                    {
+                        pawn = ParentHolder as Pawn,
+                        defaultLabel = "Color Apparel",
+                        alsoClickIfOtherInGroupClicked = true,
+                    };
+                }
 
                 gizm.defaultDesc = isDisabled
                     ? "Cannot change colors on other faction!"
@@ -180,7 +202,7 @@ namespace GW4KArmor
 
         public override IEnumerable<Gizmo> CompGetGizmosExtra()
         {
-            foreach (var gizmo in base.CompGetGizmosExtra())
+            foreach (Gizmo gizmo in base.CompGetGizmosExtra())
             {
                 yield return gizmo;
             }

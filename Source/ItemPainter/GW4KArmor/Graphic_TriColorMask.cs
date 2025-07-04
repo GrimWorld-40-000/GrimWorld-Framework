@@ -1,4 +1,5 @@
-﻿using RimWorld;
+﻿using GW4KArmor.Debugging;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -9,15 +10,17 @@ namespace GW4KArmor
         public override void DrawWorker(Vector3 loc, Rot4 rot, ThingDef thingDef, Thing thing, float extraRotation)
         {
             if (thing is Apparel apparel)
+            {
                 rot = Rot4.South;
-
+            }
+            
             base.DrawWorker(loc, rot, thingDef, thing, extraRotation);
         }
         
         public override void Print(SectionLayer layer, Thing thing, float extraRotation)
         {
-            var rotateBack = false;
-            var rotation = thing.Rotation;
+            bool rotateBack = false;
+            Rot4 rotation = thing.Rotation;
 
             if (thing is Apparel apparel)
             {
@@ -27,8 +30,11 @@ namespace GW4KArmor
             }
 
             base.Print(layer, thing, extraRotation);
+            
             if (rotateBack)
+            {
                 thing.Rotation = rotation;
+            }
         }
 
         public override void Init(GraphicRequest req)
@@ -39,7 +45,8 @@ namespace GW4KArmor
             color = req.color;
             colorTwo = req.colorTwo;
             drawSize = req.drawSize;
-            var array = new Texture2D[mats.Length];
+            
+            Texture2D[] array = new Texture2D[mats.Length];
             array[0] = ContentFinder<Texture2D>.Get(req.path + "_north", false);
             array[1] = ContentFinder<Texture2D>.Get(req.path + "_east", false);
             array[2] = ContentFinder<Texture2D>.Get(req.path + "_south", false);
@@ -70,8 +77,8 @@ namespace GW4KArmor
 
             if (array[0] == null)
             {
-                Log.Error("Failed to find any textures at " + req.path + " while constructing " +
-                          this.ToStringSafe());
+                GW4KLog.Error("Failed to find any textures at " + req.path + 
+                              " while constructing " + this.ToStringSafe());
             }
             else
             {
@@ -106,8 +113,8 @@ namespace GW4KArmor
                     }
                 }
 
-                var array2 = new Texture2D[mats.Length];
-                var maskPath = this.maskPath;
+                Texture2D[] array2 = new Texture2D[mats.Length];
+                string maskPath = this.maskPath;
                 array2[0] = ContentFinder<Texture2D>.Get(maskPath + "_north", false);
                 array2[1] = ContentFinder<Texture2D>.Get(maskPath + "_east", false);
                 array2[2] = ContentFinder<Texture2D>.Get(maskPath + "_south", false);
@@ -158,9 +165,9 @@ namespace GW4KArmor
                     }
                 }
 
-                for (var i = 0; i < mats.Length; i++)
+                for (int i = 0; i < mats.Length; i++)
                 {
-                    var req2 = default(MaterialRequest);
+                    MaterialRequest req2 = default;
                     req2.mainTex = array[i];
                     req2.shader = req.shader;
                     req2.color = color;

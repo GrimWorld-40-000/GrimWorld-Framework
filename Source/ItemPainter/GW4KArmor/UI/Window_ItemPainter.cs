@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ColorPicker;
 using GW4KArmor.Data;
+using GW4KArmor.Debugging;
 using LudeonTK;
 using RimWorld;
 using UnityEngine;
@@ -28,13 +29,13 @@ namespace GW4KArmor.UI
         [TweakValue("_GW", 0f, 400f)]
         private static readonly float mainButtonsHeightPx = 70f;
 
-        private readonly Color[] colors = new Color[]
-        {
-        Color.red,
-        Color.green,
-        Color.blue
-        };
-
+        private readonly Color[] colors =
+        [
+            Color.red,
+            Color.green,
+            Color.blue
+        ];
+        
         private readonly ThingWithComps target;
         private readonly Comp_TriColorMask comp;
         private Material materialInstance;
@@ -47,7 +48,7 @@ namespace GW4KArmor.UI
 
         private readonly Color[] originalColors = new Color[3];
         private readonly int originalMask;
-        private readonly List<Material> tempMaterials = new List<Material>();
+        private readonly List<Material> tempMaterials = [];
         private int previewMaskIndex;
         private int previewRotation = 2;
         private string paletteName = "My Palette";
@@ -58,19 +59,19 @@ namespace GW4KArmor.UI
 
         public static Window_ItemPainter OpenWindowFor(ThingWithComps thing)
         {
-            Window_ItemPainter windowItemPainter = new Window_ItemPainter(thing);
+            Window_ItemPainter windowItemPainter = new(thing);
             Find.WindowStack.Add(windowItemPainter);
             return windowItemPainter;
         }
 
-        public override Vector2 InitialSize => new Vector2(1500f, 800f);
+        public override Vector2 InitialSize => new(1500f, 800f);
 
         private Window_ItemPainter(ThingWithComps thing)
         {
             target = thing;
-            var triColorMaskComp = thing.GetComp<Comp_TriColorMask>();
-            comp = triColorMaskComp ?? throw new Exception(string.Format("Missing TriColorMaskComp on {0} ({1})", thing, thing.def.defName));
-
+            Comp_TriColorMask triColorMaskComp = thing.GetComp<Comp_TriColorMask>();
+            comp = triColorMaskComp ?? throw new Exception($"Missing TriColorMaskComp on {thing} ({thing.def.defName})");
+            
             previewMaskIndex = comp.MaskIndex;
             colors[0] = comp.ColorOne;
             colors[1] = comp.ColorTwo;
@@ -85,12 +86,12 @@ namespace GW4KArmor.UI
             resizeable = true;
             draggable = true;
             doCloseX = true;
-            colorTabs = new List<TabRecord>()
-            {
+            colorTabs =
+            [
                 new TabRecord("ColA", delegate { OnColorTabClicked(0); }, true),
                 new TabRecord("ColB", delegate { OnColorTabClicked(1); }, false),
-                new TabRecord("ColC", delegate { OnColorTabClicked(2); }, false),
-            };
+                new TabRecord("ColC", delegate { OnColorTabClicked(2); }, false)
+            ];
 
             _colorPicker = new ColorPickerWidget(colors[0], OnColorChanged);
             // _pickerTool = new ColorPickerTool();
@@ -103,75 +104,75 @@ namespace GW4KArmor.UI
 
         private void OnColorTabClicked(int index)
         {
-            for (var i = 0; i < colorTabs.Count; i++)
+            for (int i = 0; i < colorTabs.Count; i++)
             {
-                var tabRecord = colorTabs[i];
+                TabRecord tabRecord = colorTabs[i];
                 tabRecord.selected = i == index;
-                tabRecord.label = string.Format("<color=#{0}>{1}{2}</color> Color {3}", ColorUtility.ToHtmlStringRGB(colors[i]), '█', '█', i + 1);
-                if (tabRecord.selected)
-                {
-                    _colorPicker.R = colors[i].r;
-                    _colorPicker.G = colors[i].g;
-                    _colorPicker.B = colors[i].b;
-                    _colorPicker.A = colors[i].a;
+                tabRecord.label = $"<color=#{ColorUtility.ToHtmlStringRGB(colors[i])}>{'█'}{'█'}</color> Color {i + 1}";
 
-                    //_pickerTool.SetColorDirect(colors[i]);
-                }
+                if (!tabRecord.selected) 
+                    continue;
+                
+                _colorPicker.R = colors[i].r;
+                _colorPicker.G = colors[i].g;
+                _colorPicker.B = colors[i].b;
+                _colorPicker.A = colors[i].a;
+
+                //_pickerTool.SetColorDirect(colors[i]);
             }
         }
 
         private int GetSelectedColorIndex()
         {
-            for (var i = 0; i < colorTabs.Count; i++)
+            for (int i = 0; i < colorTabs.Count; i++)
             {
-                var selected = colorTabs[i].selected;
+                bool selected = colorTabs[i].selected;
                 if (selected) return i;
             }
-
             return -1;
         }
 
         private void OnColorChanged(Color newColor)
         {
-            var selectedColorIndex = GetSelectedColorIndex();
-            var tabRecord = colorTabs[selectedColorIndex];
-            tabRecord.label = string.Format("<color=#{0}>{1}{2}</color> Color {3}", ColorUtility.ToHtmlStringRGB(newColor),
-                '█', '█', selectedColorIndex + 1);
+            int selectedColorIndex = GetSelectedColorIndex();
+            TabRecord tabRecord = colorTabs[selectedColorIndex];
+            tabRecord.label =
+                $"<color=#{ColorUtility.ToHtmlStringRGB(newColor)}>{'█'}{'█'}</color> Color {selectedColorIndex + 1}";
         }
 
         private bool Guard_BadInstance()
         {
-            var thingWithComps = target;
+            ThingWithComps thingWithComps = target;
 
-            if (thingWithComps == null || target.Destroyed)
-            {
-                Core.Error("Bad item/clothes instance, closing window.");
-                Close();
-                return true;
-            }
-            return false;
+            if (thingWithComps != null && !target.Destroyed)
+                return false;
+            
+            GW4KLog.Error("[Guard_BadInstance] Bad item/clothes instance, closing window.");
+            Close();
+            return true;
         }
 
         public override void DoWindowContents(Rect inRect)
         {
-            if (Guard_BadInstance()) return;
-
+            if (Guard_BadInstance()) 
+                return;
+            
             //Layout
-            var leftPart = inRect.LeftPartPixels(256);
-            var rightPart = inRect.RightPartPixels(colorsWidthPx); //;384
-            var center = new Rect(leftPart.xMax, leftPart.y, rightPart.x - leftPart.xMax, leftPart.height);
-
+            Rect leftPart = inRect.LeftPartPixels(256);
+            Rect rightPart = inRect.RightPartPixels(colorsWidthPx); //384
+            Rect center = new(leftPart.xMax, leftPart.y, rightPart.x - leftPart.xMax, leftPart.height);
+            
             //
             ItemPreview(center);
-
+            
             //Pattern selection
             DrawPatternSelection(leftPart);
-
+            
             //Color Group
-            var pixels = TabDrawer.TabHeight + 210 + 30 + 10;//_dynamicRectColorPicker ?? 384;
-            var colorPickerRect = rightPart.TopPartPixels(pixels).Rounded();
-            var paletteRect = rightPart.BottomPartPixels((rightPart.height - pixels) - 10).Rounded();
-
+            float pixels = TabDrawer.TabHeight + 210 + 30 + 10; //_dynamicRectColorPicker ?? 384;
+            Rect colorPickerRect = rightPart.TopPartPixels(pixels).Rounded();
+            Rect paletteRect = rightPart.BottomPartPixels((rightPart.height - pixels) - 10).Rounded();
+            
             TriColorPicker(colorPickerRect);
             PaletteSelection(paletteRect);
         }
@@ -205,29 +206,31 @@ namespace GW4KArmor.UI
         private void DrawPatternSelection(Rect inRect)
         {
             Widgets.DrawMenuSection(inRect);
-            DrawTitle(inRect, "Pattern Selection", out var topRect);
+            DrawTitle(inRect, "Pattern Selection", out Rect topRect);
 
             const int selectionsPerRow = 2;
             const int spacing = 5;
             inRect = new Rect(topRect.xMin, topRect.yMax, topRect.width, inRect.height - topRect.height);
-            var selectionBoxSize = Mathf.RoundToInt((inRect.width - ((selectionsPerRow + 1) * spacing)) / selectionsPerRow);
-            var viewRect = new Rect(inRect.x, inRect.y, inRect.width - 20f, lastMaskHeight);
+            int selectionBoxSize = Mathf.RoundToInt((inRect.width - ((selectionsPerRow + 1) * spacing)) / selectionsPerRow);
+            Rect viewRect = new(inRect.x, inRect.y, inRect.width - 20f, lastMaskHeight);
             lastMaskHeight = 0;
 
             Widgets.BeginScrollView(inRect, ref ScrollRects.Get("Masks"), viewRect, true);
-            var previewMainTexture = GetPreviewMainTexture(Rot4.South);
+            Texture2D previewMainTexture = GetPreviewMainTexture(Rot4.South);
 
-            var num2 = 0f;
-            var curIndex = -1;
+            float num2 = 0f;
+            int curIndex = -1;
             int gridX, gridY = 0;
-            foreach (var value in EnumerateMaskTextures)
+            
+            foreach (Texture2D value in EnumerateMaskTextures)
             {
                 curIndex++;
                 gridX = curIndex % selectionsPerRow;
                 gridY = curIndex / selectionsPerRow;
-                var x = gridX * selectionBoxSize + (spacing * (gridX + 1));
-                var y = gridY * selectionBoxSize + (spacing * (gridY + 1)); ;
-                var rect2 = new Rect(inRect.x + x, inRect.y + y, selectionBoxSize, selectionBoxSize);
+                int x = gridX * selectionBoxSize + (spacing * (gridX + 1));
+                int y = gridY * selectionBoxSize + (spacing * (gridY + 1)); ;
+                Rect rect2 = new Rect(inRect.x + x, inRect.y + y, selectionBoxSize, selectionBoxSize);
+                
                 if (curIndex == previewMaskIndex)
                 {
                     GUI.color = Color.yellow;
@@ -235,17 +238,22 @@ namespace GW4KArmor.UI
                     GUI.color = Color.white;
                 }
 
+                // the actual custom shader they originally had??...
                 Material material = MaterialPool.Get();
                 tempMaterials.Add(material);
                 material.SetColor("_Color", colors[0]);
                 material.SetColor("_ColorTwo", colors[1]);
                 material.SetColor("_ColorThree", colors[2]);
                 material.SetTexture("_MaskTex", value);
+                
                 GUI.BeginClip(rect2);
                 {
-                    Graphics.DrawTexture(rect2.AtZero(), previewMainTexture, new Rect(0f, 0f, 1f, 1f), 0, 0, 0, 0, material);
+                    Graphics.DrawTexture(rect2.AtZero(), previewMainTexture, 
+                        new Rect(0f, 0f, 1f, 1f),
+                        0, 0, 0, 0, material);
                 }
                 GUI.EndClip();
+                
                 if (Mouse.IsOver(rect2))
                 {
                     GUI.color = Color.white * 0.7f;
@@ -254,10 +262,14 @@ namespace GW4KArmor.UI
                 }
 
                 if (Widgets.ButtonInvisible(rect2))
+                {
                     previewMaskIndex = curIndex;
+                }
 
                 if (y + 100f > num2)
+                {
                     num2 = y + 100f;
+                }
             }
 
             lastMaskHeight = gridY * selectionBoxSize + (spacing * (gridY + 1)) + selectionBoxSize;
@@ -266,8 +278,8 @@ namespace GW4KArmor.UI
 
         private void TriColorPicker(Rect inRect)
         {
-            var tabRect = inRect.TopPartPixels(TabDrawer.TabHeight);
-            var pickerRect = inRect.BottomPartPixels(inRect.height - TabDrawer.TabHeight);
+            Rect tabRect = inRect.TopPartPixels(TabDrawer.TabHeight);
+            Rect pickerRect = inRect.BottomPartPixels(inRect.height - TabDrawer.TabHeight);
             tabRect.y = tabRect.yMax;
 
             Widgets.DrawMenuSection(pickerRect);
@@ -281,10 +293,10 @@ namespace GW4KArmor.UI
             Widgets.DrawMenuSection(inRect);
 
             //Title
-            DrawTitle(inRect, "Palette Selection", out var topRect, false);
+            DrawTitle(inRect, "Palette Selection", out Rect topRect, false);
             //Rect tabRect = new Rect(topRect.x, topRect.yMax+topRect.height, topRect.width, 5);
-            var scrollRect = new Rect(topRect.x, topRect.yMax, topRect.width, inRect.height - topRect.height).ContractedBy(5);//.BottomPartPixels(inRect.yMax - tabRect.y+5).ContractedBy(5);
-
+            Rect scrollRect = new Rect(topRect.x, topRect.yMax, topRect.width, inRect.height - topRect.height).ContractedBy(5); //.BottomPartPixels(inRect.yMax - tabRect.y+5).ContractedBy(5);
+            
             // TabDrawer.DrawTabs(tabRect, _paletteTabs);
             //       
             // switch (_paletteTab)
@@ -296,10 +308,10 @@ namespace GW4KArmor.UI
             // 		break;
             // }
 
-            var palettes = CurrentPalettes.ToList();
+            List<Palette> palettes = CurrentPalettes.ToList();
             DrawPaletteGroup(scrollRect, palettes);
         }
-
+        
         private void DrawPaletteGroup(Rect inRect, IReadOnlyList<Palette> palettes)
         {
             //Guide-Lines
@@ -310,8 +322,8 @@ namespace GW4KArmor.UI
             Widgets.DrawLineHorizontal(inRect.x - 5, inRect.yMax, inRect.width + 10);
             GUI.color = Color.white;
 
-            var rowOptionHeight = inRect.height / 6;
-            var scrollableRect = new Rect(inRect.position, new Vector2(inRect.width, palettes.Count * rowOptionHeight));
+            float rowOptionHeight = inRect.height / 6;
+            Rect scrollableRect = new(inRect.position, new Vector2(inRect.width, palettes.Count * rowOptionHeight));
 
             //Scroll
             Widgets.BeginGroup(inRect);
@@ -322,54 +334,58 @@ namespace GW4KArmor.UI
 
             for (int i = 0; i < palettes.Count; i++)
             {
-                var rect = new Rect(inRect.x, inRect.y + (i * rowOptionHeight), inRect.width, rowOptionHeight);
+                Rect rect = new(inRect.x, inRect.y + (i * rowOptionHeight), inRect.width, rowOptionHeight);
                 DrawPaletteRow(rect, i, palettes[i], scrollableRect);
             }
 
             Widgets.EndScrollView();
             Widgets.EndGroup();
         }
-
+        
         private void DrawPaletteRow(Rect rect, int i, Palette palette, Rect containingRect)
         {
             Text.Font = GameFont.Small;
-            var size = Text.CalcSize(palette.name);
-            var titleRect = rect.TopPartPixels(size.y);
+            Vector2 size = Text.CalcSize(palette.name);
+            Rect titleRect = rect.TopPartPixels(size.y);
             titleRect.x += 5;
 
-            var paletteRect = rect.BottomPartPixels(rect.height - size.y).ContractedBy(5).Rounded();
-            var iconRect = paletteRect.LeftPartPixels(paletteRect.height).Rounded();
-            var paletteDataRect = paletteRect.RightPartPixels(paletteRect.width - iconRect.width - 10).Rounded();
-            var labelsRect = paletteDataRect.TopHalf().Rounded();
-            var colorsRect = paletteDataRect.BottomHalf().Rounded();
+            Rect paletteRect = rect.BottomPartPixels(rect.height - size.y).ContractedBy(5).Rounded();
+            Rect iconRect = paletteRect.LeftPartPixels(paletteRect.height).Rounded();
+            Rect paletteDataRect = paletteRect.RightPartPixels(paletteRect.width - iconRect.width - 10).Rounded();
+            Rect labelsRect = paletteDataRect.TopHalf().Rounded();
+            Rect colorsRect = paletteDataRect.BottomHalf().Rounded();
 
             Widgets.DrawHighlightIfMouseover(rect);
+            
             if (i % 2 == 0)
+            {
                 Widgets.DrawHighlight(rect);
+            }
+
             Widgets.Label(titleRect, palette.name);
 
             //Show colored texture
             Widgets.DrawHighlight(iconRect);
 
             //MainTex
-            var previewMainTexture = GetPreviewMainTexture(Rot4.South);
+            Texture2D previewMainTexture = GetPreviewMainTexture(Rot4.South);
 
             //MaskTex
-            var masks = comp.Masks;
-            var textureID = default(TextureID);
+            MaskTextureStorage masks = comp.Masks;
+            TextureID textureID = default;
             textureID.BodyType = NeedsBodyType() ? BodyTypeDefOf.Male : null;
             textureID.Index = previewMaskIndex;
             textureID.Rotation = Rot4.South.AsByte;
-            var maskTex = masks.GetTexture(textureID);
+            Texture2D maskTex = masks.GetTexture(textureID);
 
-            var material = MaterialPool.StaticMask;
+            Material material = MaterialPool.StaticMask;
             material.SetColor("_Color", palette.colorA);
             material.SetColor("_ColorTwo", palette.colorB);
             material.SetColor("_ColorThree", palette.colorC);
             material.SetTexture("_MaskTex", maskTex);
 
             Widgets.BeginGroup(iconRect);
-            var iconRect2 = iconRect.AtZero().ExpandedBy(16).Rounded();
+            Rect iconRect2 = iconRect.AtZero().ExpandedBy(16).Rounded();
             Graphics.DrawTexture(iconRect2, previewMainTexture, material);
             Widgets.EndGroup();
 
@@ -379,9 +395,9 @@ namespace GW4KArmor.UI
             }
 
             //Widgets.DrawTextureFitted();
-            var colorARect = paletteDataRect.LeftPartPixels(100);
-            var colorBRect = paletteDataRect.LeftPartPixels(200).RightPartPixels(100);
-            var colorCRect = paletteDataRect.LeftPartPixels(300).RightPartPixels(100);
+            Rect colorARect = paletteDataRect.LeftPartPixels(100);
+            Rect colorBRect = paletteDataRect.LeftPartPixels(200).RightPartPixels(100);
+            Rect colorCRect = paletteDataRect.LeftPartPixels(300).RightPartPixels(100);
 
             GUI.color = Color.white;
             Text.Font = GameFont.Tiny;
@@ -401,7 +417,7 @@ namespace GW4KArmor.UI
         private static void DrawTitle(Rect inRect, string title, out Rect topRect, bool addDivider = true)
         {
             topRect = inRect.TopPartPixels(30);
-            var titleRect = topRect;
+            Rect titleRect = topRect;
             titleRect.x += 5;
 
             Text.Font = GameFont.Medium;
@@ -493,38 +509,39 @@ namespace GW4KArmor.UI
         public override void PostClose()
         {
             base.PostClose();
-            if (materialInstance != null)
-            {
-                Object.Destroy(materialInstance);
-                materialInstance = null;
-            }
+            
+            if (materialInstance == null) 
+                return;
+            
+            Object.Destroy(materialInstance);
+            materialInstance = null;
         }
 
         private void DrawPart(Rect rect, in Action<Rect> drawAction)
         {
-            var obj = rect.ExpandedBy(-8f, -8f);
+            Rect obj = rect.ExpandedBy(-8f, -8f);
             drawAction(obj);
         }
 
         private bool NeedsBodyType()
         {
-            var apparel = target as Apparel;
-            var flag = apparel == null;
+            Apparel apparel = target as Apparel;
+            bool flag = apparel == null;
             bool result;
+            
             if (flag)
             {
                 result = false;
             }
             else
             {
-                var flag2 = apparel.def.apparel.LastLayer == ApparelLayerDefOf.Overhead ||
-                            apparel.def.apparel.LastLayer == ApparelLayerDefOf.EyeCover ||
-                            apparel.RenderAsPack() ||
-                            apparel.WornGraphicPath == BaseContent.PlaceholderImagePath ||
-                            apparel.WornGraphicPath == BaseContent.PlaceholderGearImagePath;
+                bool flag2 = apparel.def.apparel.LastLayer == ApparelLayerDefOf.Overhead ||
+                             apparel.def.apparel.LastLayer == ApparelLayerDefOf.EyeCover ||
+                             apparel.RenderAsPack() ||
+                             apparel.WornGraphicPath == BaseContent.PlaceholderImagePath ||
+                             apparel.WornGraphicPath == BaseContent.PlaceholderGearImagePath;
                 result = !flag2;
             }
-
             return result;
         }
 
@@ -541,36 +558,41 @@ namespace GW4KArmor.UI
             }
 
             rect.yMin += 40f;
-            var num = Mathf.Min(rect.width, rect.height);
-            var rect2 = new Rect(0f, rect.y + 60f, num - 120f, num - 120f).CenteredOnXIn(rect);
-            var triColorMaskComp = comp;
+            float num = Mathf.Min(rect.width, rect.height);
+            Rect rect2 = new Rect(0f, rect.y + 60f, num - 120f, num - 120f).CenteredOnXIn(rect);
+            Comp_TriColorMask triColorMaskComp = comp;
+            
             if (triColorMaskComp == null || materialInstance == null)
             {
                 return;
             }
 
-            var masks = triColorMaskComp.Masks;
-            var textureID = default(TextureID);
+            MaskTextureStorage masks = triColorMaskComp.Masks;
+            TextureID textureID = default(TextureID);
             textureID.BodyType = NeedsBodyType() ? BodyTypeDefOf.Male : null;
             textureID.Index = previewMaskIndex;
             textureID.Rotation = (byte)(NeedsRotation() ? (byte)previewRotation : 4);
-            var texture2D = masks.GetTexture(textureID);
+            Texture2D texture2D = masks.GetTexture(textureID);
 
-            var previewMainTexture = GetPreviewMainTexture();
-            var sourceRect = previewRotation == 1 ? new Rect(1f, 0f, -1f, 1f) : new Rect(0f, 0f, 1f, 1f);
+            Texture2D previewMainTexture = GetPreviewMainTexture();
+            Rect sourceRect = previewRotation == 1 
+                ? new Rect(1f, 0f, -1f, 1f) 
+                : new Rect(0f, 0f, 1f, 1f);
             materialInstance.SetColor("_Color", colors[0]);
             materialInstance.SetColor("_ColorTwo", colors[1]);
             materialInstance.SetColor("_ColorThree", colors[2]);
             materialInstance.SetTexture("_MaskTex", texture2D);
             Widgets.BeginGroup(rect2);
-            Graphics.DrawTexture(new Rect(0f, 0f, rect2.width, rect2.height), previewMainTexture, sourceRect, 0, 0, 0, 0, materialInstance);
+            Graphics.DrawTexture(new Rect(0f, 0f, rect2.width, rect2.height), 
+                previewMainTexture, sourceRect, 0, 0, 0, 0, materialInstance);
             Widgets.EndGroup();
 
-            var rect3 = rect2.LeftPartPixels(50f);
+            Rect rect3 = rect2.LeftPartPixels(50f);
             rect3.x -= 55f;
-            var rect4 = rect2.RightPartPixels(50f);
+            Rect rect4 = rect2.RightPartPixels(50f);
             rect4.x += 55f;
-            var flag = NeedsRotation();
+            bool flag = NeedsRotation();
+            
             if (flag)
             {
                 Widgets.DrawHighlightIfMouseover(rect3);
@@ -581,11 +603,15 @@ namespace GW4KArmor.UI
 
                 if (Widgets.ButtonInvisible(rect3))
                 {
-                    var num2 = previewRotation - 1;
+                    int num2 = previewRotation - 1;
                     previewRotation = num2;
                     previewRotation = num2 % 4;
-                    var flag3 = previewRotation < 0;
-                    if (flag3) previewRotation += 4;
+                    bool flag3 = previewRotation < 0;
+                    
+                    if (flag3)
+                    {
+                        previewRotation += 4;
+                    }
                 }
 
                 Widgets.DrawHighlightIfMouseover(rect4);
@@ -596,7 +622,7 @@ namespace GW4KArmor.UI
 
                 if (Widgets.ButtonInvisible(rect4))
                 {
-                    var num2 = previewRotation + 1;
+                    int num2 = previewRotation + 1;
                     previewRotation = num2;
                     previewRotation = num2 % 4;
                 }
@@ -609,25 +635,31 @@ namespace GW4KArmor.UI
 
         private Texture2D GetPreviewMainTexture(Rot4? overrideRot = null)
         {
-            var apparel = target as Apparel;
-            var flag = apparel != null;
+            Apparel apparel = target as Apparel;
+            bool flag = apparel != null;
             Texture2D result;
+            
             if (flag)
             {
                 ApparelGraphicRecord apparelGraphicRecord;
-                var flag2 =
-                    !ApparelGraphicRecordGetter.TryGetGraphicApparel(apparel, BodyTypeDefOf.Male, out apparelGraphicRecord);
+                bool flag2 =
+                    !ApparelGraphicRecordGetter
+                        .TryGetGraphicApparel(apparel, BodyTypeDefOf.Male, out apparelGraphicRecord);
+                
                 if (flag2)
+                {
                     result = null;
+                }
                 else
+                {
                     result = apparelGraphicRecord.graphic.MatAt(overrideRot ?? new Rot4(previewRotation), target)
                         .mainTexture as Texture2D;
+                }
             }
             else
             {
                 result = target.Graphic.MatSingle.mainTexture as Texture2D;
             }
-
             return result;
         }
 
@@ -636,14 +668,15 @@ namespace GW4KArmor.UI
             get
             {
                 int num;
-                for (var i = 0; i < comp.Props.maskCount; i = num + 1)
+                for (int i = 0; i < comp.Props.maskCount; i = num + 1)
                 {
-                    var masks = comp.Masks;
-                    var textureID = default(TextureID);
+                    MaskTextureStorage masks = comp.Masks;
+                    TextureID textureID = default;
                     textureID.BodyType = NeedsBodyType() ? BodyTypeDefOf.Male : null;
                     textureID.Index = i;
                     textureID.Rotation = (byte)(NeedsRotation() ? Rot4.South.AsByte : 4);
-                    var mask = masks.GetTexture(textureID);
+                    Texture2D mask = masks.GetTexture(textureID);
+                    
                     yield return
                         mask ? mask : BaseContent.BadTex;
                     num = i;
@@ -660,21 +693,24 @@ namespace GW4KArmor.UI
             }
 
             rect.yMin += 40f;
-            var num = (int)Mathf.Max(1f, (int)rect.width / 120f);
+            int num = (int)Mathf.Max(1f, (int)rect.width / 120f);
             Widgets.DrawWindowBackground(rect);
-            Widgets.BeginScrollView(rect.ExpandedBy(-2f, -8f), ref ScrollRects.Get("Masks"), new Rect(0f, 0f, rect.width - 20f, lastMaskHeight), true);
-            var previewMainTexture = GetPreviewMainTexture(Rot4.South);
-            var num2 = 0f;
-            var num3 = rect.width - 20f - (num * 120f - 20f);
-            var num4 = -1;
-            foreach (var value in EnumerateMaskTextures)
+            Widgets.BeginScrollView(rect.ExpandedBy(-2f, -8f), ref ScrollRects.Get("Masks"), 
+                new Rect(0f, 0f, rect.width - 20f, lastMaskHeight), true);
+            Texture2D previewMainTexture = GetPreviewMainTexture(Rot4.South);
+            float num2 = 0f;
+            float num3 = rect.width - 20f - (num * 120f - 20f);
+            int num4 = -1;
+            
+            foreach (Texture2D value in EnumerateMaskTextures)
             {
                 num4++;
-                var num5 = num4 % num;
-                var num6 = num4 / num;
-                var x = num3 * 0.5f + num5 * 120f;
-                var num7 = num6 * 120f + 20f;
-                var rect2 = new Rect(x, num7, 100f, 100f);
+                int num5 = num4 % num;
+                int num6 = num4 / num;
+                float x = num3 * 0.5f + num5 * 120f;
+                float num7 = num6 * 120f + 20f;
+                Rect rect2 = new(x, num7, 100f, 100f);
+                
                 if (num4 == previewMaskIndex)
                 {
                     GUI.color = Color.yellow;
@@ -694,6 +730,7 @@ namespace GW4KArmor.UI
                         new Rect(0f, 0f, 1f, 1f), 0, 0, 0, 0, material);
                 }
                 GUI.EndGroup();
+                
                 if (Mouse.IsOver(rect2))
                 {
                     GUI.color = Color.white * 0.7f;
@@ -702,14 +739,20 @@ namespace GW4KArmor.UI
                 }
 
                 if (Widgets.ButtonInvisible(rect2))
+                {
                     previewMaskIndex = num4;
+                }
 
                 if (num7 + 100f > num2)
+                {
                     num2 = num7 + 100f;
+                }
             }
-
-            foreach (var mat in tempMaterials)
+            
+            foreach (Material mat in tempMaterials)
+            {
                 MaterialPool.Return(mat);
+            }
 
             tempMaterials.Clear();
             Widgets.EndScrollView();
@@ -718,11 +761,11 @@ namespace GW4KArmor.UI
 
         private void DrawMainButtons(Rect rect)
         {
-            var font = Text.Font;
+            GameFont font = Text.Font;
             Text.Font = GameFont.Small;
 
-            var rect2 = rect.LeftHalf().ExpandedBy(-5f);
-            var rect3 = rect.RightHalf().ExpandedBy(-5f);
+            Rect rect2 = rect.LeftHalf().ExpandedBy(-5f);
+            Rect rect3 = rect.RightHalf().ExpandedBy(-5f);
             if (Widgets.ButtonText(rect2, "Save"))
             {
                 comp.MaskIndex = previewMaskIndex;
@@ -748,11 +791,13 @@ namespace GW4KArmor.UI
             {
                 if (comp.Props.palettePresets != null)
                 {
-                    foreach (var p in comp.Props.palettePresets.palettes)
+                    foreach (Palette p in comp.Props.palettePresets.palettes)
+                    {
                         yield return p;
+                    }
                 }
 
-                foreach (var p2 in PaletteStorage.Current.Palettes)
+                foreach (Palette p2 in PaletteStorage.Current.Palettes)
                 {
                     yield return p2;
                 }
@@ -769,48 +814,58 @@ namespace GW4KArmor.UI
             rect.yMin += 40f;
             Widgets.DrawLineHorizontal(rect.x, rect.y, rect.width);
             rect.yMin += 10f;
-            var num = 0f;
+            float num = 0f;
             Widgets.BeginScrollView(rect, ref ScrollRects.Get("Palette"),
                 new Rect(0f, 0f, rect.width - 20f, lastPaletteHeight), true);
             Palette toDelete = null;
-            foreach (var palette in CurrentPalettes)
+            
+            foreach (Palette palette in CurrentPalettes)
             {
-                var num2 = 40f;
-                var rect2 = new Rect(0f, num, rect.width - 20f, num2);
-                var flag = palette.Draw(rect2, ref num2, delegate { toDelete = palette; });
+                float num2 = 40f;
+                Rect rect2 = new Rect(0f, num, rect.width - 20f, num2);
+                bool flag = palette.Draw(rect2, ref num2, delegate { toDelete = palette; });
+                
                 if (flag)
+                {
                     EnablePalette(palette);
+                }
                 num += num2 + 20f;
             }
 
             Widgets.EndScrollView();
             lastPaletteHeight = num;
+            
             if (toDelete != null)
+            {
                 PaletteStorage.Current.Palettes.Remove(toDelete);
+            }
         }
 
-        public void EnablePalette(Palette p)
+        private void EnablePalette(Palette p)
         {
             Apply(new[]
             {
-            p.colorA,
-            p.colorB,
-            p.colorC
-        }, previewMaskIndex);
+                p.colorA,
+                p.colorB,
+                p.colorC
+            }, 
+                previewMaskIndex);
             paletteName = p.name;
         }
 
         private void TrySavePalette()
         {
             paletteName = paletteName.Trim();
-            var flag = !string.IsNullOrWhiteSpace(paletteName);
-            var palette = PaletteStorage.Current.Palettes.FirstOrDefault((Palette p) => p.name == paletteName);
+            bool flag = !string.IsNullOrWhiteSpace(paletteName);
+            Palette palette = PaletteStorage.Current.Palettes.FirstOrDefault((Palette p) => p.name == paletteName);
+           
             if (flag)
             {
-                var flag3 = palette == null;
+                bool flag3 = palette == null;
+                
                 if (flag3)
                 {
-                    var item = new Palette
+                    Palette item = new Palette
                     {
                         name = paletteName,
                         colorA = colors[0],
