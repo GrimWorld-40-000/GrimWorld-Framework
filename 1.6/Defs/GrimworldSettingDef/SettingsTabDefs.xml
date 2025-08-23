@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<!---->
+	<GW_Frame.Settings.SettingsTabDef>
+		<defName>WeaponTagSettings</defName>
+		<label>Weapon tags</label>
+		<settingsTabClass>GW_Frame.Settings.SettingsTabRecord_WeaponTags</settingsTabClass>
+		<settingsRecordClass>GW_Frame.Settings.SettingsRecord_WeaponTags</settingsRecordClass>
+	</GW_Frame.Settings.SettingsTabDef>
+	<!---->
+</Defs>

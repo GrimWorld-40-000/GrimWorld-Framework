@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+    <GenStepDef>
+        <defName>GW_SupporterMonuments</defName>
+        <order>1601</order><!-- after fogged and exostrider (if using Biotech) -->
+        <genStep Class="GenStep_ScatterLayout">
+            <count>1</count>
+            <allowMechanoidDatacoreReadOrLost>false</allowMechanoidDatacoreReadOrLost>
+            <validators>
+                <li Class="ScattererValidator_Buildable">
+                    <radius>10</radius>
+                    <affordance>Light</affordance>
+                </li>
+            </validators>
+            <allowRoofed>false</allowRoofed>
+            <minEdgeDistPct>0.166667</minEdgeDistPct>
+            <minDistToPlayerStartPct>0.333</minDistToPlayerStartPct>
+            <allowFoggedPositions>false</allowFoggedPositions>
+            <onlyOnStartingMap>true</onlyOnStartingMap>
+            <layout>
+                <li>
+                    <thing>GW_FancyObelisk</thing>
+                </li>
+                <li>
+                    <thing>GW_OrdinaryObelisk</thing>
+                    <offset>(3, 0, 0)</offset>
+                </li>
+                <li>
+                    <thing>GW_OrdinaryObelisk</thing>
+                    <offset>(-3, 0, 0)</offset>
+                </li>
+                <li>
+                    <thing>GW_OrdinaryObelisk</thing>
+                    <offset>(0, 0, 3)</offset>
+                </li>
+                <li>
+                    <thing>GW_OrdinaryObelisk</thing>
+                    <offset>(0, 0, -3)</offset>
+                </li>
+            </layout>
+        </genStep>
+    </GenStepDef>
+
+    <ThingDef ParentName="NonDeconstructibleAncientBuildingBase" Name="GWSupporterMonumentBase" Abstract="True">
+		<building>
+			<deconstructible>true</deconstructible>
+			<claimable>true</claimable>
+		</building>
+        <rotatable>false</rotatable>
+        <graphicData>
+            <graphicClass>Graphic_Single</graphicClass>
+            <shadowData>
+                <volume>(1.1, 1, 1.1)</volume>
+                <offset>(-0.2,0,-0.2)</offset>
+            </shadowData>
+        </graphicData>
+        <fillPercent>0.5</fillPercent>
+        <passability>PassThroughOnly</passability>
+        <pathCost>50</pathCost>
+        <statBases>
+            <MaxHitPoints>1500</MaxHitPoints>
+        </statBases>
+        <killedLeavings />
+    </ThingDef>
+
+    <ThingDef ParentName="GWSupporterMonumentBase">
+        <defName>GW_FancyObelisk</defName>
+        <label>supporter monument center</label>
+        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Astartes tier:\n\nRainyredman1234, Bailey English, Varps, Johnathon Nelson, Pappi Rabbi, Vali\n\n  Primarch tier:\n\nFulgrim, R.CSN, kyle shadowchain, Echo2222, Corvus\n\n  Emperor of Mankind tier:\n\nRisqué Che, Ahlpheiss, Seth Rainey</description>
+        <graphicData>
+            <texPath>Things/Building/Obelisks/Obelisk_Fancy</texPath>
+            <drawSize>(5,5)</drawSize>
+            <drawOffset>(0,0,0.5)</drawOffset>
+        </graphicData>
+        <size>(4,4)</size>
+		<minifiedDef>MinifiedThing</minifiedDef>
+	     <thingCategories>
+          <li>BuildingsFurniture</li>
+         </thingCategories>
+         <statBases>
+          <Mass>20</Mass>
+         </statBases>
+    </ThingDef>
+
+    <ThingDef ParentName="GWSupporterMonumentBase">
+        <defName>GW_OrdinaryObelisk</defName>
+        <label>supporter's monument</label>
+        <description>A monument to those who helped make the GrimWorld project a reality.\n\n  Servitor tier:\n\nAKorgar, Hell Fire, Sparrow, just a guy named brad, Adam rameriez, Akim Goddard, Akuma, Astral, Austin Foote, Beau Cannon, Big chief, Biz, Brody Cherry, Cajetan, Cameron Hunt, Cayleb, Chin 5chin, Cringe Boy, Dust_Man, Edward, FreeManzForLife, Ghostemp, Gilded Wraith, Haerang, Harry pascoe, Hoff Man, Hofi, John Gibon, Junhyuk Lee, Kingbruh, LittleBitOfPud, Lordathand, Matthew H, Nicholas Swaminathan, Oscar Melgar, PiePiePie, Rhinous, Ruben Jannes, Shot Bullet, Steven Pretswell, surpotato, Three Dollar Bill, Zdeněk Vrtal, ZedA, Zhilsir, Zii, Zymire Seaborn, Edward Gray, Christos Samaltanos, Metasage, F4ceRi9, Maximilian Neun, Bellatus, титан, M2f, Arthur Godinho, Eryk Złomańczuk, Alpharius Omegon, Valentin Fournier, 겜백수, Pixelidon, Scott Petersen, CMZero, Ibai, Dylan Drolette, Matt Mccall, Daedalus, CykaUka, Ondřej Kubata, Javg, steven kovacs, Ioan nis, KingBR, kako, Tomáš Křen, Nick, jean, Ashe, Yami, Malachi, Cayleb, Akim Goddard, big chief, ZedA, Cringe Boy, Rhinous, PiePiePie, BitBoar, Zii, Edward, Nicholas Swaminathan, Ghostemp, Chin7447, Biz, FreeManzForLife, Dust_Man, Junhyuk Lee, Akuma, Adam rameriez, Hofi, Christian Stavnshöj, Cameron Hunt, Zdeněk Vrtal, John Mclane, Shot Bullet, Ruben Jannes, Hoff Man, Harry pascoe, Matthew H, Douglas wiltz, Lordathand, Cajetan, Beau Cannon, Steven Pretswell, Austin Foote, Zymire Seaborn, LittleBitOfPud, just a guy named brad\n\n  Guardsmen tier:\n\nJózef Kozioł, MisterCroxo48, Christian Stavnshöj, Daluca, Liadryn, MisterCroxo48, Pascal, rui, Thera_SPQR, Zany GrosmaGrant, Edgar, Mocker, Lightripper, Michael Zielenski, Eternal Maximus, Caecaltus Dusk, jason, SKG OCL, JimJams, tinker, Solgriev, Josh, Fett Erich, Pascal, surpotato, Zany Grosma, Thera_SPQR, Liadryn, Martin Polli, Sokrates\n\n  Stormtrooper tier:\n\n♠_Caligula_♠, Benio, Alloyskull, Vylixan, Gofres, Celorico, Risque, Madgile, Andrew Witherspoon, Andy Chen, Cool Man, Deathmarine, Erde, Eric Lott, Fancypants4000, Gofres, Freen Skies, Gregg Quibal, Issac Christie, Jason Dean, joe sy, John Smith, Joshua Smith, Kákóczki Levente, LeyZee, lucas kamisnky, Luke Bainbridge, Madgile, Matthew Rotejo, Mitch Collins, neonoxia, Plink the Necrobird, PrimoStream, Ravenous 21, Retro72, Roger B, satkill08, Schmiddy, Sophia Orr, spade, Toasty Cosmonaut, Visaud S, Xestril, Witzzard, Omnipeasant, Jason Dean, Andrew Witherspoon, Plink the Necrobird, John Smith, Matthew Rotejo, satkill08, Fancypants4000, Erde, Mitch Collins, _♣Caligula♣_, nomotog, Egg, Isaac Christie, Luke Bainbridge, PrimoStream, Roger B, bob 2, Bunn, Mikkel Cameron, el putas, Xeno, Charles Edrington, Kyle Soden, kaiser squire, Freedom, DerTeC, Ossuarius, Jelle Reynders, Mighty O' Chondria, Josh Corcino, Eric Lott, Sophia Orr, Schmiddy, Ravenous 21, Xestril, Hektor, Tatwen, Mantzi Mada, Retro72, TacticalCrumpet, Joshua Smith, Bienio ,Alloyskull, Vylixan, Gofres, Celorico, Madgile \n\n Neophyte tier:\n\nTacticalCrumpet, Petrie, JawnWick, Marco, Primarch Vulkan, kev G, CommodoreHood, Lucas Brüsemeister, feelold reallyold, Petrie, Lenin's Cat, kyle shadowchain</description>
+        <graphicData>
+            <texPath>Things/Building/Obelisks/Obelisk_Ordinary</texPath>
+            <drawSize>(3,3)</drawSize>
+        </graphicData>
+        <size>(2,2)</size>
+		<minifiedDef>MinifiedThing</minifiedDef>
+         <thingCategories>
+          <li>BuildingsFurniture</li>
+         </thingCategories>
+         <statBases>
+          <Mass>20</Mass>
+         </statBases>
+    </ThingDef>
+
+</Defs>

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <!-- <ScenPartDef Name="eridanus_quests.ScenPart_PlayerParentFaction"> -->
+    <!-- <defName>PlayerParentFaction</defName> -->
+    <!-- <label>Player parent faction</label> -->
+    <!-- <category>StartingImportant</category> -->
+    <!-- <scenPartClass>eridanus_quests.ScenPart_PlayerParentFaction</scenPartClass> -->
+    <!-- <summaryPriority>1000</summaryPriority> -->
+    <!-- <maxUses>1</maxUses> -->
+  <!-- </ScenPartDef> -->
+</Defs>
