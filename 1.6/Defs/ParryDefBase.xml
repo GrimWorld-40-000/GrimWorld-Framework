@@ -52,13 +52,6 @@
 			</li>
 		</stages>
 	</HediffDef>
-
-  <JobDef>
-    <defName>BM_EquipWeaponBuilding</defName>
-    <driverClass>BuildingEquipment.JobDriver_EquipWeaponBuilding</driverClass>
-    <reportString>Equipping TargetA.</reportString>
-    <allowOpportunisticPrefix>true</allowOpportunisticPrefix>
-  </JobDef>
 	
 	<!-- example shield with parry -->
 	<ThingDef Abstract="True">
