@@ -5,6 +5,10 @@ using Verse;
 
 namespace GW_Frame
 {
+    /// <summary>
+    /// You can already serialize Dictionaries with vanilla RW.........
+    /// there's no use for this... :sip:
+    /// </summary>
     public class ScribeDictionary<T, D> : IDictionary<T, D>, IExposable
     {
         public LookMode keyLookMode = LookMode.Value;

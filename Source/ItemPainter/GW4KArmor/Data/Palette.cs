@@ -46,7 +46,8 @@ namespace GW4KArmor.Data
         public bool Draw(Rect rect, ref float height, Action delete = null)
         {
             Rect rect2 = rect;
-            bool flag = this.name != null;
+            bool flag = name != null;
+            
             if (flag)
             {
                 height += 28f;
@@ -55,7 +56,7 @@ namespace GW4KArmor.Data
                 {
                     Rect rect3 = rect;
                     rect3.x = rect.x + 2f;
-                    Widgets.Label(rect3, this.name ?? "");
+                    Widgets.Label(rect3, name ?? "");
                     Rect rect4 = rect;
                     Color white = Color.white;
                     white.a = 0.1f;
@@ -72,6 +73,7 @@ namespace GW4KArmor.Data
             }
 
             float num = rect.width / 3f;
+            
             for (int i = 0; i < 3; i++)
             {
                 Color solidColor = GetColorForIndex(i);
@@ -85,7 +87,8 @@ namespace GW4KArmor.Data
             Widgets.DrawHighlightIfMouseover(rect);
             bool result = Widgets.ButtonInvisible(rect, true);
             bool flag2 = false;
-            bool flag3 = this.canBeDeleted;
+            bool flag3 = canBeDeleted;
+            
             if (flag3)
             {
                 GUI.color = new Color(1f, 0.7f, 0.7f, 1f);
@@ -93,13 +96,13 @@ namespace GW4KArmor.Data
                     "<color=white>DELETE</color>", true, true, true, null);
                 GUI.color = Color.white;
             }
-
+            
             bool flag4 = flag2 && delete != null;
+            
             if (flag4)
             {
                 delete();
             }
-
             return result;
         }
     }

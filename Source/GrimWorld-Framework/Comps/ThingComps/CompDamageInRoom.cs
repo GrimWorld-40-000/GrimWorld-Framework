@@ -29,26 +29,37 @@ namespace GW_Frame.Comps.ThingComps
 		private CompPowerTrader _powerComp;
 		
 		protected CompProperties_DamageInRoom Props => (CompProperties_DamageInRoom) props;
-
+		
 		public override void CompTick()
 		{
 			base.CompTick();
-			if (!parent.IsHashIntervalTick(Props.damageInterval)) return;
+			
+			if (!parent.IsHashIntervalTick(Props.damageInterval)) 
+				return;
+			
 			if (Props.mustBePowered)
 			{
-				if (!PowerComp.PowerOn) return;
+				if (!PowerComp.PowerOn) 
+					return;
 			}
 
 			if (Props.scaleByFuelPercentage)
 			{
-				if (FuelComp.FuelPercentOfMax < Props.minFuelPercentToDamage) return;
+				if (FuelComp.FuelPercentOfMax < Props.minFuelPercentToDamage) 
+					return;
 			}
 			
 			Room room = parent.GetRoom();
-			if (room is not {ProperRoom: true}) return;
-			foreach (Thing thing in room.ContainedAndAdjacentThings.Where(thing => thing.def.category == Props.damagedCategory).ToArray())
+			
+			if (room is not {ProperRoom: true}) 
+				return;
+			
+			foreach (Thing thing in room.ContainedAndAdjacentThings
+				         .Where(thing => thing.def.category == Props.damagedCategory)
+				         .ToArray())
 			{
-				thing.TakeDamage(new DamageInfo(Props.damageType, Props.damageDealt.RandomInRange * Scaling,
+				thing.TakeDamage(new DamageInfo(Props.damageType, 
+					Props.damageDealt.RandomInRange * Scaling,
 					instigator: parent));
 			}
 		}

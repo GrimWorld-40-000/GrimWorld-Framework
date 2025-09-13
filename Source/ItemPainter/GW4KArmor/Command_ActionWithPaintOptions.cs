@@ -7,12 +7,7 @@ namespace GW4KArmor
 {
     public class Command_ActionWithPaintOptions : Command_Action
     {
-        public Command_ActionWithPaintOptions()
-        {
-        }
-
         public static (Color[] colors, int maskIndex)? Clipboard { get; set; }
-
         public override IEnumerable<FloatMenuOption> RightClickFloatMenuOptions => this.GenerateOptions();
         public Comp_TriColorMask Comp { get; set; }
 
@@ -25,14 +20,15 @@ namespace GW4KArmor
                 });
             yield return new FloatMenuOption("Paste", delegate
             {
-                var flag = Clipboard == null;
-                if (!flag)
-                {
-                    Comp.MaskIndex = Mathf.Clamp(Clipboard.Value.maskIndex, 0,
-                        Comp.Props.maskCount - 1);
-                    Comp.Paste(Clipboard.Value.colors);
-                    Comp.MarkDirty();
-                }
+                bool flag = Clipboard == null;
+                
+                if (flag) 
+                    return;
+                
+                Comp.MaskIndex = Mathf.Clamp(Clipboard.Value.maskIndex, 0,
+                    Comp.Props.maskCount - 1);
+                Comp.Paste(Clipboard.Value.colors);
+                Comp.MarkDirty();
             })
             {
                 Disabled = Clipboard == null

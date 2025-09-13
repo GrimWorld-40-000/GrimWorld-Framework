@@ -11,10 +11,10 @@ namespace GW4KArmor.Data
 
         public string MakeTexturePath(string formatString)
         {
-            var text = BodyType == null ? null : "_" + BodyType.defName;
+            string text = BodyType == null ? null : "_" + BodyType.defName;
             return $"{formatString}{text}_mask{Index + 1}{GetRotationName(Rotation)}";
         }
-
+        
         public bool Equals(TextureID other)
         {
             return Equals(BodyType, other.BodyType) && Index == other.Index &&
@@ -24,9 +24,9 @@ namespace GW4KArmor.Data
         public override bool Equals(object obj)
         {
             bool result;
-            if (obj is TextureID)
+            
+            if (obj is TextureID other)
             {
-                var other = (TextureID)obj;
                 result = Equals(other);
             }
             else
@@ -38,7 +38,7 @@ namespace GW4KArmor.Data
 
         public override int GetHashCode()
         {
-            var num = BodyType != null ? BodyType.GetHashCode() : 0;
+            int num = BodyType != null ? BodyType.GetHashCode() : 0;
             num = (num * 397) ^ Index;
             return (num * 397) ^ Rotation.GetHashCode();
         }
@@ -64,11 +64,9 @@ namespace GW4KArmor.Data
                     result = "";
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("rotation", rotation.ToString());
+                    throw new ArgumentOutOfRangeException(nameof(rotation), rotation.ToString());
             }
-
             return result;
         }
-
     }
 }

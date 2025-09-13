@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using UnityEngine;
 using Verse;
 using Object = UnityEngine.Object;
@@ -29,7 +28,7 @@ namespace ColorPicker
         private Texture2D _previewAlphaBG;
 
         private Color _alphaBGColorA = Color.white;
-        private Color _alphaBGColorB = new Color(0.85f, 0.85f, 0.85f);
+        private Color _alphaBGColorB = new(0.85f, 0.85f, 0.85f);
 
         private readonly int _pickerSize = 200;
         private readonly int _sliderWidth = 15;
@@ -64,15 +63,15 @@ namespace ColorPicker
 
         private string _hex;
 
-        private RecentColors _recentColours = new RecentColors();
+        private RecentColors _recentColours = new();
 
         private Vector2 _position = Vector2.zero;
         private Action<Color> _callback;
         public Color curColour;
         private Color _tempColour;
         private Vector2? _initialPosition;
-
-        public string Hex
+        
+        private string Hex
         {
             get => "#" + ColorUtility.ToHtmlStringRGBA(TempColour);
             set
@@ -82,7 +81,7 @@ namespace ColorPicker
             }
         }
 
-        public Color TempColour
+        private Color TempColour
         {
             get => _tempColour;
             set
@@ -93,11 +92,11 @@ namespace ColorPicker
             }
         }
 
-        public Vector2 InitialPosition => _initialPosition ??
-                                          new Vector2(UI.screenWidth - InitialSize.x,
-                                              UI.screenHeight - this.InitialSize.y) / 2f;
+        private Vector2 InitialPosition => _initialPosition ??
+                                           new Vector2(UI.screenWidth - InitialSize.x,
+                                               UI.screenHeight - this.InitialSize.y) / 2f;
 
-        public float UnitsPerPixel
+        private float UnitsPerPixel
         {
             get
             {
@@ -106,7 +105,7 @@ namespace ColorPicker
             }
         }
 
-        public float H
+        private float H
         {
             get => _h;
             set
@@ -118,7 +117,7 @@ namespace ColorPicker
             }
         }
 
-        public float S
+        private float S
         {
             get => _s;
             set
@@ -129,7 +128,7 @@ namespace ColorPicker
             }
         }
 
-        public float V
+        private float V
         {
             get => _v;
             set
@@ -140,7 +139,7 @@ namespace ColorPicker
             }
         }
 
-        public float A
+        private float A
         {
             get => TempColour.a;
             set
@@ -188,7 +187,7 @@ namespace ColorPicker
             }
         }
 
-        public Texture2D ColourPickerBG
+        private Texture2D ColourPickerBG
         {
             get
             {
@@ -201,7 +200,7 @@ namespace ColorPicker
             }
         }
 
-        public Texture2D HuePickerBG
+        private Texture2D HuePickerBG
         {
             get
             {
@@ -214,7 +213,7 @@ namespace ColorPicker
             }
         }
 
-        public Texture2D AlphaPickerBG
+        private Texture2D AlphaPickerBG
         {
             get
             {
@@ -227,7 +226,7 @@ namespace ColorPicker
             }
         }
 
-        public Texture2D TempPreviewBG
+        private Texture2D TempPreviewBG
         {
             get
             {
@@ -240,7 +239,7 @@ namespace ColorPicker
             }
         }
 
-        public Texture2D PreviewBG
+        private Texture2D PreviewBG
         {
             get
             {
@@ -253,7 +252,7 @@ namespace ColorPicker
             }
         }
 
-        public Texture2D PickerAlphaBG
+        private Texture2D PickerAlphaBG
         {
             get
             {
@@ -266,7 +265,7 @@ namespace ColorPicker
             }
         }
 
-        public Texture2D SliderAlphaBG
+        private Texture2D SliderAlphaBG
         {
             get
             {
@@ -279,7 +278,7 @@ namespace ColorPicker
             }
         }
 
-        public Texture2D PreviewAlphaBG
+        private Texture2D PreviewAlphaBG
         {
             get
             {
@@ -293,12 +292,12 @@ namespace ColorPicker
         }
 
         public override Vector2 InitialSize =>
-            new Vector2(_pickerSize + 3f * _margin + 2 * _sliderWidth + 2 * _previewSize + 36f, _pickerSize + 36f);
+            new(_pickerSize + 3f * _margin + 2 * _sliderWidth + 2 * _previewSize + 36f, _pickerSize + 36f);
 
         public Dialog_ColorPicker(Color color, Action<Color> callback = null, Vector2? position = null)
         {
-            base.absorbInputAroundWindow = true;
-            base.closeOnClickedOutside = true;
+            absorbInputAroundWindow = true;
+            closeOnClickedOutside = true;
             _callback = callback;
             _initialPosition = position;
             curColour = color;
@@ -312,15 +311,16 @@ namespace ColorPicker
             BlueField = TextField<float>.Float01(color.r, "Blue", delegate (float b) { B = b; });
             Alpha2Field = TextField<float>.Float01(A, "Alpha2", delegate (float a) { A = a; });
             HexField = TextField<string>.Hex(Hex, "Hex", delegate (string hex) { Hex = hex; });
-            textFieldIds = new List<string>(new string[9] { "Hue", "Saturation", "Value", "Alpha1", "Red", "Green", "Blue", "Alpha2", "Hex" });
+            textFieldIds =
+                [..new string[9] { "Hue", "Saturation", "Value", "Alpha1", "Red", "Green", "Blue", "Alpha2", "Hex" }];
             NotifyRGBUpdated();
         }
 
-        public override void SetInitialSizeAndPosition()
+        protected override void SetInitialSizeAndPosition()
         {
-            var val = new Vector2(Mathf.Min(InitialSize.x, UI.screenWidth),
+            Vector2 val = new(Mathf.Min(InitialSize.x, UI.screenWidth),
                 Mathf.Min(InitialSize.y, UI.screenHeight - 35f));
-            var val2 = new Vector2(Mathf.Max(0f, Mathf.Min(InitialPosition.x, UI.screenWidth - val.x)),
+            Vector2 val2 = new(Mathf.Max(0f, Mathf.Min(InitialPosition.x, UI.screenWidth - val.x)),
                 Mathf.Max(0f, Mathf.Min(InitialPosition.y, UI.screenHeight - val.y)));
             windowRect = new Rect(val2.x, val2.y, val.x, val.y);
         }
@@ -333,22 +333,22 @@ namespace ColorPicker
 
         public override void DoWindowContents(Rect inRect)
         {
-            var val = new Rect(inRect.xMin, inRect.yMin, _pickerSize, _pickerSize);
-            var val2 = new Rect(val.xMax + _margin, inRect.yMin, _sliderWidth, _pickerSize);
-            var val3 = new Rect(val2.xMax + _margin, inRect.yMin, _sliderWidth, _pickerSize);
-            var val4 = new Rect(val3.xMax + _margin, inRect.yMin, _previewSize, _previewSize);
-            var val5 = new Rect(val4.xMax, inRect.yMin, _previewSize, _previewSize);
-            var val6 = new Rect(val3.xMax + _margin, inRect.yMax - _buttonHeight, _previewSize * 2, _buttonHeight);
-            var val7 = new Rect(val3.xMax + _margin, inRect.yMax - 2f * _buttonHeight - _margin,
+            Rect val = new(inRect.xMin, inRect.yMin, _pickerSize, _pickerSize);
+            Rect val2 = new(val.xMax + _margin, inRect.yMin, _sliderWidth, _pickerSize);
+            Rect val3 = new(val2.xMax + _margin, inRect.yMin, _sliderWidth, _pickerSize);
+            Rect val4 = new(val3.xMax + _margin, inRect.yMin, _previewSize, _previewSize);
+            Rect val5 = new(val4.xMax, inRect.yMin, _previewSize, _previewSize);
+            Rect val6 = new(val3.xMax + _margin, inRect.yMax - _buttonHeight, _previewSize * 2, _buttonHeight);
+            Rect val7 = new(val3.xMax + _margin, inRect.yMax - 2f * _buttonHeight - _margin,
                 _previewSize - _margin / 2f, _buttonHeight);
-            var val8 = new Rect(val7.xMax + _margin, val7.yMin, _previewSize - _margin / 2f, _buttonHeight);
-            var hsvFieldRect = new Rect(val3.xMax + _margin,
+            Rect val8 = new(val7.xMax + _margin, val7.yMin, _previewSize - _margin / 2f, _buttonHeight);
+            Rect hsvFieldRect = new(val3.xMax + _margin,
                 inRect.yMax - 2f * _buttonHeight - 3f * _fieldHeight - 4f * _margin, _previewSize * 2, _fieldHeight);
-            var rgbFieldRect = new Rect(val3.xMax + _margin,
+            Rect rgbFieldRect = new(val3.xMax + _margin,
                 inRect.yMax - 2f * _buttonHeight - 2f * _fieldHeight - 3f * _margin, _previewSize * 2, _fieldHeight);
-            var hexRect = new Rect(val3.xMax + _margin, inRect.yMax - 2f * _buttonHeight - _fieldHeight - 2f * _margin,
+            Rect hexRect = new(val3.xMax + _margin, inRect.yMax - 2f * _buttonHeight - _fieldHeight - 2f * _margin,
                 _previewSize * 2, _fieldHeight);
-            var val9 = new Rect(val4.xMin, val4.yMax + _margin, _previewSize * 2, _recentSize * 2);
+            Rect val9 = new(val4.xMin, val4.yMax + _margin, _previewSize * 2, _recentSize * 2);
 
             GUI.DrawTexture(val, PickerAlphaBG);
             GUI.DrawTexture(val3, SliderAlphaBG);
@@ -365,11 +365,11 @@ namespace ColorPicker
                 NotifyRGBUpdated();
             }
 
-            var val10 = new Rect(val2.xMin - 3f, val2.yMin + _huePosition - _handleSize / 2f, _sliderWidth + 6f,
+            Rect val10 = new(val2.xMin - 3f, val2.yMin + _huePosition - _handleSize / 2f, _sliderWidth + 6f,
                 _handleSize);
-            var val11 = new Rect(val3.xMin - 3f, val3.yMin + _alphaPosition - _handleSize / 2f, _sliderWidth + 6f,
+            Rect val11 = new(val3.xMin - 3f, val3.yMin + _alphaPosition - _handleSize / 2f, _sliderWidth + 6f,
                 _handleSize);
-            var val12 = new Rect(val.xMin + _position.x - _handleSize / 2f,
+            Rect val12 = new(val.xMin + _position.x - _handleSize / 2f,
                 val.yMin + _position.y - _handleSize / 2f, _handleSize, _handleSize);
             GUI.DrawTexture(val10, TempPreviewBG);
             GUI.DrawTexture(val11, TempPreviewBG);
@@ -379,8 +379,12 @@ namespace ColorPicker
             Widgets.DrawBox(val11);
             Widgets.DrawBox(val12);
             GUI.color = Color.white;
-            if (Input.GetMouseButtonUp(0)) _activeControl = Controls.none;
-
+            
+            if (Input.GetMouseButtonUp(0))
+            {
+                _activeControl = Controls.none;
+            }
+            
             DrawColourPicker(val);
             DrawHuePicker(val2);
             DrawAlphaPicker(val3);
@@ -722,13 +726,13 @@ namespace ColorPicker
 
             Text.Anchor = TextAnchor.UpperLeft;
 
-            if (Event.current.type == EventType.KeyDown && Event.current.keyCode == KeyCode.Tab)
-            {
-                var nameOfFocusedControl = GUI.GetNameOfFocusedControl();
-                var num = textFieldIds.IndexOf(nameOfFocusedControl);
-                GUI.FocusControl(
-                    textFieldIds[GenMath.PositiveMod(num + (Event.current.shift ? -1 : 1), textFieldIds.Count)]);
-            }
+            if (Event.current.type != EventType.KeyDown || Event.current.keyCode != KeyCode.Tab)
+                return;
+            
+            string nameOfFocusedControl = GUI.GetNameOfFocusedControl();
+            int num = textFieldIds.IndexOf(nameOfFocusedControl);
+            GUI.FocusControl(
+                textFieldIds[GenMath.PositiveMod(num + (Event.current.shift ? -1 : 1), textFieldIds.Count)]);
         }
 
         public static Color HSVAToRGB(float H, float S, float V, float A)

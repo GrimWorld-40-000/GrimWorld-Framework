@@ -15,15 +15,17 @@ namespace GW4KArmor.Patches
         {
             public static void Postfix(Apparel apparel, bool __result, ref ApparelGraphicRecord rec)
             {
-                var flag = !__result;
-                if (!flag)
+                bool flag = !__result;
+
+                if (flag)
+                    return;
+                
+                Comp_TriColorMask triColorMaskComp = apparel?.GetComp<Comp_TriColorMask>();
+                bool flag2 = triColorMaskComp == null;
+                
+                if (!flag2)
                 {
-                    var triColorMaskComp = apparel?.GetComp<Comp_TriColorMask>();
-                    var flag2 = triColorMaskComp == null;
-                    if (!flag2)
-                    {
-                        rec.graphic = TriMaskGraphicPool.GraphicFromComp<Graphic_TriColorMask>(triColorMaskComp);
-                    }
+                    rec.graphic = TriMaskGraphicPool.GraphicFromComp<Graphic_TriColorMask>(triColorMaskComp);
                 }
             }
         }
@@ -34,18 +36,25 @@ namespace GW4KArmor.Patches
             // Token: 0x06000069 RID: 105 RVA: 0x00004454 File Offset: 0x00002654
             public static bool Prefix(Thing t, ref Graphic __result)
             {
-                if (!(t is ThingWithComps thingWithComps))
+                if (t is not ThingWithComps thingWithComps)
                     return true;
 
-                var comp = thingWithComps.GetComp<Comp_TriColorMask>();
+                Comp_TriColorMask comp = thingWithComps.GetComp<Comp_TriColorMask>();
+                
                 if (comp == null)
                     return true;
 
                 Graphic graphic;
+                
                 if (t is Apparel)
+                {
                     graphic = TriMaskGraphicPool.GraphicFromComp<Graphic_TriColorMask>(comp);
+                }
                 else
+                {
                     graphic = TriMaskGraphicPool.GraphicFromComp<Graphic_TriColorMask_Single>(comp);
+                }
+                
                 __result = graphic;
                 return false;
             }
@@ -69,12 +78,11 @@ namespace GW4KArmor.Patches
             [HarmonyPriority(800)]
             private static bool Prefix(Thing t)
             {
-                if (active != 0)
-                {
-                    t.thingIDNumber = 69420;
-                    return false;
-                }
-                return true;
+                if (active == 0)
+                    return true;
+                
+                t.thingIDNumber = 69420;
+                return false;
             }
 
             private static int active;
@@ -88,8 +96,12 @@ namespace GW4KArmor.Patches
 
                 public void Dispose()
                 {
-                    var flag = active > 0;
-                    if (flag) active--;
+                    bool flag = active > 0;
+                    
+                    if (flag)
+                    {
+                        active--;
+                    }
                 }
             }
         }
@@ -98,29 +110,42 @@ namespace GW4KArmor.Patches
         [HarmonyPatch(typeof(Pawn), nameof(Pawn.GetGizmos))]
         public static class Pawn_GetGizmosPatch
         {
-            private static List<ThingWithComps> tempList = new List<ThingWithComps>();
+            private static List<ThingWithComps> tempList = [];
+            
             public static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
             {
                 tempList.Clear();
-                if (__instance.equipment != null && __instance.apparel != null)
-                {
-                    tempList.AddRange(__instance.equipment.AllEquipmentListForReading);
-                    tempList.AddRange(__instance.apparel.WornApparel);
-                    var comps = tempList.Select(a => a.GetComp<Comp_TriColorMask>()).Where(c => c != null)?.ToList();
-                    if (comps == null) return;
-                    if (comps.Count < 1) return;
-                    var firstComp = comps.First();
-                    if (comps.Count == 1)
-                    {
-                        var gizmo = firstComp.PaintGizmo;
-                        __result = __result.Append(gizmo);
-                    }
+                if (__instance.equipment == null || __instance.apparel == null) 
+                    return;
+                
+                tempList.AddRange(__instance.equipment.AllEquipmentListForReading);
+                tempList.AddRange(__instance.apparel.WornApparel);
+                    
+                var comps = tempList
+                    .Select(a => 
+                        a.GetComp<Comp_TriColorMask>())
+                    .Where(c => c != null)?
+                    .ToList();
 
-                    if (comps.Count > 1)
+                if (comps.Count < 1) 
+                    return;
+                    
+                Comp_TriColorMask firstComp = comps.First();
+                    
+                switch (comps.Count)
+                {
+                    case 1:
                     {
-                        var gizmo = firstComp.PaintGizmoMulti;
+                        Gizmo_Paintable gizmo = firstComp.PaintGizmo;
+                        __result = __result.Append(gizmo);
+                        break;
+                    }
+                    case > 1:
+                    {
+                        Gizmo_PaintableMulti gizmo = firstComp.PaintGizmoMulti;
                         gizmo.pawn = __instance;
                         __result = __result.Append(gizmo);
+                        break;
                     }
                 }
             }
