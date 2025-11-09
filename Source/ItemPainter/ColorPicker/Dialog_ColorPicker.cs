@@ -316,7 +316,7 @@ namespace ColorPicker
             NotifyRGBUpdated();
         }
 
-        public override void SetInitialSizeAndPosition()
+        public new void SetInitialSizeAndPosition()
         {
             var val = new Vector2(Mathf.Min(InitialSize.x, UI.screenWidth),
                 Mathf.Min(InitialSize.y, UI.screenHeight - 35f));

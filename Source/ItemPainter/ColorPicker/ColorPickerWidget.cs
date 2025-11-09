@@ -507,7 +507,8 @@ namespace ColorPicker
                 int num2 = num;
                 for (int l = 0; l < height; l += _alphaBGBlockSize)
                 {
-                    val.SetPixels(k, l, _alphaBGBlockSize, _alphaBGBlockSize, (num2 % 2 == 0) ? array : array2);
+                    //Log.Message("set pixel " + k + " " + l);
+                    val.SetPixels(k, l, Mathf.Min(_alphaBGBlockSize, width - k), Mathf.Min(_alphaBGBlockSize, height - l), (num2 % 2 == 0) ? array : array2);
                     num2++;
                 }
 
