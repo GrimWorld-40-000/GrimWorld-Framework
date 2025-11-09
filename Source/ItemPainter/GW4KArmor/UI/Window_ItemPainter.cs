@@ -14,19 +14,19 @@ namespace GW4KArmor.UI
     public class Window_ItemPainter : Window
     {
         [TweakValue("_GW", 0f, 700f)]
-        private static readonly float colorsWidthPx = 448f;
+        private static float colorsWidthPx = 448f;
 
         [TweakValue("_GW", 0f, 600f)]
-        private static readonly float colorsHeightPx = 330f;
+        private static float colorsHeightPx = 330f;
 
         [TweakValue("_GW", 0f, 100f)]
-        private static readonly float tabsHeightPx = 70f;
+        private static float tabsHeightPx = 70f;
 
         [TweakValue("_GW", 0f, 500f)]
-        private static readonly float paletteWidthPx = 350f;
+        private static float paletteWidthPx = 350f;
 
         [TweakValue("_GW", 0f, 400f)]
-        private static readonly float mainButtonsHeightPx = 70f;
+        private static float mainButtonsHeightPx = 70f;
 
         private readonly Color[] colors = new Color[]
         {
@@ -616,7 +616,7 @@ namespace GW4KArmor.UI
             {
                 ApparelGraphicRecord apparelGraphicRecord;
                 var flag2 =
-                    !ApparelGraphicRecordGetter.TryGetGraphicApparel(apparel, BodyTypeDefOf.Male, out apparelGraphicRecord);
+                    !ApparelGraphicRecordGetter.TryGetGraphicApparel(apparel, BodyTypeDefOf.Male, false, out apparelGraphicRecord);
                 if (flag2)
                     result = null;
                 else
