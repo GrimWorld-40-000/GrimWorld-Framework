@@ -17,8 +17,8 @@ namespace gwrulers
 
         public float psychicSensitivityExtraSummmonFactor = 0.5f;
 
-        public string factionDef = "Empire";
+        //public string factionDef = "Empire";
 
-        public string pawnKindDef = "LOTD";
+        public List<PawnKindDef_Percentage> pawnKindDefs;
     }
 }

@@ -53,6 +53,7 @@
     <Compile Include="HediffCompProperties_DespawnAfterHediffRemoved.cs" />
     <Compile Include="HediffComp_AbilitiesStartWithCooldown.cs" />
     <Compile Include="HediffComp_DespawnAfterHediffRemoved.cs" />
+    <Compile Include="PawnKindDef_Percentage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
