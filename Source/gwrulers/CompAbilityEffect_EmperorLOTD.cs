@@ -33,8 +33,6 @@ namespace gwrulers
                     break;
             }
 
-            PawnKindDef kindDef = PawnKindDef.Named(Props.pawnKindDef);
-
             Faction faction = Faction.OfPlayer;
             //Faction faction = Find.FactionManager.FirstFactionOfDef(DefDatabase<FactionDef>.GetNamed(Props.factionDef));
 
@@ -52,7 +50,27 @@ namespace gwrulers
 
             for (int i = 0; i < num; i++)
             {
-                Pawn newPawn = PawnGenerator.GeneratePawn(kindDef, faction);
+                float chanceSum = 0f;
+                foreach (PawnKindDef_Percentage p in Props.pawnKindDefs)
+                {
+                    chanceSum += p.chance;
+                }
+
+                PawnKindDef pawnKindDef = Props.pawnKindDefs.LastOrDefault()?.pawnKindDef;
+
+                float roll = Rand.Value;
+                float weight = 0f;
+                foreach (PawnKindDef_Percentage p in Props.pawnKindDefs)
+                {
+                    weight += p.chance;
+                    if (roll < weight / chanceSum)
+                    {
+                        pawnKindDef = p.pawnKindDef;
+                        break;
+                    }
+                }
+
+                Pawn newPawn = PawnGenerator.GeneratePawn(pawnKindDef, faction);
                 //newPawn.guest.SetGuestStatus(Faction.OfPlayer);
                 GenSpawn.Spawn(newPawn, target.Cell, parent.pawn.Map);
 
