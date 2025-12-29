@@ -17,7 +17,7 @@ namespace gwrulers
 
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
-            int num = Mathf.Max(1, Mathf.FloorToInt(parent.pawn.psychicEntropy.PsychicSensitivity / Props.psychicSensitivityExtraSummmonFactor));
+            int num = ModsConfig.RoyaltyActive ? Mathf.Max(1, Mathf.FloorToInt(parent.pawn.psychicEntropy.PsychicSensitivity / Props.psychicSensitivityExtraSummmonFactor)) : Props.defaultScaling;
 
             HediffDef temporaryHediff;
             switch (num)

@@ -20,5 +20,7 @@ namespace gwrulers
         //public string factionDef = "Empire";
 
         public List<PawnKindDef_Percentage> pawnKindDefs;
+
+        public int defaultScaling = 1;
     }
 }
