@@ -37,16 +37,16 @@ namespace AutoFabricationBench
 
         public bool PoweredOn => Power.PowerOn;
 
-        public override void Notify_StartForming(Pawn billDoer)
-        {
+        //public override void Notify_StartForming(Pawn billDoer)
+        //{
             //while (activeBill.State < FormingState.Forming)
             //{
             //    activeBill.Notify_BillWorkFinished(billDoer);
             //}
-            Log.Message("activeBill.State = " + activeBill.State.ToString());
-            Log.Message("activeBill.suspended = " + activeBill.suspended);
-            SoundDef.Named("AutoFabricationBench_Started").PlayOneShot(this);
-        }
+            //Log.Message("activeBill.State = " + activeBill.State.ToString());
+            //Log.Message("activeBill.suspended = " + activeBill.suspended);
+            //SoundDef.Named("AutoFabricationBench_Started").PlayOneShot(this);
+        //}
 
         public override void Notify_FormingCompleted()
         {
@@ -62,13 +62,13 @@ namespace AutoFabricationBench
             //{
             //    GenSpawn.Spawn(products[i], InteractionCell, Map);
             //}
-            SoundDef.Named("AutoFabricationBenchBill_Completed").PlayOneShot(this);
+            //SoundDef.Named("AutoFabricationBenchBill_Completed").PlayOneShot(this);
         }
 
-        public override void Notify_HauledTo(Pawn hauler, Thing thing, int count)
-        {
-            SoundDef.Named("AutoFabricationBench_MaterialInserted").PlayOneShot(this);
-        }
+        //public override void Notify_HauledTo(Pawn hauler, Thing thing, int count)
+        //{
+        //    SoundDef.Named("AutoFabricationBench_MaterialInserted").PlayOneShot(this);
+        //}
 
         protected override void Tick()
         {
@@ -90,15 +90,15 @@ namespace AutoFabricationBench
                 }
             }
 
-            if (activeBill != null && PoweredOn && activeBill.State != 0)
-            {
-                if (workingSound == null || workingSound.Ended)
-                {
-                    workingSound = SoundDef.Named("AutoFabricationBench_Ambience").TrySpawnSustainer(this);
-                }
+            //if (activeBill != null && PoweredOn && activeBill.State != 0)
+            //{
+            //    if (workingSound == null || workingSound.Ended)
+            //    {
+            //        workingSound = SoundDef.Named("AutoFabricationBench_Ambience").TrySpawnSustainer(this);
+            //    }
 
-                workingSound.Maintain();
-            }
+            //    workingSound.Maintain();
+            //}
             else if (workingSound != null)
             {
                 workingSound.End();
