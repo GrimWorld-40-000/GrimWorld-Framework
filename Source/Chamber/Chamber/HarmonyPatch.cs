@@ -50,7 +50,7 @@ namespace Chamber
                 {
                     continue;
                 }
-                if ((!pawn3.guest.Recruitable)&&(pawn3.IsPrisonerOfColony))
+                if ((pawn3.guest != null && !pawn3.guest.Recruitable)&&(pawn3.IsPrisonerOfColony))
                 {
                     if (!pawn.CanReserveAndReach(pawn3, PathEndMode.OnCell, Danger.Deadly, 1, -1, null, ignoreOtherReservations: true) 
                         || Building_Chamber.FindChamberFor(pawn3, pawn, ignoreOtherReservations: true) == null)
