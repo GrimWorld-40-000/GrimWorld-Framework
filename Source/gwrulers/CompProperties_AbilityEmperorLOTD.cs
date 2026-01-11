@@ -22,5 +22,7 @@ namespace gwrulers
         public List<PawnKindDef_Percentage> pawnKindDefs;
 
         public int defaultScaling = 1;
+
+        public int summonLimit = -1;
     }
 }

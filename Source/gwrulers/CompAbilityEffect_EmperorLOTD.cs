@@ -18,6 +18,10 @@ namespace gwrulers
         public override void Apply(LocalTargetInfo target, LocalTargetInfo dest)
         {
             int num = Mathf.Max(1, Mathf.FloorToInt(parent.pawn.GetStatValueForPawn(StatDefOf.PsychicSensitivity, parent.pawn) / Props.psychicSensitivityExtraSummmonFactor));
+            if (Props.summonLimit >= 0)
+            {
+                num = Mathf.Min(num, Props.summonLimit);
+            }
 
             HediffDef temporaryHediff;
             switch (num)
