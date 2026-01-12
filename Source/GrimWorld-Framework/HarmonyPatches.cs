@@ -7,7 +7,7 @@ using HarmonyLib;
 using RimWorld;
 using UnityEngine;
 using Verse;
-//using GW_Frame.Settings;
+using GW_Frame.Settings;
 
 namespace GW_Frame
 {
@@ -42,12 +42,12 @@ namespace GW_Frame
             //    postfix: new HarmonyMethod(patchType, nameof(ResetMessageCountPostfix)));
         }
         
-        //public static void ResetMessageCountPostfix()
-        //{
-        //    Settings.Settings.Instance?.CastChanges();
-        //    ThingCategoryDef.Named("GW_Shield").ResolveReferences();
-        //    ThingCategoryDef.Named("GW_TwoHanded").ResolveReferences();
-        //}
+        public static void ResetMessageCountPostfix()
+        {
+            Settings.Settings.Instance?.CastChanges();
+            ThingCategoryDef.Named("GW_Shield").ResolveReferences();
+            ThingCategoryDef.Named("GW_TwoHanded").ResolveReferences();
+        }
         public static void CanEquipPostfix(ref bool __result, Thing thing, Pawn pawn, ref string cantReason)
         {
             EquipRestrictExtension extension = thing.def.GetModExtension<EquipRestrictExtension>();
