@@ -8,16 +8,18 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>embedded</DebugType>
-    <OutputPath>..\..\1.5\Assemblies</OutputPath>
+   <!-- <OutputPath>..\..\1.5\Assemblies</OutputPath> -->
+        <OutputPath>..\..\1.6\Assemblies</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>embedded</DebugType>
-    <OutputPath>..\..\1.5\Assemblies</OutputPath>
+   <!-- <OutputPath>..\..\1.5\Assemblies</OutputPath> -->
+        <OutputPath>..\..\1.6\Assemblies</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.5.4085" ExcludeAssets="runtime" />
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4633" ExcludeAssets="runtime" />
     <PackageReference Include="Lib.Harmony" Version="2.3.1.1" ExcludeAssets="runtime" />
   </ItemGroup>
   <ItemGroup>
