@@ -10,6 +10,8 @@
 	<loadAfter>
 		<li>brrainz.harmony</li>
 		<li>CETeam.CombatExtended</li>
+		<li>oskarpotocki.vanillafactionsexpanded.core</li>
+		<!-- Might be cleaner here despite Core Imp handling <li>smashphil.vehicleframework</li> -->
 	</loadAfter>
 	<modDependencies>
 		<li>

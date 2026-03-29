@@ -12,16 +12,16 @@ namespace GW_Frame.Settings
     public class Settings : ModSettings
     {
         public static bool HaveTagsEverLoaded;
-        
-        public static Settings Instance => _cachedSettings ??= LoadedModManager.GetMod<GrimWorldMod>().GetSettings<Settings>();
         private static Settings _cachedSettings;
-        
-        private List<SettingsRecord> modSettings;
+        public static Settings Instance =>
+        _cachedSettings ?? (_cachedSettings = LoadedModManager.GetMod<GrimWorldMod>().GetSettings<Settings>());
+
+        private List<SettingsRecord> modSettings = new List<SettingsRecord>();
         
         
         public bool TryGetModSettings(Type type, out SettingsRecord settingsRecord)
         {
-            if (modSettings.NullOrEmpty())
+            if (modSettings == null || modSettings.Count == 0)
             {
                 Reset();
             }
@@ -30,26 +30,26 @@ namespace GW_Frame.Settings
             if (!HaveTagsEverLoaded)
             {
                 HaveTagsEverLoaded = true;
-                Log.Message("Grimworld is loading it's tag system for the first time! Setting default values");  
+                Log.Message("Grimworld is loading its tag system for the first time! Setting default values");  
                 Instance.Reset();
             }
             
-            settingsRecord = modSettings.Find(x => x.GetType() == type);
+            settingsRecord = modSettings.Find(x => x != null && x.GetType() == type);
 
-            if (settingsRecord != null) return settingsRecord != null;
+            if (settingsRecord != null) return true;
             settingsRecord = Activator.CreateInstance(type) as SettingsRecord;
             if (settingsRecord == null) return false;
             settingsRecord.Reset();
             modSettings.Add(settingsRecord);
 
 
-            return settingsRecord != null;
+            return true;
         }
         
         
         public bool TryGetModSettings<T>(out T settingsRecord) where T : SettingsRecord
         {
-            if (modSettings.NullOrEmpty())
+            if (modSettings == null || modSettings.Count == 0)
             {
                 Reset();
             }
@@ -58,69 +58,66 @@ namespace GW_Frame.Settings
             if (!HaveTagsEverLoaded)
             {
                 HaveTagsEverLoaded = true;
-                Log.Message("Grimworld is loading it's tag system for the first time! Setting default values");  
+                Log.Message("Grimworld is loading its tag system for the first time! Setting default values");  
                 Instance.Reset();
             }
             
-            settingsRecord = modSettings.Find(x => x is T) as T;
+            settingsRecord = modSettings.Find(x => x != null && x.GetType() == typeof(T)) as T;
 
-            if (settingsRecord != null) return settingsRecord != null;
-            settingsRecord = (T)Activator.CreateInstance(typeof(T));
+            if (settingsRecord != null) return true;
+
+            settingsRecord = Activator.CreateInstance(typeof(T)) as T;
             if (settingsRecord == null) return false;
             settingsRecord.Reset();
             modSettings.Add(settingsRecord);
 
-
-            return settingsRecord != null;
+            return true;
         }
         public void CastChanges()
         {
-            if (!modSettings.NullOrEmpty())
+            if (modSettings == null)
             {
+                Reset();
+            }
+            
                 foreach (var pair in modSettings)
                 {
                     pair?.CastChanges();
                 }
                 
-                modSettings.RemoveWhere(record => record == null);
-            }
-            else
-            {
-                Reset();
-            }
+                modSettings.RemoveAll(record => record == null);
+
         }
 
         public void Reset()
         {
-            if (!modSettings.NullOrEmpty())
-            {
+            if (modSettings == null)
+                modSettings = new List<SettingsRecord>();
+
+            modSettings.RemoveAll(x => x == null);
+
+
                 foreach (SettingsRecord settingsRecord in modSettings)
                 {
-                    settingsRecord.Reset();
-                    //Log.Message($"{settingsRecord.GetType().Name} reset");
+                    if (settingsRecord != null)
+                        settingsRecord.Reset();
+                        //Log.Message($"{settingsRecord.GetType().Name} reset");
                 }
+
+
                 foreach (SettingsTabDef settingsTabDef in DefDatabase<SettingsTabDef>.AllDefs)
                 {
-                    if (!TryGetModSettings(settingsTabDef.settingsRecordClass, out SettingsRecord settingsRecord))
+                    var settingsRecord = modSettings.Find(
+                        x => x != null && x.GetType() == settingsTabDef.settingsRecordClass
+                    );
+
+                    if (settingsRecord == null)
                     {
                         settingsRecord = (SettingsRecord)Activator.CreateInstance(settingsTabDef.settingsRecordClass);
                         settingsRecord.Reset();
-                        //Log.Message($"{settingsRecord.GetType().Name} reset");
                         modSettings.Add(settingsRecord);
                     }
                 }
-            }
-            else
-            {
-                modSettings = new List<SettingsRecord>();
-                foreach (SettingsTabDef settingsTabDef in DefDatabase<SettingsTabDef>.AllDefs)
-                {
-                    SettingsRecord settingsRecord = (SettingsRecord)Activator.CreateInstance(settingsTabDef.settingsRecordClass);
-                    settingsRecord.Reset();
-                    //Log.Message($"{settingsRecord.GetType().Name} reset");
-                    modSettings.Add(settingsRecord);
-                }
-            }
         }
         public override void ExposeData()
         {
