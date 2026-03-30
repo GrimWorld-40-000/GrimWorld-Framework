@@ -631,22 +631,28 @@ namespace GW4KArmor.UI
             return result;
         }
 
-        private IEnumerable<Texture2D> EnumerateMaskTextures
+        public IEnumerable<Texture2D> EnumerateMaskTextures
         {
             get
             {
-                int num;
-                for (var i = 0; i < comp.Props.maskCount; i = num + 1)
+                // No more need for maskCount
+                var availableIndices = comp.Masks.GetAvailableMaskIndices(
+                    comp.Props.TexPath,
+                    NeedsBodyType(),
+                    NeedsRotation()
+                );
+
+                foreach (var index in availableIndices)
                 {
-                    var masks = comp.Masks;
-                    var textureID = default(TextureID);
-                    textureID.BodyType = NeedsBodyType() ? BodyTypeDefOf.Male : null;
-                    textureID.Index = i;
-                    textureID.Rotation = (byte)(NeedsRotation() ? Rot4.South.AsByte : 4);
-                    var mask = masks.GetTexture(textureID);
-                    yield return
-                        mask ? mask : BaseContent.BadTex;
-                    num = i;
+                    var textureID = new TextureID
+                    {
+                        BodyType = NeedsBodyType() ? BodyTypeDefOf.Male : null,
+                        Index = index,
+                        Rotation = NeedsRotation() ? (byte)Rot4.South.AsByte : (byte)4
+                    };
+
+                    var mask = comp.Masks.GetTexture(textureID);
+                    yield return mask ?? BaseContent.BadTex; // Default to BadTex if no mask found
                 }
             }
         }
@@ -660,21 +666,22 @@ namespace GW4KArmor.UI
             }
 
             rect.yMin += 40f;
-            var num = (int)Mathf.Max(1f, (int)rect.width / 120f);
             Widgets.DrawWindowBackground(rect);
             Widgets.BeginScrollView(rect.ExpandedBy(-2f, -8f), ref ScrollRects.Get("Masks"), new Rect(0f, 0f, rect.width - 20f, lastMaskHeight), true);
             var previewMainTexture = GetPreviewMainTexture(Rot4.South);
             var num2 = 0f;
-            var num3 = rect.width - 20f - (num * 120f - 20f);
+            var num3 = rect.width - 20f - 120f; // Adjust layout
             var num4 = -1;
-            foreach (var value in EnumerateMaskTextures)
+
+            foreach (var mask in EnumerateMaskTextures)
             {
                 num4++;
-                var num5 = num4 % num;
-                var num6 = num4 / num;
+                var num5 = num4 % 4; // Adjust column layout if needed
+                var num6 = num4 / 4;
                 var x = num3 * 0.5f + num5 * 120f;
                 var num7 = num6 * 120f + 20f;
                 var rect2 = new Rect(x, num7, 100f, 100f);
+
                 if (num4 == previewMaskIndex)
                 {
                     GUI.color = Color.yellow;
@@ -687,13 +694,14 @@ namespace GW4KArmor.UI
                 material.SetColor("_Color", colors[0]);
                 material.SetColor("_ColorTwo", colors[1]);
                 material.SetColor("_ColorThree", colors[2]);
-                material.SetTexture("_MaskTex", value);
+                material.SetTexture("_MaskTex", mask);
                 GUI.BeginGroup(rect2);
                 {
                     Graphics.DrawTexture(new Rect(0f, 0f, rect2.width, rect2.height), previewMainTexture,
                         new Rect(0f, 0f, 1f, 1f), 0, 0, 0, 0, material);
                 }
                 GUI.EndGroup();
+
                 if (Mouse.IsOver(rect2))
                 {
                     GUI.color = Color.white * 0.7f;

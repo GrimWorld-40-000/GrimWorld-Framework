@@ -12,6 +12,7 @@ using Verse;
 
 namespace GW4KArmor;
 
+[StaticConstructorOnStartup]
 public class Core : Mod
 {
     public static HashSet<CompProperties_TriColorMask> AllMaskable = new ();
@@ -115,8 +116,25 @@ public class Core : Mod
             platform = null;
         }
 
-        string assetPath = Path.Combine(Content.RootDir, "1.4", "AssetBundles", platform, "gw4k");
-        AssetBundle assetBundle = AssetBundle.LoadFromFile(assetPath);
+        string[] possibleVersions = { "1.6", "1.5", "1.4" };         // changed 1.4 asset bundles to version independent method
+
+        AssetBundle assetBundle = null;
+
+        foreach (var version in possibleVersions)
+        {
+            string path = Path.Combine(Content.RootDir, version, "AssetBundles", platform, "gw4k");
+            
+             Log($"Trying asset bundle path: {path}");              // Added logging
+            if (File.Exists(path))
+            {
+                assetBundle = AssetBundle.LoadFromFile(path);
+                if (assetBundle != null)
+                {
+                    Log($"Loaded asset bundle from {version}");
+                    break;
+                }
+            }
+        }
         if (assetBundle == null)
         {
             Error("Asset bundle failed to load, so the shader cannot be used! This mod will not work.");
@@ -128,7 +146,10 @@ public class Core : Mod
                 Error(
                     "Asset bundle was loaded but failed to find the mask material. Why!? This mod will not work.");
             else
+            {
                 MaskShader = MaskMaterial.shader;
+                GW4KArmor.UI.MaterialPool.StaticMask = new Material(MaskMaterial);
+            }
         }
     }
 }

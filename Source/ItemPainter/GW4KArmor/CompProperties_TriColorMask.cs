@@ -11,8 +11,8 @@ namespace GW4KArmor
         public PaletteDef palettePresets;
         public Palette defaultPalette;
 
-        //TODO: discover masks auomatically
-        public int maskCount;
+        //TODO: discover masks auomatically - DONE, maskCount no longer needed!
+        // public int maskCount;
         private MaskTextureStorage _masks;
 
         public MaskTextureStorage Masks
@@ -29,8 +29,8 @@ namespace GW4KArmor
         {
             get
             {
-                var apparel = Def.apparel;
-                return apparel?.wornGraphicPath ?? Def.graphicData.texPath;
+                if (Def == null) return null;
+                return Def.apparel?.wornGraphicPath ?? Def.graphicData?.texPath;
             }
         }
 
@@ -43,8 +43,10 @@ namespace GW4KArmor
         {
             foreach (var error in base.ConfigErrors(parentDef))
                 yield return error;
-            if (maskCount <= 0)
-                yield return "<maskCount> must be at least 1!";
+
+            var texPath = parentDef.apparel?.wornGraphicPath ?? parentDef.graphicData?.texPath;
+            if (string.IsNullOrEmpty(texPath))
+                yield return "TexPath could not be resolved for mask textures.";
         }
     }
 }
