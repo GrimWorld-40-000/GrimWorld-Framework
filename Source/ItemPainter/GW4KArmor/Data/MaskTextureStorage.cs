@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using RimWorld;
 using UnityEngine;
 using Verse;
 using Object = UnityEngine.Object;
@@ -36,6 +37,35 @@ namespace GW4KArmor.Data
             }
 
             return result;
+        }
+        // NEW: auto-discover masks
+        private readonly List<int> _discoveredMaskIndices = new List<int>();
+        private bool _hasScannedMasks = false;
+
+        public IReadOnlyList<int> GetAvailableMaskIndices(string texPath, bool needsBodyType, bool needsRotation)
+        {
+            if (_hasScannedMasks)
+                return _discoveredMaskIndices;
+
+            _discoveredMaskIndices.Clear();
+
+            for (int i = 0; i < 100; i++) // safety cap
+            {
+                var textureID = default(TextureID);
+                textureID.BodyType = needsBodyType ? BodyTypeDefOf.Male : null;
+                textureID.Index = i;
+                textureID.Rotation = (byte)(needsRotation ? Rot4.South.AsByte : 4);
+
+                var path = textureID.MakeTexturePath(texPath);
+
+                if (ContentFinder<Texture2D>.Get(path, false) == null)
+                    break;
+
+                _discoveredMaskIndices.Add(i);
+            }
+
+            _hasScannedMasks = true;
+            return _discoveredMaskIndices;
         }
 
         public void Dispose()

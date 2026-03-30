@@ -29,7 +29,7 @@ namespace GW4KArmor
                 if (!flag)
                 {
                     Comp.MaskIndex = Mathf.Clamp(Clipboard.Value.maskIndex, 0,
-                        Comp.Props.maskCount - 1);
+                        Comp.Props.Masks.GetAvailableMaskIndices(Comp.Props.TexPath, false, false).Count - 1);
                     Comp.Paste(Clipboard.Value.colors);
                     Comp.MarkDirty();
                 }

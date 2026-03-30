@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
   <name>GrimWorld 40,000 - Framework</name>
-  <author>Clashgore, Odzmang, BlackMarket420, Tittymcswaggy, Alite, Abomination, Epsilon, Maxim, Shun The Witch, Samael, Con, ThatHitmann</author>
+  <author>Clashgore, Odzmang, BlackMarket420, Tittymcswaggy, Alite, Abomination, Epsilon, Maxim, Shun The Witch, Samael, Con, ThatHitmann, atxmatt2510</author>
   <packageId>Grimworld.Framework</packageId>
   <modIconPath IgnoreIfNoMatchingField="True">UI/GrimWorldFrameworkModIcon</modIconPath>
   <supportedVersions>
@@ -10,6 +10,8 @@
 	<loadAfter>
 		<li>brrainz.harmony</li>
 		<li>CETeam.CombatExtended</li>
+		<li>oskarpotocki.vanillafactionsexpanded.core</li>
+		<!-- Might be cleaner here despite Core Imp handling <li>smashphil.vehicleframework</li> -->
 	</loadAfter>
 	<modDependencies>
 		<li>

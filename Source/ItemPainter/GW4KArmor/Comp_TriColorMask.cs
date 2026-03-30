@@ -138,7 +138,7 @@ namespace GW4KArmor
                 Gizmo_Paintable gizm;
 
                 if (_gizmo != null) gizm = _gizmo;
-                else gizm = new Gizmo_Paintable
+                else gizm = _gizmo = new Gizmo_Paintable
                 {
                     paintComp = this,
                     defaultLabel = "Set Colors",
@@ -163,7 +163,7 @@ namespace GW4KArmor
                 Gizmo_PaintableMulti gizm;
 
                 if (_gizmoMulti != null) gizm = _gizmoMulti;
-                else gizm = new Gizmo_PaintableMulti
+                else gizm = _gizmoMulti = new Gizmo_PaintableMulti
                 {
                     pawn = ParentHolder as Pawn,
                     defaultLabel = "Color Apparel",

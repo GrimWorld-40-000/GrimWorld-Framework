@@ -225,9 +225,9 @@ namespace GW_Frame.Comps.ThingComps
 			Detonate(previousMap, true);
 		}
 
-		public override void PostDeSpawn(Map map)
+		public override void PostDeSpawn(Map map, DestroyMode mode)
 		{
-			base.PostDeSpawn(map);
+			base.PostDeSpawn(map, mode);
 			StopWick();
 		}
 
@@ -319,13 +319,14 @@ namespace GW_Frame.Comps.ThingComps
 					effecter.Cleanup();
 				}
 
-				//Make sure parent is undamaged by explosion
+				//Make sure parent is undamaged by explosion, added 329 - 1.6 params (float? postExplosionGasRadiusOverride (pass null) int postExplosionGasAmount (pass 0))
 				(thingsIgnoredByExplosion ??= new List<Thing>()).AddDistinct(parent);
 
 				GenExplosion.DoExplosion(cell, map, explosiveRadius, propsMultiExplosive.explosiveDamageType,
 					knownInstigatorThing, ExplosiveDamage, propsMultiExplosive.armorPenetrationBase, propsMultiExplosive.explosionSound,
 					null, null, null, propsMultiExplosive.postExplosionSpawnThingDef, propsMultiExplosive.postExplosionSpawnChance,
 					propsMultiExplosive.postExplosionSpawnThingCount, Props.postExplosionGasType,
+					null, 0,
 					propsMultiExplosive.applyDamageToExplosionCellsNeighbors, propsMultiExplosive.preExplosionSpawnThingDef,
 					propsMultiExplosive.preExplosionSpawnChance, propsMultiExplosive.preExplosionSpawnThingCount, propsMultiExplosive.chanceToStartFire,
 					propsMultiExplosive.damageFalloff, new float?(), thingsIgnoredByExplosion, new FloatRange?(),

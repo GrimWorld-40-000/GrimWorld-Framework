@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Verse;
 
 namespace GW4KArmor.UI
 {
+    [StaticConstructorOnStartup]
     public static class MaterialPool
     {
-        internal static Material StaticMask = new Material(Core.MaskMaterial);
+        internal static Material StaticMask;
         private static readonly Queue<Material> pool = new Queue<Material>();
 
         public static Material Get()

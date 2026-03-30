@@ -24,31 +24,138 @@ namespace GW_Frame
 
         static HarmonyPatches()
         {
-            Harmony harmony = new Harmony("Rimworld.Grimworld.Framework.main");
-            harmony.Patch(AccessTools.Method(typeof(EquipmentUtility), nameof(EquipmentUtility.CanEquip), new[] { typeof(Thing), typeof(Pawn), typeof(string).MakeByRefType(), typeof(bool) }),
-                postfix: new HarmonyMethod(patchType, nameof(CanEquipPostfix)));
-            harmony.Patch(AccessTools.Method(typeof(MainTabWindow_Research), "DrawResearchPrerequisites"),
-                prefix: new HarmonyMethod(patchType, nameof(DrawResearchPrerequisitesPrefix)));
-            harmony.Patch(AccessTools.PropertyGetter(typeof(ResearchProjectDef), nameof(ResearchProjectDef.PrerequisitesCompleted)),
-                postfix: new HarmonyMethod(patchType, nameof(PrerequisitesCompletedPostFix)));
-            harmony.Patch(AccessTools.Method(typeof(MainTabWindow_Research), "DrawBottomRow"),
-                prefix: new HarmonyMethod(patchType, nameof(DrawBottomRowPreFix)));
-            harmony.Patch(AccessTools.Method(typeof(Pawn_EquipmentTracker), "MakeRoomFor"),
-                postfix: new HarmonyMethod(patchType, nameof(DropShieldIfEquippedTwoHandedPostFix)));
-            harmony.Patch(AccessTools.Method(typeof(Pawn_ApparelTracker), "Wear"),
-                postfix: new HarmonyMethod(patchType, nameof(DropTwoHandedIfEquippedShieldPostFix)));
-            //TODO: Temporarily disabled  until it's purpose can be ascertained (genuinely WTF does this do?) 
-            //harmony.Patch(AccessTools.Method(typeof(Log), "ResetMessageCount"),
-            //    postfix: new HarmonyMethod(patchType, nameof(ResetMessageCountPostfix)));
+            try
+            {
+                Harmony harmony = new Harmony("Rimworld.Grimworld.Framework.main");
+
+                // 1. Patch EquipmentUtility.CanEquip
+                MethodInfo canEquipMethod = AccessTools.Method(
+                    typeof(EquipmentUtility),
+                    "CanEquip",
+                    new Type[] { typeof(Thing), typeof(Pawn) }
+                );
+
+                if (canEquipMethod != null)
+                {
+                    harmony.Patch(
+                        canEquipMethod,
+                        postfix: new HarmonyMethod(typeof(HarmonyPatches), nameof(CanEquipPostfix))
+                    );
+                    Log.Message("[GW_Frame] Patched EquipmentUtility.CanEquip(Thing,Pawn)");
+                }
+                else
+                {
+                    Log.Warning("[GW_Frame] EquipmentUtility.CanEquip(Thing,Pawn) not found, patch skipped.");
+                }
+
+                // 2. Patch MainTabWindow_Research.DrawResearchPrerequisites
+                MethodInfo drawPrereqs = AccessTools.Method(typeof(MainTabWindow_Research), "DrawResearchPrerequisites");
+                if (drawPrereqs != null)
+                {
+                    harmony.Patch(drawPrereqs,
+                        prefix: new HarmonyMethod(typeof(HarmonyPatches), nameof(DrawResearchPrerequisitesPrefix))
+                    );
+                    Log.Message("[GW_Frame] Patched DrawResearchPrerequisites");
+                }
+                else
+                {
+                    Log.Warning("[GW_Frame] DrawResearchPrerequisites not found, patch skipped.");
+                }
+
+                // 3. Patch ResearchProjectDef.PrerequisitesCompleted (getter)
+                MethodInfo prerequisitesGetter = AccessTools.PropertyGetter(
+                    typeof(ResearchProjectDef),
+                    nameof(ResearchProjectDef.PrerequisitesCompleted)
+                );
+                if (prerequisitesGetter != null)
+                {
+                    harmony.Patch(prerequisitesGetter,
+                        postfix: new HarmonyMethod(typeof(HarmonyPatches), nameof(PrerequisitesCompletedPostFix))
+                    );
+                    Log.Message("[GW_Frame] Patched PrerequisitesCompleted getter");
+                }
+                else
+                {
+                    Log.Warning("[GW_Frame] PrerequisitesCompleted getter not found, patch skipped.");
+                }
+
+                // 4. Patch MainTabWindow_Research.DrawBottomRow
+                MethodInfo drawBottomRow = AccessTools.Method(typeof(MainTabWindow_Research), "DrawBottomRow");
+                if (drawBottomRow != null)
+                {
+                    harmony.Patch(drawBottomRow,
+                        prefix: new HarmonyMethod(typeof(HarmonyPatches), nameof(DrawBottomRowPreFix))
+                    );
+                    Log.Message("[GW_Frame] Patched DrawBottomRow");
+                }
+                else
+                {
+                    Log.Warning("[GW_Frame] DrawBottomRow not found, patch skipped.");
+                }
+
+                // 5. Patch Pawn_EquipmentTracker.MakeRoomFor(Thing)
+
+                MethodInfo makeRoomForMethod = AccessTools.Method(   // Get the method directly from Pawn_EquipmentTracker
+                    typeof(Pawn_EquipmentTracker),
+                    "MakeRoomFor",
+                    new Type[] { typeof(ThingWithComps) }
+                );
+
+                if (makeRoomForMethod != null)     // Only patch if method is found
+                {
+                    Log.Message("[GW_Frame] Patching Pawn_EquipmentTracker.MakeRoomFor: " + makeRoomForMethod);
+                    harmony.Patch(
+                        makeRoomForMethod,
+                        postfix: new HarmonyMethod(patchType, nameof(DropShieldIfEquippedTwoHandedPostFix))
+                    );
+                }
+                else
+                {
+                    Log.Warning("[GW_Frame] MakeRoomFor not found, patch skipped.");
+                }
+
+                // 6. Patch Pawn_ApparelTracker.Wear(Apparel)
+                MethodInfo wearMethod = AccessTools.Method(typeof(Pawn_ApparelTracker), "Wear");
+                if (wearMethod != null)
+                {
+                    harmony.Patch(wearMethod,
+                        postfix: new HarmonyMethod(typeof(HarmonyPatches), nameof(DropTwoHandedIfEquippedShieldPostFix))
+                    );
+                    Log.Message("[GW_Frame] Patched Wear");
+                }
+                else
+                {
+                    Log.Warning("[GW_Frame] Wear method not found, patch skipped.");
+                }
+
+                // end of patches
+                LongEventHandler.ExecuteWhenFinished(() =>
+                    {
+                        RefreshModCategories();
+                    });
+
+            }
+            catch (Exception e)
+            {
+                Log.Error("[GW_Frame] Harmony init failed:\n" + e);
+            }
         }
-        
-        public static void ResetMessageCountPostfix()
+
+        private static void RefreshModCategories()              // Refreshes mod-added categories safely after all defs are loaded. (new ResetMessageCountPostFix)
         {
-            Settings.Settings.Instance?.CastChanges();
-            ThingCategoryDef.Named("GW_Shield").ResolveReferences();
-            ThingCategoryDef.Named("GW_TwoHanded").ResolveReferences();
+            Settings.Settings.Instance?.CastChanges();                              // Apply mod settings if needed
+
+            var shieldCategory = ThingCategoryDef.Named("GW_Shield");        // Safely resolve the GW_Shield category, single string, no bool
+            if (shieldCategory != null)
+                shieldCategory.ResolveReferences();
+
+            var twoHandedCategory = ThingCategoryDef.Named("GW_TwoHanded");  // Safely resolve the GW_TwoHanded category, single string, no bool
+            if (twoHandedCategory != null)
+                twoHandedCategory.ResolveReferences();
+
+            Log.Message("[GW_Frame] Mod categories refreshed safely.");
         }
-        public static void CanEquipPostfix(ref bool __result, Thing thing, Pawn pawn, ref string cantReason)
+        public static void CanEquipPostfix(ref bool __result, Thing thing, Pawn pawn)
         {
             EquipRestrictExtension extension = thing.def.GetModExtension<EquipRestrictExtension>();
             if (extension != null && __result)
@@ -68,16 +175,16 @@ namespace GW_Frame
                     if (!requiredGenesToEquip.NullOrEmpty() || !requireOneOfGenesToEquip.NullOrEmpty() || !forbiddenGenesToEquip.NullOrEmpty() ||
                         !requireOneOfXenotypeToEquip.NullOrEmpty() || !forbiddenXenotypesToEquip.NullOrEmpty())
                     {
-                        bool flag = true;
+                        bool flag = true;  // all cantReason patches removed - paramater not supported in harmony and 1.6
                         if (!requireOneOfXenotypeToEquip.NullOrEmpty() && !requireOneOfXenotypeToEquip.Contains(pawn.genes.Xenotype) && flag)
                         {
-                            if (requireOneOfXenotypeToEquip.Count > 1) cantReason = "GW_XenoRestrictedEquipment_AnyOne".Translate();
-                            else cantReason = "GW_XenoRestrictedEquipment_One".Translate(requireOneOfXenotypeToEquip[0].label);
+                            // if (requireOneOfXenotypeToEquip.Count > 1) cantReason = "GW_XenoRestrictedEquipment_AnyOne".Translate();
+                            // else cantReason = "GW_XenoRestrictedEquipment_One".Translate(requireOneOfXenotypeToEquip[0].label);
                             flag = false;
                         }
                         if (!forbiddenXenotypesToEquip.NullOrEmpty() && forbiddenXenotypesToEquip.Contains(pawn.genes.Xenotype) && flag)
                         {
-                            cantReason = "GW_XenoRestrictedEquipment_None".Translate(pawn.genes.Xenotype.label);
+                            // cantReason = "GW_XenoRestrictedEquipment_None".Translate(pawn.genes.Xenotype.label);
                             flag = false;
                         }
                         if (!forbiddenGenesToEquip.NullOrEmpty() && flag)
@@ -86,36 +193,39 @@ namespace GW_Frame
                             {
                                 if (forbiddenGenesToEquip.Contains(gene.def))
                                 {
-                                    cantReason = "GW_GeneRestrictedEquipment_None".Translate(gene.def.label);
+                                    // cantReason = "GW_GeneRestrictedEquipment_None".Translate(gene.def.label);
                                     flag = false;
                                     break;
                                 }
                             }
                         }
+                        
                         if (!requiredGenesToEquip.NullOrEmpty() && flag)
                         {
+                            var requiredGenesToEquipList = extension.requiredGenesToEquip?.ToList();
                             foreach (Gene gene in currentGenes.GenesListForReading)
                             {
-                                if (requiredGenesToEquip.Contains(gene.def)) requiredGenesToEquip.Remove(gene.def);
+                                
+                                if (requiredGenesToEquipList.Contains(gene.def)) requiredGenesToEquipList.Remove(gene.def);
                             }
-                            if (!requiredGenesToEquip.NullOrEmpty())
+                            if (!requiredGenesToEquipList.NullOrEmpty())
                             {
-                                if (extension.requiredGenesToEquip.Count > 1) cantReason = "GW_GeneRestrictedEquipment_All".Translate();
-                                else cantReason = "GW_GeneRestrictedEquipment_One".Translate(extension.requiredGenesToEquip[0].label);
+                                // if (extension.requiredGenesToEquip.Count > 1) cantReason = "GW_GeneRestrictedEquipment_All".Translate();
+                                // else cantReason = "GW_GeneRestrictedEquipment_One".Translate(extension.requiredGenesToEquip[0].label);
                                 flag = false;
                             }
                         }
                         if (!requireOneOfGenesToEquip.NullOrEmpty() && flag)
                         {
                             flag = false;
-                            if (requireOneOfGenesToEquip.Count > 1) cantReason = "GW_GeneRestrictedEquipment_AnyOne".Translate();
-                            else cantReason = "GW_GeneRestrictedEquipment_One".Translate(requireOneOfGenesToEquip[0].label);
+                           // if (requireOneOfGenesToEquip.Count > 1) cantReason = "GW_GeneRestrictedEquipment_AnyOne".Translate();
+                           // else cantReason = "GW_GeneRestrictedEquipment_One".Translate(requireOneOfGenesToEquip[0].label);
                             foreach (Gene gene in currentGenes.GenesListForReading)
                             {
-                                if (requiredGenesToEquip.Contains(gene.def))
+                                if (requireOneOfGenesToEquip.Contains(gene.def)) // was requiredGenesToEquip
                                 {
                                     flag = true;
-                                    cantReason = null;
+                                    // cantReason = null;
                                     break;
                                 }
                             }
@@ -127,7 +237,7 @@ namespace GW_Frame
                 {
                     if (!requiredGenesToEquip.NullOrEmpty() || !requireOneOfGenesToEquip.NullOrEmpty() || !requireOneOfXenotypeToEquip.NullOrEmpty())
                     {
-                        cantReason = "GW_GenesNotFound".Translate();
+                        // cantReason = "GW_GenesNotFound".Translate();
                         __result = false;
                     }
                 }
@@ -145,7 +255,7 @@ namespace GW_Frame
                             {
                                 if (hediffSet.HasHediff(hediffDef))
                                 {
-                                    cantReason = "GW_HediffRestrictedEquipment_None".Translate(hediffDef.label);
+                                    // cantReason = "GW_HediffRestrictedEquipment_None".Translate(hediffDef.label);
                                     flag = false;
                                     break;
                                 }
@@ -165,21 +275,22 @@ namespace GW_Frame
                             }
                             if (!flag)
                             {
-                                if (requireOneOfHediffsToEquip.Count > 1) cantReason = "GW_HediffRestrictedEquipment_AnyOne".Translate();
-                                else cantReason = "GW_HediffRestrictedEquipment_One".Translate(requireOneOfHediffsToEquip[0].label);
+                              //  if (requireOneOfHediffsToEquip.Count > 1) cantReason = "GW_HediffRestrictedEquipment_AnyOne".Translate();
+                              //  else cantReason = "GW_HediffRestrictedEquipment_One".Translate(requireOneOfHediffsToEquip[0].label);
                             }
                         }
 
                         if (flag && !requiredHediffsToEquip.NullOrEmpty())
                         {
+                            var requiredHediffsToEquipList = extension.requiredHediffsToEquip?.ToList();
                             foreach (Hediff hediff in hediffSet.hediffs)
                             {
-                                if (requiredHediffsToEquip.Contains(hediff.def)) requiredHediffsToEquip.Remove(hediff.def);
+                                if (requiredHediffsToEquipList.Contains(hediff.def)) requiredHediffsToEquipList.Remove(hediff.def);
                             }
-                            if (!requiredHediffsToEquip.NullOrEmpty())
+                            if (!requiredHediffsToEquipList.NullOrEmpty())
                             {
-                                if (extension.requiredHediffsToEquip.Count > 1) cantReason = "GW_HediffRestrictedEquipment_All".Translate();
-                                else "GW_HediffRestrictedEquipment_One".Translate(extension.requiredHediffsToEquip[0].label);
+                               // if (extension.requiredHediffsToEquip.Count > 1) cantReason = "GW_HediffRestrictedEquipment_All".Translate();
+                               // else cantReason = "GW_HediffRestrictedEquipment_One".Translate(extension.requiredHediffsToEquip[0].label);
                                 flag = false;
                             }
                         }
@@ -334,9 +445,10 @@ namespace GW_Frame
             return true;
         }
 
-        public static void DropShieldIfEquippedTwoHandedPostFix(Pawn_EquipmentTracker __instance, ThingWithComps eq)
+        public static void DropShieldIfEquippedTwoHandedPostFix(Pawn_EquipmentTracker __instance, Thing eq)
         {
-            if (!eq.HasThingCategory(DefDatabase<ThingCategoryDef>.GetNamed("GW_TwoHanded"))) return;
+            if (eq is not ThingWithComps twc) return;
+            if (!twc.HasThingCategory(DefDatabase<ThingCategoryDef>.GetNamed("GW_TwoHanded"))) return;
 
             var pawnApparelTracker = __instance.pawn.apparel;
             var allWornApparels = pawnApparelTracker.WornApparel;

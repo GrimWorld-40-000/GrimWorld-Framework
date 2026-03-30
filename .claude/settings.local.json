@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep:*)",
+      "Bash(find d:/Games/Steam/steamapps/common/RimWorld/Mods/Core-Imperialis -iname *.wav -o -iname *.ogg -o -iname *.mp3)"
+    ]
+  }
+}
