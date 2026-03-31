@@ -72,6 +72,23 @@ namespace GW_Frame.Settings
 
             if (!tabs.NullOrEmpty())
             {
+                if (CurTabRecord is SettingsTabRecord_Patches)
+                {
+                    Rect buttonRect = new Rect(inRect.xMax - 110f, inRect.y + 5f, 100f, 30f);
+                    Rect warningRect = new Rect(inRect.x, inRect.y, inRect.width - 120f, 40f);
+
+                    GUI.color = Color.yellow;
+                    Text.Font = GameFont.Medium;
+                    Text.Anchor = TextAnchor.MiddleCenter;
+                    Widgets.Label(warningRect, "Restart for changes to take effect");
+                    Text.Anchor = TextAnchor.UpperLeft;
+                    Text.Font = GameFont.Small;
+                    GUI.color = Color.white;
+
+                    if (Widgets.ButtonText(buttonRect, "Restart Now"))
+                        GenCommandLine.Restart();
+                }
+
                 Rect drawTabsRect = new Rect(inRect.x + 10, inRect.y + 40, inRect.width - 20, inRect.height - 40);
                 Widgets.DrawMenuSection(drawTabsRect);
                 TabDrawer.DrawTabs(drawTabsRect, tabs);

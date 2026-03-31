@@ -44,13 +44,6 @@ namespace GW_Frame.Settings
             Listing_Standard listing = new Listing_Standard();
             listing.Begin(viewRect);
 
-            Text.Font = GameFont.Tiny;
-            GUI.color = Color.yellow;
-            listing.Label("Changes require a restart to take effect.");
-            GUI.color = Color.white;
-            Text.Font = GameFont.Small;
-            listing.Gap();
-
             bool gwAny = GWAny;
 
             // Master toggle — display reflects AnyEnabled; click sets all children
