@@ -15,4 +15,11 @@
 		<settingsRecordClass>GW_Frame.Settings.SettingsRecord_Patches</settingsRecordClass>
 	</GW_Frame.Settings.SettingsTabDef>
 	<!---->
+	<GW_Frame.Settings.SettingsTabDef>
+		<defName>MainSettings</defName>
+		<label>Settings</label>
+		<settingsTabClass>GW_Frame.Settings.SettingsTabRecord_Main</settingsTabClass>
+		<settingsRecordClass>GW_Frame.Settings.SettingsRecord_Main</settingsRecordClass>
+	</GW_Frame.Settings.SettingsTabDef>
+	<!---->
 </Defs>

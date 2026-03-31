@@ -14,5 +14,6 @@ namespace Chamber
         public static HediffDef Crack;
         public static HediffDef IndoctrinationChamber_BrainDamage;
         public static HediffDef IndoctrinationChamberSickness;
+        public static HediffDef GW_PersonaDisso;
     }
 }

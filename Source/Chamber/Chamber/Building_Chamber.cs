@@ -1,22 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Chamber.Settings;
 using RimWorld;
 using UnityEngine;
 using Verse;
 using Verse.AI;
 using Verse.Sound;
-using static Verse.DamageWorker;
 
 namespace Chamber
 {
     [StaticConstructorOnStartup]
     public class Building_Chamber : Building_CryptosleepCasket, IThingHolderWithDrawnPawn
     {
-        
+
         private Graphic chamberTopGraphic;
 
         public float HeldPawnDrawPos_Y => this.DrawPos.y + 1f;
@@ -33,9 +30,9 @@ namespace Chamber
         public override void SpawnSetup(Map map, bool respawningAfterLoad)
         {
             base.SpawnSetup(map, respawningAfterLoad);
-            //ticksToFinish = def.GetModExtension<ChamberModExtension>().ticksToFinish;
         }
-        public override void Tick()
+
+        protected override void Tick()
         {
             base.Tick();
             if (conversionReady || innerContainer.Count < 1)
@@ -60,26 +57,17 @@ namespace Chamber
                     Messages.Message(s2, new LookTargets(p), MessageTypeDefOf.NegativeEvent);
 
                     float sev = this.def.GetModExtension<ChamberModExtension>().brainDamageSeverity;
-                    //Hediff hediff=p.health.AddHediff(DefOfs.IndoctrinationChamber_BrainDamage, p.health.hediffSet.GetBrain());
-                    //HealthUtility.AdjustSeverity(p, DefOfs.IndoctrinationChamber_BrainDamage, sev);
-                    //
                     Hediff firstHediffOfDef = HediffMaker.MakeHediff(DefOfs.IndoctrinationChamber_BrainDamage, p);
                     firstHediffOfDef.Severity = sev;
                     firstHediffOfDef.TryGetComp<HediffComp_GetsPermanent>().IsPermanent = true;
                     p.health.AddHediff(firstHediffOfDef, p.health.hediffSet.GetBrain());
-
-                    //DamageResult result=p.TakeDamage(new DamageInfo(DefOfs.IndoctrinationChamber_BrainDamageDamage, damage, 10,hitPart:p.health.hediffSet.GetBrain()));
-                    //result.hediffs.First().TryGetComp<HediffComp_GetsPermanent>().IsPermanent = true;
-                    //hediff.TryGetComp<HediffComp_GetsPermanent>().IsPermanent=true;
                 }
-
             }
-
         }
+
         public override void Open()
         {
             base.Open();
-            //ticksToFinish = def.GetModExtension<ChamberModExtension>().ticksToFinish;
             conversionReady = false;
         }
 
@@ -96,12 +84,13 @@ namespace Chamber
             return "IndoctrinationChamber_Progress".Translate() + ": " + ticksToFinish.TicksToDays().ToString("F3") + " days left.";
         }
 
-        public override  void ExposeData()
+        public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look(ref ticksToFinish, "ticksToFinish", -1);
             Scribe_Values.Look(ref conversionReady, "conversionReady", false);
         }
+
         protected override void DrawAt(Vector3 drawLoc, bool flip = false)
         {
             base.DrawAt(drawLoc, flip);
@@ -116,14 +105,12 @@ namespace Chamber
             {
                 Pawn p = innerContainer.First() as Pawn;
                 Vector3 pos2 = base.Position.ToVector3ShiftedWithAltitude(AltitudeLayer.BuildingBelowTop);
-                pos2 += new Vector3(0, 2, -0.15f);// was -4
+                pos2 += new Vector3(0, 2, -0.15f);
                 p.Rotation = Rot4.South;
                 p.Drawer.renderer.RenderPawnAt(pos2, Rot4.South, neverAimWeapon: true);
             }
         }
 
-
-        //below is vanilla cryptosleep stuff VVVV
         public override bool TryAcceptThing(Thing thing, bool allowSpecialEffects = true)
         {
             Pawn p = thing as Pawn;
@@ -136,7 +123,6 @@ namespace Chamber
                 if (allowSpecialEffects)
                 {
                     SoundDefOf.CryptosleepCasket_Accept.PlayOneShot(new TargetInfo(base.Position, base.Map));
-                    //
                     Pawn pa = thing as Pawn;
                     float res = pa.guest.Resistance;
                     float multiplier = 1;
@@ -185,14 +171,34 @@ namespace Chamber
         {
             foreach (Gizmo gizmo in base.GetGizmos())
             {
+                if (gizmo is Command_Action cmd)
+                {
+                    if (cmd.defaultLabel == "CommandPodEject".Translate())
+                        continue;
+
+                    if (innerContainer.Count > 0)
+                    {
+                        Action originalAction = cmd.action;
+                        cmd.action = delegate
+                        {
+                            Messages.Message("Ending indoctrination early could have catastrophic side effects.", MessageTypeDefOf.CautionInput, historical: false);
+                            originalAction?.Invoke();
+                        };
+                    }
+                }
                 yield return gizmo;
             }
             if (base.Faction == Faction.OfPlayer && innerContainer.Count > 0 && def.building.isPlayerEjectable)
             {
                 Command_Action command_Action = new Command_Action();
-                command_Action.action = EjectContents;
-                command_Action.defaultLabel = "CommandPodEject".Translate();
-                command_Action.defaultDesc = "CommandPodEjectDesc".Translate();
+                command_Action.action = delegate
+                {
+                    Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation(
+                        "Ending indoctrination early could have catastrophic side effects.",
+                        EjectContents));
+                };
+                command_Action.defaultLabel = "Eject occupant";
+                command_Action.defaultDesc = "Release from the indoctrination chamber. Could have catastrophic side effects.";
                 if (innerContainer.Count == 0)
                 {
                     command_Action.Disable("CommandPodEjectFailEmpty".Translate());
@@ -200,6 +206,15 @@ namespace Chamber
                 command_Action.hotKey = KeyBindingDefOf.Misc8;
                 command_Action.icon = ContentFinder<Texture2D>.Get("UI/Commands/PodEject");
                 yield return command_Action;
+            }
+            if (DebugSettings.godMode && innerContainer.Count > 0 && !conversionReady)
+            {
+                Command_Action devFinish = new Command_Action();
+                devFinish.defaultLabel = "DEV: Finish now";
+                devFinish.defaultDesc = "Immediately completes the indoctrination cycle.";
+                devFinish.action = () => { ticksToFinish = 0; };
+                devFinish.icon = ContentFinder<Texture2D>.Get("UI/Buttons/DevRoot", false);
+                yield return devFinish;
             }
         }
 
@@ -212,9 +227,9 @@ namespace Chamber
                 {
                     PawnComponentsUtility.AddComponentsForSpawn(pawn);
                     pawn.filth.GainFilth(filth_Slime);
-                    if (pawn.RaceProps.IsFlesh)
+                    if (pawn.RaceProps.IsFlesh && Rand.Chance(0.2f))
                     {
-                        pawn.health.AddHediff(DefOfs.IndoctrinationChamberSickness);
+                        pawn.health.AddHediff(DefOfs.GW_PersonaDisso);
                     }
                 }
             }
@@ -229,7 +244,7 @@ namespace Chamber
         {
             foreach (ThingDef item in DefDatabase<ThingDef>.AllDefs.Where((ThingDef def) => def.GetModExtension<ChamberModExtension>() != null))
             {
-                Building_CryptosleepCasket building_CryptosleepCasket = (Building_CryptosleepCasket)GenClosest.ClosestThingReachable(p.PositionHeld, p.MapHeld, ThingRequest.ForDef(item), PathEndMode.InteractionCell, TraverseParms.For(traveler), 9999f, (Thing x) => !((Building_CryptosleepCasket)x).HasAnyContents && traveler.CanReserve(x, 1, -1, null, ignoreOtherReservations));
+                Building_CryptosleepCasket building_CryptosleepCasket = (Building_CryptosleepCasket)GenClosest.ClosestThingReachable(p.PositionHeld, p.MapHeld, ThingRequest.ForDef(item), PathEndMode.InteractionCell, TraverseParms.For(traveler), 9999f, (Thing x) => !((Building_CryptosleepCasket)x).HasAnyContents && traveler.MapHeld.reservationManager.CanReserve(traveler, x, 1, -1, null, ignoreOtherReservations));
                 if (building_CryptosleepCasket != null)
                 {
                     return building_CryptosleepCasket;
