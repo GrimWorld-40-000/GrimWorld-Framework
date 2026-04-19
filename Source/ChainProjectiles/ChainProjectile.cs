@@ -30,6 +30,11 @@ namespace ChainProjectiles
                 return;
             }
 
+            if (verb == null)
+            {
+                return;
+            }
+
             LocalTargetInfo currentTarget = GetNextTarget(hitThing);
             if (!currentTarget.HasThing)
             {
@@ -40,7 +45,7 @@ namespace ChainProjectiles
 
             projectile2.hitThings = hitThings;
             projectile2.hitThings.Add(hitThing);
-            projectile2.chainLeft = ChainLeft;
+            projectile2.chainLeft = ChainLeft - 1;
             projectile2.verb = verb;
 
             if (verb == null)
@@ -272,7 +277,7 @@ namespace ChainProjectiles
 
             ImpactSomething();
 
-            Log.Warning("launched with ChainLeft: " + ChainLeft + ", verb: " + verb + ", hitThings count: " + hitThings.Count + ", ChainRange: " + ChainRange);
+            //Log.Warning("launched with ChainLeft: " + ChainLeft + ", verb: " + verb + ", hitThings count: " + hitThings.Count + ", ChainRange: " + ChainRange);
         }
     }
 }
