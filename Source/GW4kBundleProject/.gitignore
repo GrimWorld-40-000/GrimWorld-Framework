@@ -1,0 +1,14 @@
+Library/
+Temp/
+Obj/
+Build/
+Builds/
+Logs/
+UserSettings/
+*.pidb
+*.suo
+*.sln
+*.csproj
+*.unityproj
+*.DS_Store
+*.swp

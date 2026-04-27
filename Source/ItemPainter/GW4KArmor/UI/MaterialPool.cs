@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -12,18 +12,14 @@ namespace GW4KArmor.UI
 
         public static Material Get()
         {
-            Material result;
-            if (pool.TryDequeue(out var material))
+            // Drain any materials destroyed between game cycles before returning one
+            while (pool.TryDequeue(out var material))
             {
-                result = material;
-            }
-            else
-            {
-                material = new Material(Core.MaskMaterial);
-                result = material;
+                if (material != null)
+                    return material;
             }
 
-            return result;
+            return new Material(Core.GetOrRebuildMaskMaterial());
         }
 
         public static void Return(Material mat)
