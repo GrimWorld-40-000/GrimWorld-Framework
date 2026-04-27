@@ -169,6 +169,8 @@ namespace GW4KArmor
                     req2.shaderParameters = req.shaderParameters;
                     req2.renderQueue = req.renderQueue;
                     mats[i] = MaterialPool.MatFrom(req2);
+                    if (mats[i] != null)
+                        mats[i].hideFlags = HideFlags.DontUnloadUnusedAsset;
                 }
             }
         }

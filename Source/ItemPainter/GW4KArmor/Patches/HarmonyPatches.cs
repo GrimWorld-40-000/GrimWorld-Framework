@@ -125,5 +125,6 @@ namespace GW4KArmor.Patches
                 }
             }
         }
+
     }
 }

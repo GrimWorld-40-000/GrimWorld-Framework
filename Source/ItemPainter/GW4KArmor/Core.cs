@@ -21,6 +21,9 @@ public class Core : Mod
     public static Shader MaskShader { get; private set; }
     public static Harmony HarmonyInstance { get; private set; }
 
+    // Kept alive so Unity doesn't free the bundle's assets during UnloadUnusedAssets()
+    private static AssetBundle _bundle;
+
     /*
     [DebugAction("_GW", allowedGameStates = AllowedGameStates.Entry)]
     private static void OpenWindow()
@@ -49,6 +52,30 @@ public class Core : Mod
         }
     }
     */
+    // Called by MaterialPool each time a new material instance is needed.
+    // Rebuilds MaskMaterial from the global shader cache if it was destroyed between game cycles.
+    public static Material GetOrRebuildMaskMaterial()
+    {
+        if (MaskMaterial != null)
+            return MaskMaterial;
+
+        Log("MaskMaterial was destroyed between game cycles — rebuilding from shader cache");
+        var shader = MaskShader != null ? MaskShader : Shader.Find("Unlit/CutoffCustom");
+        if (shader == null)
+        {
+            Error("Cannot rebuild MaskMaterial: shader not found in cache.");
+            return null;
+        }
+
+        MaskMaterial = new Material(shader);
+        MaskMaterial.hideFlags = HideFlags.DontUnloadUnusedAsset;
+        MaskShader = MaskMaterial.shader;
+        MaskShader.hideFlags   = HideFlags.DontUnloadUnusedAsset;
+        GW4KArmor.UI.MaterialPool.StaticMask = new Material(MaskMaterial);
+        GW4KArmor.UI.MaterialPool.StaticMask.hideFlags = HideFlags.DontUnloadUnusedAsset;
+        return MaskMaterial;
+    }
+
     public static void Log(string msg)
     {
         Verse.Log.Message("<color=magenta>[GW4kArmor]</color> " + (msg ?? "<i><null></i>"));
@@ -123,8 +150,8 @@ public class Core : Mod
         foreach (var version in possibleVersions)
         {
             string path = Path.Combine(Content.RootDir, version, "AssetBundles", platform, "gw4k");
-            
-             Log($"Trying asset bundle path: {path}");              // Added logging
+
+            Log($"Trying asset bundle path: {path}");
             if (File.Exists(path))
             {
                 assetBundle = AssetBundle.LoadFromFile(path);
@@ -133,6 +160,19 @@ public class Core : Mod
                     Log($"Loaded asset bundle from {version}");
                     break;
                 }
+
+                // LoadFromFile returns null when the bundle is already loaded by another system.
+                // Recover by finding it in the already-loaded pool rather than giving up.
+                foreach (var loaded in AssetBundle.GetAllLoadedAssetBundles())
+                {
+                    if (loaded.Contains("Assets/Material/CustomMaskMaterial.mat"))
+                    {
+                        assetBundle = loaded;
+                        Log($"Recovered already-loaded bundle (version {version})");
+                        break;
+                    }
+                }
+                if (assetBundle != null) break;
             }
         }
         if (assetBundle == null)
@@ -141,14 +181,34 @@ public class Core : Mod
         }
         else
         {
+            _bundle = assetBundle;
             MaskMaterial = assetBundle.LoadAsset<Material>("CustomMaskMaterial");
+
+            // Bundle assets may have been freed by UnloadUnusedAssets() before we recovered the
+            // bundle. Fall back to Shader.Find — Unity keeps compiled shaders in a global cache
+            // even after their originating bundle assets are released.
             if (MaskMaterial == null)
-                Error(
-                    "Asset bundle was loaded but failed to find the mask material. Why!? This mod will not work.");
+            {
+                Log("Material not found in bundle (assets may have been unloaded) — falling back to Shader.Find");
+                var cachedShader = Shader.Find("Unlit/CutoffCustom");
+                if (cachedShader != null)
+                    MaskMaterial = new Material(cachedShader);
+            }
+
+            if (MaskMaterial == null)
+                Error("Asset bundle was loaded but failed to find the mask material. This mod will not work.");
             else
             {
                 MaskShader = MaskMaterial.shader;
                 GW4KArmor.UI.MaterialPool.StaticMask = new Material(MaskMaterial);
+
+                // Prevent Unity from unloading these during inter-cycle asset cleanup.
+                // Without this flag, aggressive UnloadUnusedAssets() passes between devtest
+                // cycles destroy the native GPU resources while C# wrappers remain, causing
+                // a native crash on the second map gen.
+                MaskMaterial.hideFlags = HideFlags.DontUnloadUnusedAsset;
+                MaskShader.hideFlags   = HideFlags.DontUnloadUnusedAsset;
+                GW4KArmor.UI.MaterialPool.StaticMask.hideFlags = HideFlags.DontUnloadUnusedAsset;
             }
         }
     }

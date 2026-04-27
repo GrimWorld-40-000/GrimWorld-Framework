@@ -1,0 +1,20 @@
+ManifestFileVersion: 0
+CRC: 4231666921
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 07213f42b6027a7a2b351b9a0c686bbf
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 5651999fa58938ac55fc849c3d2539bc
+HashAppended: 0
+ClassTypes:
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Material/CustomMaskMaterial.mat
+- Assets/Shaders/CutoffCustom.shader
+Dependencies: []
