@@ -67,6 +67,15 @@ public class Pawn_PreApplyDamage_Parry
         if (__instance == null || !__instance.RaceProps.Humanlike)
             return;
 
+        // Parry only applies to melee attacks: damage def must not be ranged and the
+        // attacker must be in adjacent (melee) range.
+        if (dinfo.Def.isRanged)
+            return;
+        if (dinfo.Instigator is not Pawn meleeAttacker)
+            return;
+        if (!meleeAttacker.Position.AdjacentTo8Way(__instance.Position))
+            return;
+
         GW_CompParryable parryComp = null;
 
         Apparel parryApparel = __instance.apparel?.WornApparel
