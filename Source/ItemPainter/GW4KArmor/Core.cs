@@ -162,15 +162,33 @@ public class Core : Mod
                 }
 
                 // LoadFromFile returns null when the bundle is already loaded by another system.
-                // Recover by finding it in the already-loaded pool rather than giving up.
+                // UnloadUnusedAssets() may have freed the instantiated Material and Shader objects
+                // from that bundle before we get here. However, the bundle's raw file data is
+                // still intact, so we can reload a fresh Shader directly from it, then build a
+                // fresh Material — bypassing any zombie wrappers entirely.
                 foreach (var loaded in AssetBundle.GetAllLoadedAssetBundles())
                 {
-                    if (loaded.Contains("Assets/Material/CustomMaskMaterial.mat"))
+                    if (!loaded.Contains("Assets/Material/CustomMaskMaterial.mat")) continue;
+
+                    var freshShader = loaded.LoadAsset<Shader>("CutoffCustom");
+                    if (freshShader != null)
                     {
-                        assetBundle = loaded;
-                        Log($"Recovered already-loaded bundle (version {version})");
-                        break;
+                        Log($"Bundle pre-loaded (version {version}) — reloaded fresh shader, building new material");
+                        MaskMaterial = new Material(freshShader);
+                        MaskMaterial.hideFlags = HideFlags.DontUnloadUnusedAsset;
+                        MaskShader             = freshShader;
+                        MaskShader.hideFlags   = HideFlags.DontUnloadUnusedAsset;
+                        GW4KArmor.UI.MaterialPool.StaticMask = new Material(MaskMaterial);
+                        GW4KArmor.UI.MaterialPool.StaticMask.hideFlags = HideFlags.DontUnloadUnusedAsset;
+                        _bundle = loaded;
+                        return;
                     }
+
+                    // Shader reload also failed — keep the bundle reference and let the normal
+                    // LoadAsset path below attempt a full recovery.
+                    assetBundle = loaded;
+                    Log($"Recovered already-loaded bundle (version {version})");
+                    break;
                 }
                 if (assetBundle != null) break;
             }

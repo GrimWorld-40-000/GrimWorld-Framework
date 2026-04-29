@@ -142,10 +142,24 @@ namespace GW_Frame.Settings
             }
         }
 
+        private static readonly string[] TwoHandedLabelTerms =
+        {
+            "spear", "scythe", "poleaxe", "staff", "glaive", "warhammer", "zeushammer"
+        };
+
         private bool IsThingTwoHandedByDefault(ThingDef thing)
         {
-            return thing.thingCategories != null && (thing.thingCategories.Contains(Grimworld_DefsOf.GW_TwoHanded) ||
-                                                     thing.thingCategories.Contains(Grimworld_DefsOf.TwoHanded));
+            if (thing.thingCategories != null && (thing.thingCategories.Contains(Grimworld_DefsOf.GW_TwoHanded) ||
+                                                   thing.thingCategories.Contains(Grimworld_DefsOf.TwoHanded)))
+                return true;
+
+            if (thing.label == null) return false;
+            foreach (string term in TwoHandedLabelTerms)
+            {
+                if (thing.label.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+            return false;
         }
         
         private bool IsThingShieldByDefault(ThingDef thing)
