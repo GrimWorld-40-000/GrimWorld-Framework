@@ -41,11 +41,11 @@ namespace GW_Frame
                         canEquipMethod,
                         postfix: new HarmonyMethod(typeof(HarmonyPatches), nameof(CanEquipPostfix))
                     );
-                    Log.Message("[GW_Frame] Patched EquipmentUtility.CanEquip(Thing,Pawn)");
+                    Log.Message("<color=#ADD8E6>[GW_Frame]</color> Patched EquipmentUtility.CanEquip(Thing,Pawn)");
                 }
                 else
                 {
-                    Log.Warning("[GW_Frame] EquipmentUtility.CanEquip(Thing,Pawn) not found, patch skipped.");
+                    Log.Warning("<color=#ADD8E6>[GW_Frame]</color> EquipmentUtility.CanEquip(Thing,Pawn) not found, patch skipped.");
                 }
 
                 // 2. Patch MainTabWindow_Research.DrawResearchPrerequisites
@@ -55,11 +55,11 @@ namespace GW_Frame
                     harmony.Patch(drawPrereqs,
                         prefix: new HarmonyMethod(typeof(HarmonyPatches), nameof(DrawResearchPrerequisitesPrefix))
                     );
-                    Log.Message("[GW_Frame] Patched DrawResearchPrerequisites");
+                    Log.Message("<color=#ADD8E6>[GW_Frame]</color> Patched DrawResearchPrerequisites");
                 }
                 else
                 {
-                    Log.Warning("[GW_Frame] DrawResearchPrerequisites not found, patch skipped.");
+                    Log.Warning("<color=#ADD8E6>[GW_Frame]</color> DrawResearchPrerequisites not found, patch skipped.");
                 }
 
                 // 3. Patch ResearchProjectDef.PrerequisitesCompleted (getter)
@@ -72,11 +72,11 @@ namespace GW_Frame
                     harmony.Patch(prerequisitesGetter,
                         postfix: new HarmonyMethod(typeof(HarmonyPatches), nameof(PrerequisitesCompletedPostFix))
                     );
-                    Log.Message("[GW_Frame] Patched PrerequisitesCompleted getter");
+                    Log.Message("<color=#ADD8E6>[GW_Frame]</color> Patched PrerequisitesCompleted getter");
                 }
                 else
                 {
-                    Log.Warning("[GW_Frame] PrerequisitesCompleted getter not found, patch skipped.");
+                    Log.Warning("<color=#ADD8E6>[GW_Frame]</color> PrerequisitesCompleted getter not found, patch skipped.");
                 }
 
                 // 4. Patch MainTabWindow_Research.DrawBottomRow
@@ -86,11 +86,11 @@ namespace GW_Frame
                     harmony.Patch(drawBottomRow,
                         prefix: new HarmonyMethod(typeof(HarmonyPatches), nameof(DrawBottomRowPreFix))
                     );
-                    Log.Message("[GW_Frame] Patched DrawBottomRow");
+                    Log.Message("<color=#ADD8E6>[GW_Frame]</color> Patched DrawBottomRow");
                 }
                 else
                 {
-                    Log.Warning("[GW_Frame] DrawBottomRow not found, patch skipped.");
+                    Log.Warning("<color=#ADD8E6>[GW_Frame]</color> DrawBottomRow not found, patch skipped.");
                 }
 
                 // 5. Patch Pawn_EquipmentTracker.MakeRoomFor(Thing)
@@ -103,7 +103,7 @@ namespace GW_Frame
 
                 if (makeRoomForMethod != null)     // Only patch if method is found
                 {
-                    Log.Message("[GW_Frame] Patching Pawn_EquipmentTracker.MakeRoomFor: " + makeRoomForMethod);
+                    Log.Message("<color=#ADD8E6>[GW_Frame]</color> Patching Pawn_EquipmentTracker.MakeRoomFor: " + makeRoomForMethod);
                     harmony.Patch(
                         makeRoomForMethod,
                         postfix: new HarmonyMethod(patchType, nameof(DropShieldIfEquippedTwoHandedPostFix))
@@ -111,7 +111,7 @@ namespace GW_Frame
                 }
                 else
                 {
-                    Log.Warning("[GW_Frame] MakeRoomFor not found, patch skipped.");
+                    Log.Warning("<color=#ADD8E6>[GW_Frame]</color> MakeRoomFor not found, patch skipped.");
                 }
 
                 // 6. Patch Pawn_ApparelTracker.Wear(Apparel)
@@ -121,11 +121,11 @@ namespace GW_Frame
                     harmony.Patch(wearMethod,
                         postfix: new HarmonyMethod(typeof(HarmonyPatches), nameof(DropTwoHandedIfEquippedShieldPostFix))
                     );
-                    Log.Message("[GW_Frame] Patched Wear");
+                    Log.Message("<color=#ADD8E6>[GW_Frame]</color> Patched Wear");
                 }
                 else
                 {
-                    Log.Warning("[GW_Frame] Wear method not found, patch skipped.");
+                    Log.Warning("<color=#ADD8E6>[GW_Frame]</color> Wear method not found, patch skipped.");
                 }
 
                 // end of patches
@@ -137,7 +137,7 @@ namespace GW_Frame
             }
             catch (Exception e)
             {
-                Log.Error("[GW_Frame] Harmony init failed:\n" + e);
+                Log.Error("<color=#ADD8E6>[GW_Frame]</color> Harmony init failed:\n" + e);
             }
         }
 
@@ -153,7 +153,7 @@ namespace GW_Frame
             if (twoHandedCategory != null)
                 twoHandedCategory.ResolveReferences();
 
-            Log.Message("[GW_Frame] Mod categories refreshed safely.");
+            Log.Message("<color=#ADD8E6>[GW_Frame]</color> Mod categories refreshed safely.");
         }
         public static void CanEquipPostfix(ref bool __result, Thing thing, Pawn pawn)
         {
