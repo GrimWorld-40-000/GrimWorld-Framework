@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using GW4KArmor.Patches;
 using GW4KArmor.UI;
@@ -54,6 +55,43 @@ public class Core : Mod
     */
     // Called by MaterialPool each time a new material instance is needed.
     // Rebuilds MaskMaterial from the global shader cache if it was destroyed between game cycles.
+    // After Unload(false), ContentFinder's ModAssetBundlesHandler still holds the dead
+    // AssetBundle C# wrapper. Iterating it causes a NullReferenceException. Walk all
+    // mod content packs up to 2 levels deep and remove any null-evaluating bundle refs.
+    private static void PurgeDeadBundleRefs()
+    {
+        const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+        foreach (var mod in LoadedModManager.RunningModsListForReading)
+            PurgeBundleListsInObject(mod, flags, depth: 2);
+    }
+
+    private static void PurgeBundleListsInObject(object obj, BindingFlags flags, int depth)
+    {
+        if (obj == null || depth < 0) return;
+        try
+        {
+            foreach (var field in obj.GetType().GetFields(flags))
+            {
+                try
+                {
+                    var value = field.GetValue(obj);
+                    if (value is List<AssetBundle> list)
+                    {
+                        int removed = list.RemoveAll(b => b == null);
+                        if (removed > 0)
+                            Log($"Purged {removed} dead bundle ref(s) from {obj.GetType().Name}.{field.Name}");
+                    }
+                    else if (depth > 0 && value != null && !field.FieldType.IsPrimitive && !field.FieldType.IsEnum)
+                    {
+                        PurgeBundleListsInObject(value, flags, depth - 1);
+                    }
+                }
+                catch { }
+            }
+        }
+        catch { }
+    }
+
     public static Material GetOrRebuildMaskMaterial()
     {
         if (MaskMaterial != null)
@@ -161,36 +199,26 @@ public class Core : Mod
                     break;
                 }
 
-                // LoadFromFile returns null when the bundle is already loaded by another system.
-                // UnloadUnusedAssets() may have freed the instantiated Material and Shader objects
-                // from that bundle before we get here. However, the bundle's raw file data is
-                // still intact, so we can reload a fresh Shader directly from it, then build a
-                // fresh Material — bypassing any zombie wrappers entirely.
-                foreach (var loaded in AssetBundle.GetAllLoadedAssetBundles())
+                // LoadFromFile returns null: another system loaded this bundle first, and
+                // UnloadUnusedAssets() has since freed its Material/Shader assets, leaving
+                // zombie C# wrappers. Unity tracks bundles by content hash so even a file
+                // copy won't load. The fix: call Unload(false) on the pre-loaded bundle to
+                // remove it from Unity's registry (assets are already freed so this is safe),
+                // then load it ourselves to get clean GPU resources.
+                foreach (var preLoaded in AssetBundle.GetAllLoadedAssetBundles())
                 {
-                    if (!loaded.Contains("Assets/Material/CustomMaskMaterial.mat")) continue;
-
-                    var freshShader = loaded.LoadAsset<Shader>("CutoffCustom");
-                    if (freshShader != null)
-                    {
-                        Log($"Bundle pre-loaded (version {version}) — reloaded fresh shader, building new material");
-                        MaskMaterial = new Material(freshShader);
-                        MaskMaterial.hideFlags = HideFlags.DontUnloadUnusedAsset;
-                        MaskShader             = freshShader;
-                        MaskShader.hideFlags   = HideFlags.DontUnloadUnusedAsset;
-                        GW4KArmor.UI.MaterialPool.StaticMask = new Material(MaskMaterial);
-                        GW4KArmor.UI.MaterialPool.StaticMask.hideFlags = HideFlags.DontUnloadUnusedAsset;
-                        _bundle = loaded;
-                        return;
-                    }
-
-                    // Shader reload also failed — keep the bundle reference and let the normal
-                    // LoadAsset path below attempt a full recovery.
-                    assetBundle = loaded;
-                    Log($"Recovered already-loaded bundle (version {version})");
+                    if (!preLoaded.Contains("Assets/Material/CustomMaskMaterial.mat")) continue;
+                    Log($"Evicting pre-loaded bundle to reload clean (version {version})");
+                    preLoaded.Unload(false);
+                    PurgeDeadBundleRefs();
                     break;
                 }
-                if (assetBundle != null) break;
+                assetBundle = AssetBundle.LoadFromFile(path);
+                if (assetBundle != null)
+                {
+                    Log($"Reloaded clean bundle after eviction (version {version})");
+                    break;
+                }
             }
         }
         if (assetBundle == null)

@@ -14,6 +14,10 @@ namespace GW_Frame.Settings
 
         private Dictionary<string, bool> patches;
 
+        /// <summary>Default for new installs, missing keys after mod update, and Reset in mod settings.</summary>
+        public static bool DefaultEnabledForKey(string key) =>
+            key != "GWCat" && key != "GWBalance" && key != "GWGene";
+
         public bool Get(string key) => patches != null && patches.TryGetValue(key, out var v) && v;
 
         public void Set(string key, bool value)
@@ -34,7 +38,7 @@ namespace GW_Frame.Settings
         {
             patches = new Dictionary<string, bool>();
             foreach (var key in GW_KEYS)
-                patches[key] = true;
+                patches[key] = DefaultEnabledForKey(key);
         }
 
         public override void CastChanges() { }
@@ -47,7 +51,7 @@ namespace GW_Frame.Settings
             foreach (var key in GW_KEYS)
             {
                 if (!patches.ContainsKey(key))
-                    patches[key] = true;
+                    patches[key] = DefaultEnabledForKey(key);
             }
         }
     }
