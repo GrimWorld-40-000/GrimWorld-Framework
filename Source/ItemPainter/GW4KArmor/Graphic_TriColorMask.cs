@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -155,6 +155,18 @@ namespace GW4KArmor
                     else
                     {
                         array2[3] = array2[0];
+                    }
+                }
+
+                // If east/west main layers share one texture (mirrored view), mask east/west must share one mask too.
+                // Otherwise missing _west body + present _west mask pairs flipped base art with an unpaired mask.
+                if (array[1] != null && array[3] != null && ReferenceEquals(array[1], array[3]))
+                {
+                    var maskEw = array2[1] ?? array2[3];
+                    if (maskEw != null)
+                    {
+                        array2[1] = maskEw;
+                        array2[3] = maskEw;
                     }
                 }
 

@@ -415,3 +415,25 @@ FodyWeavers.xsd
 # GitHub Copilot persisted chat sessions
 
 .idea/
+
+# RimWorld / local modding artifacts
+*.dmp
+*.mdmp
+*.stackdump
+Player.log
+Player-prev.log
+output_log.txt
+RimWorldWin64.exe.*.dmp
+WER_RimWorld_CrashDump_Setup.txt
+
+# Local debug toggles and scratch files
+DISABLEDDebug.*
+Debug.*
+
+# Build artifacts that can appear under old-style C# projects
+**/bin/
+**/obj/
+
+# Cursor / local agent state
+.cursor/
+agent-tools/
