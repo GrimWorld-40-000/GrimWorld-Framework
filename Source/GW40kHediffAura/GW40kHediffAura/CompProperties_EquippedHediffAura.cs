@@ -4,6 +4,8 @@ namespace GW40kHediffAura;
 
 public class CompProperties_EquippedHediffAura : CompProperties
 {
+	public HediffDef wearerHediff;
+
 	public HediffDef allyOrNeutralHediff;
 
 	public HediffDef hostileHediff;
