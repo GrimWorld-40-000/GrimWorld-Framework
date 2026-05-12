@@ -11,6 +11,8 @@ public class MapComponent_EquippedHediffAura : MapComponent
 
 	private readonly Dictionary<int, int> lastAuraTickByThingId = new();
 
+	private readonly Dictionary<WearerHediffKey, ActiveWearerHediff> activeWearerHediffs = new();
+
 	public MapComponent_EquippedHediffAura(Map map) : base(map)
 	{
 	}
@@ -23,6 +25,7 @@ public class MapComponent_EquippedHediffAura : MapComponent
 			return;
 		}
 
+		HashSet<WearerHediffKey> seenWearerHediffs = new();
 		foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned)
 		{
 			if (pawn?.equipment?.Primary == null || pawn.Dead || pawn.Destroyed)
@@ -36,6 +39,14 @@ public class MapComponent_EquippedHediffAura : MapComponent
 				continue;
 			}
 
+			if (aura.Props.wearerHediff != null)
+			{
+				WearerHediffKey key = new(pawn.thingIDNumber, aura.Props.wearerHediff.shortHash);
+				seenWearerHediffs.Add(key);
+				activeWearerHediffs[key] = new ActiveWearerHediff(pawn, aura.Props.wearerHediff);
+				EnsureWearerHediff(pawn, aura.Props.wearerHediff);
+			}
+
 			int tickInterval = aura.Props.tickInterval > 0 ? aura.Props.tickInterval : 250;
 			int thingId = pawn.equipment.Primary.thingIDNumber;
 			if (lastAuraTickByThingId.TryGetValue(thingId, out int lastTick) && Find.TickManager.TicksGame - lastTick < tickInterval)
@@ -46,6 +57,8 @@ public class MapComponent_EquippedHediffAura : MapComponent
 			lastAuraTickByThingId[thingId] = Find.TickManager.TicksGame;
 			ApplyAura(pawn, aura.Props);
 		}
+
+		RemoveInactiveWearerHediffs(seenWearerHediffs);
 	}
 
 	private void ApplyAura(Pawn source, CompProperties_EquippedHediffAura props)
@@ -81,6 +94,57 @@ public class MapComponent_EquippedHediffAura : MapComponent
 			{
 				AddOrRefreshHediff(target, props.ownerFactionHediff, props.severityPerTrigger);
 			}
+		}
+	}
+
+	private void RemoveInactiveWearerHediffs(HashSet<WearerHediffKey> seenWearerHediffs)
+	{
+		List<WearerHediffKey> inactiveKeys = null;
+		foreach (KeyValuePair<WearerHediffKey, ActiveWearerHediff> entry in activeWearerHediffs)
+		{
+			if (seenWearerHediffs.Contains(entry.Key))
+			{
+				continue;
+			}
+
+			inactiveKeys ??= new List<WearerHediffKey>();
+			inactiveKeys.Add(entry.Key);
+			RemoveWearerHediff(entry.Value.Pawn, entry.Value.HediffDef);
+		}
+
+		if (inactiveKeys == null)
+		{
+			return;
+		}
+
+		foreach (WearerHediffKey key in inactiveKeys)
+		{
+			activeWearerHediffs.Remove(key);
+		}
+	}
+
+	private static void EnsureWearerHediff(Pawn pawn, HediffDef hediffDef)
+	{
+		if (pawn?.health?.hediffSet == null || hediffDef == null || pawn.health.hediffSet.HasHediff(hediffDef, false))
+		{
+			return;
+		}
+
+		float initialSeverity = hediffDef.initialSeverity > 0f ? hediffDef.initialSeverity : 1f;
+		pawn.health.AddHediff(GW40kUtility.CreateHediff(hediffDef, pawn, Math.Min(initialSeverity, hediffDef.maxSeverity)));
+	}
+
+	private static void RemoveWearerHediff(Pawn pawn, HediffDef hediffDef)
+	{
+		if (pawn?.health?.hediffSet == null || hediffDef == null)
+		{
+			return;
+		}
+
+		Hediff hediff = pawn.health.hediffSet.GetFirstHediffOfDef(hediffDef, false);
+		if (hediff != null)
+		{
+			pawn.health.RemoveHediff(hediff);
 		}
 	}
 
