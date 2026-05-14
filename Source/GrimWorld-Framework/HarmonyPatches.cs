@@ -128,6 +128,58 @@ namespace GW_Frame
                     Log.Warning("<color=#ADD8E6>[GW_Frame]</color> Wear method not found, patch skipped.");
                 }
 
+                // 7. Apparel restrict — CanWearWithoutDroppingAnything(ThingDef)
+                MethodInfo canWearMethod = AccessTools.Method(
+                    typeof(Pawn_ApparelTracker),
+                    nameof(Pawn_ApparelTracker.CanWearWithoutDroppingAnything),
+                    new Type[] { typeof(ThingDef) });
+                if (canWearMethod != null)
+                {
+                    harmony.Patch(
+                        canWearMethod,
+                        postfix: new HarmonyMethod(typeof(Pawn_ApparelTracker_CanWear_Patch), nameof(Pawn_ApparelTracker_CanWear_Patch.Postfix)));
+                    Log.Message("<color=#ADD8E6>[GW_Frame]</color> Patched CanWearWithoutDroppingAnything");
+                }
+                else
+                {
+                    Log.Warning("<color=#ADD8E6>[GW_Frame]</color> CanWearWithoutDroppingAnything not found, patch skipped.");
+                }
+
+                // 8. Apparel restrict — FloatMenuOptionProvider_Wear.GetSingleOptionFor(Thing, FloatMenuContext)
+                // Base FloatMenuOptionProvider also declares GetSingleOptionFor(Pawn, FloatMenuContext) — resolve explicitly.
+                MethodInfo wearMenuMethod = AccessTools.DeclaredMethod(
+                    typeof(FloatMenuOptionProvider_Wear),
+                    "GetSingleOptionFor",
+                    new Type[] { typeof(Thing), typeof(FloatMenuContext) });
+                if (wearMenuMethod != null)
+                {
+                    harmony.Patch(
+                        wearMenuMethod,
+                        postfix: new HarmonyMethod(typeof(FloatMenuOptionProvider_Wear_Patch), nameof(FloatMenuOptionProvider_Wear_Patch.Postfix)));
+                    Log.Message("<color=#ADD8E6>[GW_Frame]</color> Patched FloatMenuOptionProvider_Wear.GetSingleOptionFor");
+                }
+                else
+                {
+                    Log.Warning("<color=#ADD8E6>[GW_Frame]</color> GetSingleOptionFor not found, patch skipped.");
+                }
+
+                // 9. Apparel restrict — cascade drops when fibrovest / power torso is removed
+                MethodInfo notifyRemovedMethod = AccessTools.Method(
+                    typeof(Pawn_ApparelTracker),
+                    nameof(Pawn_ApparelTracker.Notify_ApparelRemoved),
+                    new Type[] { typeof(Apparel) });
+                if (notifyRemovedMethod != null)
+                {
+                    harmony.Patch(
+                        notifyRemovedMethod,
+                        postfix: new HarmonyMethod(typeof(Pawn_ApparelTracker_NotifyRemoved_Patch), nameof(Pawn_ApparelTracker_NotifyRemoved_Patch.Postfix)));
+                    Log.Message("<color=#ADD8E6>[GW_Frame]</color> Patched Pawn_ApparelTracker.Notify_ApparelRemoved");
+                }
+                else
+                {
+                    Log.Warning("<color=#ADD8E6>[GW_Frame]</color> Notify_ApparelRemoved not found, patch skipped.");
+                }
+
                 // end of patches
                 LongEventHandler.ExecuteWhenFinished(() =>
                     {

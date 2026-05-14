@@ -55,6 +55,10 @@ namespace GW_Frame
                     enabled = s.Get("VEHook") && AnyGWActive();
                     break;
 
+                case "GWPowerArmorRestrict":
+                    enabled = s.Get("GWPowerArmorRestrict") && AnyGWActive();
+                    break;
+
                 default:
                     enabled = false;
                     break;
