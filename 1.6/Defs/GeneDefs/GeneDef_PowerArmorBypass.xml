@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+	<GeneCategoryDef MayRequire="Ludeon.RimWorld.Biotech">
+		<defName>GW_PowerArmorBypass</defName>
+		<label>power armor interface</label>
+		<displayPriorityInXenotype>505</displayPriorityInXenotype>
+	</GeneCategoryDef>
+
+	<!-- Placeholders until faction gene systems are authored. Either gene bypasses fibrovest requirement for power armor. -->
+	<GeneDef MayRequire="Ludeon.RimWorld.Biotech">
+		<defName>Gene_placeholderA</defName>
+		<label>placeholder gene A</label>
+		<description>Placeholder gene — allows wearing power armor without a fibrovest. Replace with a real black carapace or interface gene when authored.</description>
+		<iconPath>UI/Icons/Genes/Gene_BodyToughness</iconPath>
+		<displayCategory>GW_PowerArmorBypass</displayCategory>
+		<canGenerateInGeneSet>false</canGenerateInGeneSet>
+	</GeneDef>
+
+	<GeneDef MayRequire="Ludeon.RimWorld.Biotech">
+		<defName>Gene_placeholderB</defName>
+		<label>placeholder gene B</label>
+		<description>Placeholder gene — allows wearing power armor without a fibrovest. Replace with a real black carapace or interface gene when authored.</description>
+		<iconPath>UI/Icons/Genes/Gene_BodyToughness</iconPath>
+		<displayCategory>GW_PowerArmorBypass</displayCategory>
+		<canGenerateInGeneSet>false</canGenerateInGeneSet>
+	</GeneDef>
+</Defs>
