@@ -103,6 +103,42 @@ public static class ParryUtility
 
             IntVec3 target = delta + attacker.PositionHeld;
             IntVec3 dest = GenSight.LastPointOnLineOfSight(attacker.Position, target, x => !x.Impassable(attacker.Map), false);
+
+            // If the computed destination is unwalkable (e.g. occupied, odd terrain, deep water),
+            // step the pawn back toward its origin one tile at a time until a walkable cell is
+            // found, then deal 5 blunt damage as though it was slammed into a wall — unless the
+            // blocked cell is deep water, in which case the pawn splashes in rather than impacts.
+            if (!dest.IsValid || !dest.Walkable(attacker.Map))
+            {
+                TerrainDef blockedTerrain = dest.IsValid ? dest.GetTerrain(attacker.Map) : null;
+                bool isDeepWater = blockedTerrain != null
+                    && blockedTerrain.defName.IndexOf("Water",  System.StringComparison.OrdinalIgnoreCase) >= 0
+                    && blockedTerrain.defName.IndexOf("Deep",   System.StringComparison.OrdinalIgnoreCase) >= 0;
+
+                if (!isDeepWater)
+                    attacker.TakeDamage(new DamageInfo(DamageDefOf.Blunt, 5f, 0f, instigator: user));
+
+                IntVec3 dir = attacker.Position - dest; // vector pointing back to origin
+                float maxDist = Mathf.Max(Mathf.Abs(dir.x), Mathf.Abs(dir.z));
+                IntVec3 fallback = attacker.Position; // worst case: don't move at all
+                if (maxDist > 0f)
+                {
+                    for (int step = 1; step <= (int)maxDist; step++)
+                    {
+                        IntVec3 candidate = new IntVec3(
+                            dest.x + Mathf.RoundToInt(dir.x * step / maxDist),
+                            0,
+                            dest.z + Mathf.RoundToInt(dir.z * step / maxDist));
+                        if (candidate.InBounds(attacker.Map) && candidate.Walkable(attacker.Map))
+                        {
+                            fallback = candidate;
+                            break;
+                        }
+                    }
+                }
+                dest = fallback;
+            }
+
             attacker.Position = dest;
             attacker.Notify_Teleported(true, true);
         }
