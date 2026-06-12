@@ -9,6 +9,7 @@ namespace GW_Frame
         public static ThingCategoryDef GW_Shield;
         public static ThingCategoryDef GW_TwoHanded;
         //public static ThingCategoryDef Shield;
+        [MayRequire("Grimworld.Core")]
         public static ThingCategoryDef TwoHanded;
     }
 }
