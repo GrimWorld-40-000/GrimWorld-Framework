@@ -58,6 +58,7 @@ namespace GW_Frame.Settings
             DrawToggle(listing, "    Enable GW: Research Balance Patch",     "GWBalance",  gwAny);
             DrawToggle(listing, "    Enable GW: Gene Seeding Patch",         "GWGene",     gwAny);
             DrawToggle(listing, "    Enable GW: Vanilla Expanded Hook",      "VEHook",     gwAny);
+            DrawToggle(listing, "    Enable GW: Power Armor Restriction Patch", "GWPowerArmorRestrict", gwAny);
 
             listing.End();
             Widgets.EndScrollView();

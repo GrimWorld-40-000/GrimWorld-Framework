@@ -9,14 +9,14 @@ namespace GW_Frame.Settings
         public static readonly string[] GW_KEYS =
         {
             "GWCat", "GWResearch",
-            "GWBalance", "GWGene", "VEHook" // Gravship and Core integrated, Aspectus empty
+            "GWBalance", "GWGene", "VEHook", "GWPowerArmorRestrict"
         };
 
         private Dictionary<string, bool> patches;
 
         /// <summary>Default for new installs, missing keys after mod update, and Reset in mod settings.</summary>
         public static bool DefaultEnabledForKey(string key) =>
-            key != "GWCat" && key != "GWBalance" && key != "GWGene";
+            key != "GWCat" && key != "GWBalance" && key != "GWGene" && key != "GWPowerArmorRestrict";
 
         public bool Get(string key) => patches != null && patches.TryGetValue(key, out var v) && v;
 

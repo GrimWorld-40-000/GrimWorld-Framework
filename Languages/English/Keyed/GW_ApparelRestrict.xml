@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+    <GW_CannotWearApparel>Cannot wear {0}: {1}</GW_CannotWearApparel>
+    <GW_PowerArmorRequiresFibrovestOrGene>must wear a fibrovest or have a compatible gene</GW_PowerArmorRequiresFibrovestOrGene>
+    <GW_PowerArmorAttachmentRequiresTorso>must equip power armor first</GW_PowerArmorAttachmentRequiresTorso>
+    <GW_PowerArmorAttachmentRequiresMatchingSet>requires matching power armor</GW_PowerArmorAttachmentRequiresMatchingSet>
+    <GW_ShoulderRequiresPowerArmor>must equip power armor first</GW_ShoulderRequiresPowerArmor>
+    <GW_ShoulderRequiresPowerArmorTier>requires power armor tier {0} or higher</GW_ShoulderRequiresPowerArmorTier>
+    <GW_ShoulderRequiresPowerArmorTags>incompatible power armor for this attachment</GW_ShoulderRequiresPowerArmorTags>
+    <GW_ShoulderRequiresMatchingArmorSet>requires a matching armor set</GW_ShoulderRequiresMatchingArmorSet>
+</LanguageData>
